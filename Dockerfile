@@ -19,6 +19,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd mysqli
 # Enable Apache modules
 RUN a2enmod rewrite
 RUN a2enmod headers
+RUN a2enmod expires
 
 # Set working directory
 WORKDIR /var/www/html

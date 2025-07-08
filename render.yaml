@@ -1,10 +1,33 @@
 services:
   - type: web
     name: pablings
-    env: php
+    env: docker
     plan: free
-    buildCommand: composer install --no-dev --optimize-autoloader
-    startCommand: php -S 0.0.0.0:$PORT -t .
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PHP_VERSION
-        value: 8.1
+      - key: DB_HOST
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+    
+  - type: pserv
+    name: pablings-mysql
+    env: docker
+    plan: free
+    disk:
+      name: mysql
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_DATABASE
+        value: edoc
+      - key: MYSQL_USER
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: MYSQL_ROOT_PASSWORD
+        sync: false

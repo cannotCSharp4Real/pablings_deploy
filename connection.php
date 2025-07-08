@@ -1,11 +1,17 @@
 <?php
-    $host = getenv('DB_HOST') ?: 'localhost';
-    $username = getenv('DB_USERNAME') ?: 'root';
-    $password = getenv('DB_PASSWORD') ?: '';
-    $dbname = getenv('DB_NAME') ?: 'edoc';
+// Get these values from your Render database dashboard
+$host = "dpg-xxxxxxxxx-a.singapore-postgres.render.com";
+$port = "5432";
+$dbname = "your_database_name";
+$username = "your_username";
+$password = "your_password";
 
-    $database = new mysqli($host, $username, $password, $dbname);
-    if ($database->connect_error) {
-        die("Connection failed: " . $database->connect_error);
-    }
+// For PostgreSQL, use PDO
+try {
+    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connected successfully";
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
 ?>

@@ -1,9 +1,9 @@
 <?php
 // Get these values from your Render database dashboard
-$host = "dpg-xxxxxxxxx-a.singapore-postgres.render.com";
+$host = "dpg-d1mh2hje5dus73bhlug0-a";
 $port = "5432";
-$dbname = "your_database_name";
-$username = "your_username";
+$dbname = "pablings_dp";
+$username = "pablings_dp_user";
 $password = "your_password";
 
 // For PostgreSQL, use PDO

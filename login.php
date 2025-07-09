@@ -13,18 +13,55 @@ date_default_timezone_set('Asia/Kolkata');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 
+// Initialize the error variable
+$error = '';
+
 if ($_POST) {
     $email = $_POST['useremail'];
     $password = $_POST['userpassword'];
 
-    $error = '<label for="promter" class="form-label"></label>';
-
+    // Attempt to fetch user from the database
     $result = $database->query("SELECT * FROM webuser WHERE email='$email'");
     if ($result && $result->num_rows == 1) {
         $utype = $result->fetch_assoc()['usertype'];
-        // Your existing logic for user types...
+
+        // Your existing logic for user types
+        if ($utype == 'p') {
+            // Check customer credentials
+            $checker = $database->query("SELECT * FROM customer WHERE pemail='$email' AND ppassword='$password'");
+            if ($checker && $checker->num_rows == 1) {
+                $_SESSION['user'] = $email;
+                $_SESSION['usertype'] = 'p';
+                header('Location: customer/index.php');
+                exit; // Ensure to exit after redirect
+            } else {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+            }
+        } elseif ($utype == 'a') {
+            // Check admin credentials
+            $checker = $database->query("SELECT * FROM admin WHERE aemail='$email' AND apassword='$password'");
+            if ($checker && $checker->num_rows == 1) {
+                $_SESSION['user'] = $email;
+                $_SESSION['usertype'] = 'a';
+                header('Location: admin/index.php');
+                exit;
+            } else {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+            }
+        } elseif ($utype == 'd') {
+            // Check barber credentials
+            $checker = $database->query("SELECT * FROM barber WHERE docemail='$email' AND docpassword='$password'");
+            if ($checker && $checker->num_rows == 1) {
+                $_SESSION['user'] = $email;
+                $_SESSION['usertype'] = 'd';
+                header('Location: barber/index.php');
+                exit;
+            } else {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+            }
+        }
     } else {
-        $error = '<label for="promter" class="form-label">&nbsp;</label>';
+        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We can’t find any account for this email.</label>';
     }
 }
 ?>
@@ -73,7 +110,7 @@ if ($_POST) {
                         </td>
                     </tr>
                     <tr>
-                        <td><br><?php echo $error ?></td>
+                        <td><br><?php echo $error; ?></td>
                     </tr>
                     <tr>
                         <td>

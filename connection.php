@@ -2,7 +2,7 @@
 // Use environment variables for database connection (recommended)
 $host = $_ENV['DATABASE_HOST'] ?? 'dpg-d1n3sv8dl3ps73ft5df0-a';
 $port = $_ENV['DATABASE_PORT'] ?? '5432';
-$dbname = $_ENV['DATABASE_NAME'] ?? 'pablings';
+$dbname = $_ENV['DATABASE_NAME'] ?? 'pablings_dp';
 $username = $_ENV['DATABASE_USER'] ?? 'pablings_user';
 $password = $_ENV['DATABASE_PASSWORD'] ?? '';
 

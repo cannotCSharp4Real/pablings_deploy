@@ -17,71 +17,82 @@ $_SESSION["date"] = $date;
 $error = '';
 
 if ($_POST) {
-    $email = $_POST['useremail'];
-    $password = $_POST['userpassword'];
+    $email = isset($_POST['useremail']) ? trim($_POST['useremail']) : '';
+    $password = isset($_POST['userpassword']) ? $_POST['userpassword'] : '';
 
-    // Check if database connection exists
-    if (!isset($database) || !$database) {
-        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
+    // Validate input
+    if (empty($email) || empty($password)) {
+        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please fill in all fields.</label>';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid email address.</label>';
     } else {
-        // Use prepared statements to prevent SQL injection
-        $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result && $result->num_rows == 1) {
-            $utype = $result->fetch_assoc()['usertype'];
-
-            // Check user type and credentials
-            if ($utype == 'p') {
-                // Check customer credentials
-                $stmt = $database->prepare("SELECT * FROM customer WHERE pemail = ? AND ppassword = ?");
-                $stmt->bind_param("ss", $email, $password);
-                $stmt->execute();
-                $checker = $stmt->get_result();
-                
-                if ($checker && $checker->num_rows == 1) {
-                    $_SESSION['user'] = $email;
-                    $_SESSION['usertype'] = 'p';
-                    header('Location: customer/index.php');
-                    exit;
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-            } elseif ($utype == 'a') {
-                // Check admin credentials
-                $stmt = $database->prepare("SELECT * FROM admin WHERE aemail = ? AND apassword = ?");
-                $stmt->bind_param("ss", $email, $password);
-                $stmt->execute();
-                $checker = $stmt->get_result();
-                
-                if ($checker && $checker->num_rows == 1) {
-                    $_SESSION['user'] = $email;
-                    $_SESSION['usertype'] = 'a';
-                    header('Location: admin/index.php');
-                    exit;
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-            } elseif ($utype == 'd') {
-                // Check barber credentials
-                $stmt = $database->prepare("SELECT * FROM barber WHERE docemail = ? AND docpassword = ?");
-                $stmt->bind_param("ss", $email, $password);
-                $stmt->execute();
-                $checker = $stmt->get_result();
-                
-                if ($checker && $checker->num_rows == 1) {
-                    $_SESSION['user'] = $email;
-                    $_SESSION['usertype'] = 'd';
-                    header('Location: barber/index.php');
-                    exit;
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-            }
+        // Check if database connection exists
+        if (!isset($pdo) || !$pdo) {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
         } else {
-            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We can\'t find any account for this email.</label>';
+            try {
+                // Use prepared statements to prevent SQL injection
+                $stmt = $pdo->prepare("SELECT * FROM webuser WHERE email = ?");
+                $stmt->execute([$email]);
+                $result = $stmt->fetch();
+                
+                if ($result) {
+                    $utype = $result['usertype'];
+
+                    // Check user type and credentials
+                    if ($utype == 'p') {
+                        // Check customer credentials
+                        $stmt = $pdo->prepare("SELECT * FROM customer WHERE pemail = ?");
+                        $stmt->execute([$email]);
+                        $customer = $stmt->fetch();
+                        
+                        if ($customer && password_verify($password, $customer['ppassword'])) {
+                            $_SESSION['user'] = $email;
+                            $_SESSION['usertype'] = 'p';
+                            $_SESSION['username'] = $customer['pname'];
+                            header('Location: customer/index.php');
+                            exit;
+                        } else {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                        }
+                    } elseif ($utype == 'a') {
+                        // Check admin credentials
+                        $stmt = $pdo->prepare("SELECT * FROM admin WHERE aemail = ?");
+                        $stmt->execute([$email]);
+                        $admin = $stmt->fetch();
+                        
+                        if ($admin && password_verify($password, $admin['apassword'])) {
+                            $_SESSION['user'] = $email;
+                            $_SESSION['usertype'] = 'a';
+                            $_SESSION['username'] = $admin['aname'];
+                            header('Location: admin/index.php');
+                            exit;
+                        } else {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                        }
+                    } elseif ($utype == 'd') {
+                        // Check barber credentials
+                        $stmt = $pdo->prepare("SELECT * FROM barber WHERE docemail = ?");
+                        $stmt->execute([$email]);
+                        $barber = $stmt->fetch();
+                        
+                        if ($barber && password_verify($password, $barber['docpassword'])) {
+                            $_SESSION['user'] = $email;
+                            $_SESSION['usertype'] = 'd';
+                            $_SESSION['username'] = $barber['docname'];
+                            header('Location: barber/index.php');
+                            exit;
+                        } else {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                        }
+                    }
+                } else {
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We can\'t find any account for this email.</label>';
+                }
+            } catch (PDOException $e) {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database error. Please try again later.</label>';
+                error_log("Login error: " . $e->getMessage());
+            }
         }
     }
 }
@@ -117,7 +128,7 @@ if ($_POST) {
                     </tr>
                     <tr>
                         <td class="label-td">
-                            <input type="email" name="useremail" class="input-text" placeholder="Email Address" required>
+                            <input type="email" name="useremail" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['useremail']) ? htmlspecialchars($_POST['useremail']) : ''; ?>">
                         </td>
                     </tr>
                     <tr>

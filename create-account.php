@@ -1,8 +1,10 @@
 <?php
-// Move all PHP code to the top before any HTML output
 session_start();
 
-// Unset all the server side variables
+// Import database
+include("connection.php");
+
+// Unset all server-side variables
 $_SESSION["user"] = "";
 $_SESSION["usertype"] = "";
 
@@ -11,30 +13,27 @@ date_default_timezone_set('Asia/Kolkata');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 
-// Import database
-include("connection.php");
-
 // Initialize error variable
-$error = '<label for="promter" class="form-label"></label>';
+$error = '';
 
 if ($_POST) {
     // Check if database connection exists
-    if (!isset($database) || !$database) {
+    if (!isset($database) || $database->connect_error) {
         $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
     } else {
         // Get form data
-        $fname = $_SESSION['personal']['fname'];
-        $lname = $_SESSION['personal']['lname'];
+        $fname = $_SESSION['personal']['fname'] ?? '';
+        $lname = $_SESSION['personal']['lname'] ?? '';
         $name = $fname . " " . $lname;
-        $address = $_SESSION['personal']['address'];
-        $dob = $_SESSION['personal']['dob'];
+        $address = $_SESSION['personal']['address'] ?? '';
+        $dob = $_SESSION['personal']['dob'] ?? '';
         $email = $_POST['newemail'];
         $newpassword = $_POST['newpassword'];
         $cpassword = $_POST['cpassword'];
         $tele = $_POST['tele'] ?? '';
         
         // Check if passwords match
-        if ($newpassword == $cpassword) {
+        if ($newpassword === $cpassword) {
             // Use prepared statement to check if email exists
             $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
             $stmt->bind_param("s", $email);
@@ -44,9 +43,12 @@ if ($_POST) {
             if ($result->num_rows == 1) {
                 $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
             } else {
+                // Hash the password before storing it
+                $hashedPassword = password_hash($newpassword, PASSWORD_DEFAULT);
+                
                 // Insert new user with prepared statements
                 $stmt1 = $database->prepare("INSERT INTO customer (pemail, pname, ppassword, paddress, pdob) VALUES (?, ?, ?, ?, ?)");
-                $stmt1->bind_param("sssss", $email, $name, $newpassword, $address, $dob);
+                $stmt1->bind_param("sssss", $email, $name, $hashedPassword, $address, $dob);
                 
                 $stmt2 = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'p')");
                 $stmt2->bind_param("s", $email);
@@ -81,7 +83,7 @@ if ($_POST) {
     <link rel="stylesheet" href="css/signup.css">
     <title>Create Account</title>
     <style>
-        .container{
+        .container {
             animation: transitionIn-X 0.5s;
         }
     </style>
@@ -139,7 +141,7 @@ if ($_POST) {
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <?php echo $error ?>
+                            <?php echo $error; ?>
                         </td>
                     </tr>
                     <tr>

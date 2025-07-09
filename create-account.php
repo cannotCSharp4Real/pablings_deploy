@@ -2,7 +2,7 @@
 session_start();
 
 // Import database
-include("connection.php");
+require_once("connection.php");
 
 // Unset all server-side variables
 $_SESSION["user"] = "";
@@ -18,56 +18,77 @@ $error = '';
 
 if ($_POST) {
     // Check if database connection exists
-    if (!isset($database) || $database->connect_error) {
+    if (!isset($pdo) || !$pdo) {
         $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
     } else {
-        // Get form data
-        $fname = $_SESSION['personal']['fname'] ?? '';
-        $lname = $_SESSION['personal']['lname'] ?? '';
+        // Get form data and sanitize
+        $fname = isset($_SESSION['personal']['fname']) ? trim($_SESSION['personal']['fname']) : '';
+        $lname = isset($_SESSION['personal']['lname']) ? trim($_SESSION['personal']['lname']) : '';
         $name = $fname . " " . $lname;
-        $address = $_SESSION['personal']['address'] ?? '';
-        $dob = $_SESSION['personal']['dob'] ?? '';
-        $email = $_POST['newemail'];
-        $newpassword = $_POST['newpassword'];
-        $cpassword = $_POST['cpassword'];
-        $tele = $_POST['tele'] ?? '';
+        $address = isset($_SESSION['personal']['address']) ? trim($_SESSION['personal']['address']) : '';
+        $dob = isset($_SESSION['personal']['dob']) ? $_SESSION['personal']['dob'] : '';
+        $email = isset($_POST['newemail']) ? trim($_POST['newemail']) : '';
+        $newpassword = isset($_POST['newpassword']) ? $_POST['newpassword'] : '';
+        $cpassword = isset($_POST['cpassword']) ? $_POST['cpassword'] : '';
+        $tele = isset($_POST['tele']) ? trim($_POST['tele']) : '';
         
-        // Check if passwords match
-        if ($newpassword === $cpassword) {
-            // Use prepared statement to check if email exists
-            $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            if ($result->num_rows == 1) {
-                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
-            } else {
-                // Hash the password before storing it
-                $hashedPassword = password_hash($newpassword, PASSWORD_DEFAULT);
-                
-                // Insert new user with prepared statements
-                $stmt1 = $database->prepare("INSERT INTO customer (pemail, pname, ppassword, paddress, pdob) VALUES (?, ?, ?, ?, ?)");
-                $stmt1->bind_param("sssss", $email, $name, $hashedPassword, $address, $dob);
-                
-                $stmt2 = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'p')");
-                $stmt2->bind_param("s", $email);
-                
-                if ($stmt1->execute() && $stmt2->execute()) {
-                    // Set session variables
-                    $_SESSION["user"] = $email;
-                    $_SESSION["usertype"] = "p";
-                    $_SESSION["username"] = $fname;
-                    
-                    // Redirect to customer dashboard
-                    header('Location: customer/index.php');
-                    exit();
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Error creating account. Please try again.</label>';
-                }
-            }
-        } else {
+        // Validate required fields
+        if (empty($email) || empty($newpassword) || empty($cpassword)) {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please fill in all required fields.</label>';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid email address.</label>';
+        } elseif (strlen($newpassword) < 6) {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password must be at least 6 characters long.</label>';
+        } elseif ($newpassword !== $cpassword) {
             $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>';
+        } else {
+            try {
+                // Check if email exists
+                $stmt = $pdo->prepare("SELECT * FROM webuser WHERE email = ?");
+                $stmt->execute([$email]);
+                $result = $stmt->fetch();
+                
+                if ($result) {
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
+                } else {
+                    // Hash the password before storing it
+                    $hashedPassword = password_hash($newpassword, PASSWORD_DEFAULT);
+                    
+                    // Begin transaction
+                    $pdo->beginTransaction();
+                    
+                    try {
+                        // Insert new customer
+                        $stmt1 = $pdo->prepare("INSERT INTO customer (pemail, pname, ppassword, paddress, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?)");
+                        $stmt1->execute([$email, $name, $hashedPassword, $address, $dob, $tele]);
+                        
+                        // Insert new webuser
+                        $stmt2 = $pdo->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'p')");
+                        $stmt2->execute([$email]);
+                        
+                        // Commit transaction
+                        $pdo->commit();
+                        
+                        // Set session variables
+                        $_SESSION["user"] = $email;
+                        $_SESSION["usertype"] = "p";
+                        $_SESSION["username"] = $fname;
+                        
+                        // Redirect to customer dashboard
+                        header('Location: customer/index.php');
+                        exit();
+                        
+                    } catch (PDOException $e) {
+                        // Rollback transaction on error
+                        $pdo->rollback();
+                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Error creating account. Please try again.</label>';
+                        error_log("Registration error: " . $e->getMessage());
+                    }
+                }
+            } catch (PDOException $e) {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database error. Please try again.</label>';
+                error_log("Database error: " . $e->getMessage());
+            }
         }
     }
 }
@@ -106,7 +127,7 @@ if ($_POST) {
                     </tr>
                     <tr>
                         <td class="label-td" colspan="2">
-                            <input type="email" name="newemail" class="input-text" placeholder="Email Address" required>
+                            <input type="email" name="newemail" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['newemail']) ? htmlspecialchars($_POST['newemail']) : ''; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +137,7 @@ if ($_POST) {
                     </tr>
                     <tr>
                         <td class="label-td" colspan="2">
-                            <input type="tel" name="tele" class="input-text" placeholder="ex: 0712345678" pattern="[0]{1}[0-9]{9}">
+                            <input type="tel" name="tele" class="input-text" placeholder="ex: 0712345678" pattern="[0]{1}[0-9]{9}" value="<?php echo isset($_POST['tele']) ? htmlspecialchars($_POST['tele']) : ''; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -126,7 +147,7 @@ if ($_POST) {
                     </tr>
                     <tr>
                         <td class="label-td" colspan="2">
-                            <input type="password" name="newpassword" class="input-text" placeholder="New Password" required>
+                            <input type="password" name="newpassword" class="input-text" placeholder="New Password" required minlength="6">
                         </td>
                     </tr>
                     <tr>
@@ -136,7 +157,7 @@ if ($_POST) {
                     </tr>
                     <tr>
                         <td class="label-td" colspan="2">
-                            <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required>
+                            <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required minlength="6">
                         </td>
                     </tr>
                     <tr>

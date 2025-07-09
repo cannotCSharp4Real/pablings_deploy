@@ -4,7 +4,7 @@ $host = $_ENV['DATABASE_HOST'] ?? 'dpg-d1n3sv8dl3ps73ft5df0-a';
 $port = $_ENV['DATABASE_PORT'] ?? '5432';
 $dbname = $_ENV['DATABASE_NAME'] ?? 'pablings_dp';
 $username = $_ENV['DATABASE_USER'] ?? 'pablings_user';
-$password = $_ENV['DATABASE_PASSWORD'] ?? '';
+$password = $_ENV['DATABASE_PASSWORD'] ?? 'hfxyWz1aZ80LypnHTGU5mc4joqpO9CqM';
 
 try {
     // Create PDO connection for PostgreSQL

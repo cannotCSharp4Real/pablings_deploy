@@ -1,45 +1,44 @@
-    <?php
+<?php
+session_start();
 
-    //learn from w3schools.com
-    //Unset all the server side variables
+//learn from w3schools.com
+//Unset all the server side variables
 
-    session_start();
-
-    $_SESSION["user"]="";
-    $_SESSION["usertype"]="";
+$_SESSION["user"]="";
+$_SESSION["usertype"]="";
     
-    // Set the new timezone
-    date_default_timezone_set('Asia/Kolkata');
-    $date = date('Y-m-d');
+// Set the new timezone
+date_default_timezone_set('Asia/Kolkata');
+$date = date('Y-m-d');
 
-    $_SESSION["date"]=$date;
-    
-
-    //import database
-    include("connection.php");
-
+$_SESSION["date"]=$date;
     
 
+//import database
+include("connection.php");
+
+    
 
 
-    if($_POST){
 
-        $email=$_POST['useremail'];
-        $password=$_POST['userpassword'];
+if($_POST){
+
+    $email=$_POST['useremail'];
+    $password=$_POST['userpassword'];
         
-        $error='<label for="promter" class="form-label"></label>';
+    $error='<label for="promter" class="form-label"></label>';
 
-        $result= $database->query("select * from webuser where email='$email'");
-        if($result->num_rows==1){
-            $utype=$result->fetch_assoc()['usertype'];
-            if ($utype=='p'){
-                $checker = $database->query("select * from customer where pemail='$email' and ppassword='$password'");
-                if ($checker->num_rows==1){
+    $result= $database->query("select * from webuser where email='$email'");
+    if($result->num_rows==1){
+        $utype=$result->fetch_assoc()['usertype'];
+        if ($utype=='p'){
+            $checker = $database->query("select * from customer where pemail='$email' and ppassword='$password'");
+            if ($checker->num_rows==1){
 
 
-                    //   Customer dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='p';
+                //   Customer dashbord
+                $_SESSION['user']=$email;
+                $_SESSION['usertype']='p';
                     
                     header('location: customer/index.php');
 
@@ -82,8 +81,6 @@
         }else{
             $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We cant found any acount for this email.</label>';
         }
-
-
 
 
 

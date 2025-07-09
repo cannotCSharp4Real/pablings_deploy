@@ -27,7 +27,7 @@ if ($_POST) {
         $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid email address.</label>';
     } else {
         // Check if database connection exists
-        if (!isset($pdo) || !$pdo) {
+        if (!isset($pdo)) {
             $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
         } else {
             try {

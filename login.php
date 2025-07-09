@@ -9,7 +9,7 @@ $_SESSION["user"] = "";
 $_SESSION["usertype"] = "";
 
 // Set the timezone
-date_default_timezone_set('Singapore');
+date_default_timezone_set('Asia/Kolkata');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 

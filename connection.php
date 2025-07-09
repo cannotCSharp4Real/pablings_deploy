@@ -1,10 +1,10 @@
 <?php
 // Use environment variables for database connection (recommended)
-$host = $_ENV['DATABASE_HOST'] ?? 'dpg-d1n3sv8dl3ps73ft5df0-a';
+$host = $_ENV['DATABASE_HOST'] ?? 'dpg-d1n4eper433s73bbh8g0-a';
 $port = $_ENV['DATABASE_PORT'] ?? '5432';
-$dbname = $_ENV['DATABASE_NAME'] ?? 'pablings_dp';
-$username = $_ENV['DATABASE_USER'] ?? 'pablings_user';
-$password = $_ENV['DATABASE_PASSWORD'] ?? 'hfxyWz1aZ80LypnHTGU5mc4joqpO9CqM';
+$dbname = $_ENV['DATABASE_NAME'] ?? 'pablings_dp_jdd3';
+$username = $_ENV['DATABASE_USER'] ?? 'pablings_dp_jdd3_user';
+$password = $_ENV['DATABASE_PASSWORD'] ?? 'EDy75KM1w3BN7vbxxc1Par4i26N1ho9p';
 
 try {
     // Create PDO connection for PostgreSQL

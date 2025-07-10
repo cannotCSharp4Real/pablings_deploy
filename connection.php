@@ -1,25 +1,25 @@
 <?php
-// Debug-enabled database connection for troubleshooting
+// Database connection with improved error handling
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database credentials from your Render dashboard
-$host = $_ENV['DATABASE_HOST'] ?? 'dpg-d1n4eper433s73bbh8g0-a';
-$port = $_ENV['DATABASE_PORT'] ?? '5432';
-$dbname = $_ENV['DATABASE_NAME'] ?? 'pablings_dp_jdd3';
-$username = $_ENV['DATABASE_USER'] ?? 'pablings_dp_jdd3_user';
-$password = $_ENV['DATABASE_PASSWORD'] ?? 'EDy75KM1w3BN7vbxxc1Par4i26N1ho9p';
+// Database credentials - Use environment variables with fallbacks
+$host = $_ENV['DATABASE_HOST'] ?? getenv('DATABASE_HOST') ?? 'dpg-d1n4eper433s73bbh8g0-a.oregon-postgres.render.com';
+$port = $_ENV['DATABASE_PORT'] ?? getenv('DATABASE_PORT') ?? '5432';
+$dbname = $_ENV['DATABASE_NAME'] ?? getenv('DATABASE_NAME') ?? 'pablings_dp_jdd3';
+$username = $_ENV['DATABASE_USER'] ?? getenv('DATABASE_USER') ?? 'pablings_dp_jdd3_user';
+$password = $_ENV['DATABASE_PASSWORD'] ?? getenv('DATABASE_PASSWORD') ?? 'EDy75KM1w3BN7vbxxc1Par4i26N1ho9p';
 
-// Clean any potential invisible characters from the host
+// Clean any potential invisible characters
 $host = trim($host);
 $host = preg_replace('/[\x{200E}\x{200F}\x{202A}-\x{202E}]/u', '', $host);
 
-// Debug: Show what we're trying to connect to (remove in production)
+// Remove debug info in production - comment out the line below for production
 echo "<!-- DEBUG: Attempting to connect to: $host:$port/$dbname with user: $username -->\n";
 
 try {
-    // Create PDO connection for PostgreSQL with connection timeout
-    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;connect_timeout=10";
+    // Create PDO connection for PostgreSQL with SSL and proper timeout
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
     
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -44,7 +44,7 @@ try {
     $error_message = $e->getMessage();
     error_log("Database connection error: " . $error_message);
     
-    // More detailed error for debugging
+    // More detailed error for debugging - remove in production
     echo "<!-- DEBUG ERROR: " . htmlspecialchars($error_message) . " -->\n";
     
     // Check if it's a specific type of error

@@ -92,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             error_log("Login error: " . $e->getMessage());
         } catch (Exception $e) {
             $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">' . htmlspecialchars($e->getMessage()) . '</label>';
+            error_log("Login exception: " . $e->getMessage());
         }
     }
 }

@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database credentials - Use environment variables with fallbacks
+// Database credentials - Update these to match your actual database
 $host = $_ENV['DATABASE_HOST'] ?? getenv('DATABASE_HOST') ?? 'dpg-d1n4eper433s73bbh8g0-a.oregon-postgres.render.com';
 $port = $_ENV['DATABASE_PORT'] ?? getenv('DATABASE_PORT') ?? '5432';
 $dbname = $_ENV['DATABASE_NAME'] ?? getenv('DATABASE_NAME') ?? 'pablings_dp_jdd3';

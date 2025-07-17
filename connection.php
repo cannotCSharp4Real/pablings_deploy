@@ -3,12 +3,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database credentials - Update these to match your actual database
-$host = $_ENV['DATABASE_HOST'] ?? getenv('DATABASE_HOST') ?? 'dpg-d1n4eper433s73bbh8g0-a.oregon-postgres.render.com';
-$port = $_ENV['DATABASE_PORT'] ?? getenv('DATABASE_PORT') ?? '5432';
-$dbname = $_ENV['DATABASE_NAME'] ?? getenv('DATABASE_NAME') ?? 'pablings_dp_jdd3';
-$username = $_ENV['DATABASE_USER'] ?? getenv('DATABASE_USER') ?? 'pablings_dp_jdd3_user';
-$password = $_ENV['DATABASE_PASSWORD'] ?? getenv('DATABASE_PASSWORD') ?? 'EDy75KM1w3BN7vbxxc1Par4i26N1ho9p';
+// Alternative connection using full URL
+$database_url = "your_external_database_url_from_render";
+$pdo = new PDO($database_url, null, null, $options);
 
 // Clean any potential invisible characters
 $host = trim($host);

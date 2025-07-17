@@ -1,22 +1,20 @@
 <?php
-// Database connection with improved error handling
+// Database connection using full Database URL
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Alternative connection using full URL
-$database_url = "your_external_database_url_from_render";
-$pdo = new PDO($database_url, null, null, $options);
-
-// Clean any potential invisible characters
-$host = trim($host);
-$host = preg_replace('/[\x{200E}\x{200F}\x{202A}-\x{202E}]/u', '', $host);
-
-// Remove debug info in production - comment out the line below for production
-echo "<!-- DEBUG: Attempting to connect to: $host:$port/$dbname with user: $username -->\n";
-
 try {
-    // Create PDO connection for PostgreSQL with SSL and proper timeout
-    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+    // Method 1: Using Environment Variable (Recommended for production)
+    $database_url = $_ENV['DATABASE_URL'] ?? getenv('DATABASE_URL');
+    
+    // Method 2: If environment variable not set, use the full URL directly
+    if (!$database_url) {
+        // Replace this with your actual External Database URL from Render dashboard
+        $database_url = "postgresql://pablings_dp_jdd3_user:EDy75KM1w3BN7vbxxc1Par4i26N1ho9p@dpg-d1n4eper433s73bbh8g0-a.singapore-postgres.render.com/pablings_dp_jdd3";
+    }
+    
+    // Remove debug info in production - comment out the line below for production
+    echo "<!-- DEBUG: Connecting using database URL -->\n";
     
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -27,7 +25,8 @@ try {
         PDO::ATTR_PERSISTENT => false
     ];
     
-    $pdo = new PDO($dsn, $username, $password, $options);
+    // Create PDO connection using the full database URL
+    $pdo = new PDO($database_url, null, null, $options);
     
     // Test the connection
     $pdo->query('SELECT 1');

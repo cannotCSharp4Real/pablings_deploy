@@ -1,5 +1,5 @@
 <?php
-// Database connection with driver check and fallback
+// Database connection with improved error handling and SSL configuration
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -24,17 +24,16 @@ function parseDatabaseUrl($url) {
 try {
     // Check available PDO drivers
     $available_drivers = checkPDODrivers();
-    echo "<!-- DEBUG: Available PDO drivers: " . implode(', ', $available_drivers) . " -->\n";
     
     // Check if PostgreSQL driver is available
     if (!in_array('pgsql', $available_drivers)) {
         throw new Exception("PostgreSQL PDO driver (pdo_pgsql) is not installed. Available drivers: " . implode(', ', $available_drivers));
     }
     
-    // Get database URL
+    // Get database URL from environment
     $database_url = $_ENV['DATABASE_URL'] ?? getenv('DATABASE_URL');
     
-    // Fallback URL if environment variable not set
+    // Updated fallback URL (make sure this is correct)
     if (!$database_url) {
         $database_url = "postgresql://pablings_dp_jdd3_user:EDy75KM1w3BN7vbxxc1Par4i26N1ho9p@dpg-d1n4eper433s73bbh8g0-a.singapore-postgres.render.com/pablings_dp_jdd3";
     }
@@ -42,58 +41,98 @@ try {
     // Parse the database URL
     $db_config = parseDatabaseUrl($database_url);
     
-    // Build DSN string
+    // Validate required configuration
+    if (empty($db_config['host']) || empty($db_config['database']) || empty($db_config['username'])) {
+        throw new Exception("Invalid database configuration. Missing required parameters.");
+    }
+    
+    // Build DSN string with proper SSL configuration
     $dsn = sprintf(
-        "pgsql:host=%s;port=%d;dbname=%s;sslmode=require",
+        "pgsql:host=%s;port=%d;dbname=%s;sslmode=require;options='--client_encoding=UTF8'",
         $db_config['host'],
         $db_config['port'],
         $db_config['database']
     );
     
-    echo "<!-- DEBUG: Using DSN: " . str_replace($db_config['password'], '***', $dsn) . " -->\n";
-    
+    // PDO options with improved configuration
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
         PDO::ATTR_STRINGIFY_FETCHES => false,
         PDO::ATTR_TIMEOUT => 30,
-        PDO::ATTR_PERSISTENT => false
+        PDO::ATTR_PERSISTENT => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci", // This won't affect PostgreSQL but won't hurt
     ];
     
-    // Create PDO connection
-    $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], $options);
+    // Create PDO connection with retry logic
+    $max_retries = 3;
+    $retry_delay = 1; // seconds
+    $pdo = null;
+    
+    for ($i = 0; $i < $max_retries; $i++) {
+        try {
+            $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], $options);
+            break; // Success, exit retry loop
+        } catch (PDOException $e) {
+            if ($i == $max_retries - 1) {
+                throw $e; // Last attempt failed, throw the exception
+            }
+            sleep($retry_delay);
+            $retry_delay *= 2; // Exponential backoff
+        }
+    }
     
     // Test the connection
-    $pdo->query('SELECT 1');
-    echo "<!-- DEBUG: Database connection successful -->\n";
+    $test_query = $pdo->query('SELECT 1 as test');
+    $test_result = $test_query->fetch();
+    
+    if ($test_result['test'] != 1) {
+        throw new Exception("Database connection test failed");
+    }
+    
+    // Set timezone for PostgreSQL
+    $pdo->exec("SET timezone = 'Asia/Manila'");
     
     // For backward compatibility
     $conn = $pdo;
     $database = $pdo;
     
+    // Success message (only in development)
+    if (isset($_GET['debug']) || (defined('DEBUG') && DEBUG)) {
+        echo "<!-- DEBUG: Database connection successful -->\n";
+    }
+    
 } catch(PDOException $e) {
     $error_message = $e->getMessage();
     error_log("Database connection error: " . $error_message);
     
-    echo "<!-- DEBUG ERROR: " . htmlspecialchars($error_message) . " -->\n";
-    
-    // Provide specific error messages
+    // Provide specific error messages without exposing sensitive information
     if (strpos($error_message, 'could not find driver') !== false) {
-        die("Connection failed: PostgreSQL PDO driver is not installed. Please install php-pgsql extension.");
-    } elseif (strpos($error_message, 'could not translate host name') !== false) {
-        die("Connection failed: DNS resolution error. The database host cannot be reached.");
+        $user_error = "Database driver not available. Please contact support.";
+    } elseif (strpos($error_message, 'could not translate host name') !== false || 
+              strpos($error_message, 'Name or service not known') !== false) {
+        $user_error = "Database server is currently unavailable. Please try again later.";
     } elseif (strpos($error_message, 'password authentication failed') !== false) {
-        die("Connection failed: Authentication error. Please check username and password.");
+        $user_error = "Database authentication error. Please contact support.";
     } elseif (strpos($error_message, 'database') !== false && strpos($error_message, 'does not exist') !== false) {
-        die("Connection failed: Database does not exist. Please check database name.");
-    } elseif (strpos($error_message, 'Connection timed out') !== false) {
-        die("Connection failed: Connection timeout. Please try again later.");
+        $user_error = "Database configuration error. Please contact support.";
+    } elseif (strpos($error_message, 'Connection timed out') !== false || 
+              strpos($error_message, 'timeout') !== false) {
+        $user_error = "Database connection timeout. Please try again later.";
     } else {
-        die("Connection failed: " . htmlspecialchars($error_message));
+        $user_error = "Database connection failed. Please try again later.";
     }
+    
+    // In development, show more details
+    if (isset($_GET['debug']) || (defined('DEBUG') && DEBUG)) {
+        die("Connection failed: " . htmlspecialchars($error_message));
+    } else {
+        die("Connection failed: " . $user_error);
+    }
+    
 } catch(Exception $e) {
     error_log("General connection error: " . $e->getMessage());
-    die("Connection failed: " . htmlspecialchars($e->getMessage()));
+    die("Connection failed: Database service unavailable. Please try again later.");
 }
 ?>

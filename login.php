@@ -4,12 +4,17 @@ session_start();
 // Import database connection
 require_once("connection.php");
 
+// Check if connection was successful
+if (!isset($pdo)) {
+    die("Database connection failed. Please check your database configuration.");
+}
+
 // Unset all the server-side variables
 $_SESSION["user"] = "";
 $_SESSION["usertype"] = "";
 
 // Set the timezone
-date_default_timezone_set('Asia/Kolkata');
+date_default_timezone_set('Asia/Manila'); // Changed to Philippines timezone
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 
@@ -27,11 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid email address.</label>';
     } else {
         try {
-            // Check if database connection exists
-            if (!isset($pdo)) {
-                throw new Exception("Database connection error. Please try again later.");
-            }
-
             // Use prepared statements to prevent SQL injection
             $stmt = $pdo->prepare("SELECT * FROM webuser WHERE email = ?");
             $stmt->execute([$email]);
@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database error. Please try again later.</label>';
             error_log("Login error: " . $e->getMessage());
         } catch (Exception $e) {
-            $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">' . htmlspecialchars($e->getMessage()) . '</label>';
+            $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">System error. Please try again later.</label>';
             error_log("Login exception: " . $e->getMessage());
         }
     }
@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/login.css">
-    <title>Login</title>
+    <title>Login - Pabling's Barbershop</title>
 </head>
 <body>
     <center>

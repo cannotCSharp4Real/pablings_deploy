@@ -1,22 +1,43 @@
 <?php
 session_start();
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Import database connection
 require_once("connection.php");
 
 // Set the new timezone
-date_default_timezone_set('Asia/Manila'); // Changed from Kolkata to Manila for Philippines
+date_default_timezone_set('Asia/Manila');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 
 // Initialize variables
 $error = '';
 $success = '';
+$debug_info = '';
 
-// Check if personal details are in session
+// DEBUG: Check session data
+if (isset($_GET['debug'])) {
+    $debug_info .= "DEBUG INFO:\n";
+    $debug_info .= "Session ID: " . session_id() . "\n";
+    $debug_info .= "Session personal data: " . (isset($_SESSION["personal"]) ? "EXISTS" : "MISSING") . "\n";
+    if (isset($_SESSION["personal"])) {
+        $debug_info .= "Personal data: " . print_r($_SESSION["personal"], true) . "\n";
+    }
+    $debug_info .= "POST data: " . print_r($_POST, true) . "\n";
+}
+
+// Create dummy session data for testing (REMOVE IN PRODUCTION)
 if (!isset($_SESSION["personal"])) {
-    header("Location: signup.php");
-    exit();
+    $_SESSION["personal"] = [
+        'fname' => 'Test',
+        'lname' => 'User',
+        'address' => '123 Test Street',
+        'dob' => '1990-01-01'
+    ];
+    $debug_info .= "Created dummy session data for testing\n";
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -24,6 +45,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = isset($_POST['newpassword']) ? $_POST['newpassword'] : '';
     $cpassword = isset($_POST['cpassword']) ? $_POST['cpassword'] : '';
     $tel = isset($_POST['newtel']) ? trim($_POST['newtel']) : '';
+
+    $debug_info .= "Form submitted with email: $email\n";
+    $debug_info .= "Password length: " . strlen($password) . "\n";
+    $debug_info .= "Phone: $tel\n";
 
     // Enhanced validation
     if (empty($email) || empty($password) || empty($cpassword) || empty($tel)) {
@@ -35,9 +60,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (strlen($password) < 8) {
         $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password must be at least 8 characters long.</label>';
     } elseif (!preg_match('/^[0-9]{10,11}$/', $tel)) {
-        $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid phone number.</label>';
+        $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid phone number (10-11 digits only).</label>';
     } else {
         try {
+            $debug_info .= "Starting database operations...\n";
+            
             // Check if email already exists
             $stmt = $pdo->prepare("SELECT email FROM webuser WHERE email = ?");
             $stmt->execute([$email]);
@@ -45,7 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($result) {
                 $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">This email is already registered.</label>';
+                $debug_info .= "Email already exists in database\n";
             } else {
+                $debug_info .= "Email not found in database, proceeding with registration...\n";
+                
                 // Get personal details from session
                 $personal = $_SESSION["personal"];
                 $fname = $personal['fname'];
@@ -54,16 +84,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $dob = $personal['dob'];
                 $name = $fname . ' ' . $lname;
                 
+                $debug_info .= "Personal details: Name=$name, Address=$address, DOB=$dob\n";
+                
                 // Hash the password
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $debug_info .= "Password hashed successfully\n";
                 
                 // Begin transaction
                 $pdo->beginTransaction();
+                $debug_info .= "Transaction started\n";
                 
                 try {
                     // Insert into customer table first
                     $stmt = $pdo->prepare("INSERT INTO customer (pemail, pname, ppassword, paddress, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?)");
                     $success_customer = $stmt->execute([$email, $name, $hashed_password, $address, $dob, $tel]);
+                    
+                    $debug_info .= "Customer insert result: " . ($success_customer ? "SUCCESS" : "FAILED") . "\n";
                     
                     if (!$success_customer) {
                         throw new Exception("Failed to create customer record");
@@ -73,12 +109,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt = $pdo->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'p')");
                     $success_webuser = $stmt->execute([$email]);
                     
+                    $debug_info .= "Webuser insert result: " . ($success_webuser ? "SUCCESS" : "FAILED") . "\n";
+                    
                     if (!$success_webuser) {
                         throw new Exception("Failed to create webuser record");
                     }
                     
                     // Commit transaction
                     $pdo->commit();
+                    $debug_info .= "Transaction committed successfully\n";
                     
                     // Clear session data
                     unset($_SESSION["personal"]);
@@ -91,12 +130,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } catch (Exception $e) {
                     // Rollback transaction on error
                     $pdo->rollback();
+                    $debug_info .= "Transaction rolled back due to error: " . $e->getMessage() . "\n";
                     error_log("Transaction error: " . $e->getMessage());
                     throw $e;
                 }
             }
         } catch (PDOException $e) {
             $error_details = $e->getMessage();
+            $debug_info .= "PDO Error: " . $error_details . "\n";
             error_log("Account creation error: " . $error_details);
             
             // Check for specific database errors
@@ -105,11 +146,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif (strpos($error_details, 'connection') !== false) {
                 $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
             } else {
-                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Account creation failed. Please try again later.</label>';
+                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database error: ' . htmlspecialchars($error_details) . '</label>';
             }
         } catch (Exception $e) {
+            $debug_info .= "General Error: " . $e->getMessage() . "\n";
             error_log("General account creation error: " . $e->getMessage());
-            $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Account creation failed. Please try again later.</label>';
+            $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Account creation failed: ' . htmlspecialchars($e->getMessage()) . '</label>';
         }
     }
 }
@@ -141,6 +183,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-align: center;
             display: block;
             margin: 10px 0;
+        }
+        .debug-info {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
         }
         .input-text {
             width: 100%;
@@ -177,6 +228,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <p class="sub-text">Add Your Login Details to Continue</p>
                         </td>
                     </tr>
+                    
+                    <?php if (isset($_GET['debug']) && $debug_info): ?>
+                    <tr>
+                        <td colspan="2">
+                            <div class="debug-info"><?php echo htmlspecialchars($debug_info); ?></div>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                    
                     <form action="" method="POST">
                         <tr>
                             <td class="label-td" colspan="2">
@@ -242,7 +302,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <br>
                                 <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
                                 <a href="login.php" class="hover-link1 non-style-link">Login</a>
-                                <br><br><br>
+                                <br><br>
+                                <p><small>For debugging, add ?debug=1 to the URL</small></p>
                             </td>
                         </tr>
                     </form>

@@ -340,7 +340,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
                                 <a href="login.php" class="hover-link1 non-style-link">Login</a>
                                 <br><br>
-                                <p><small>For debugging, add ?debug=1 to the URL</small></p>
                             </td>
                         </tr>
                     </form>

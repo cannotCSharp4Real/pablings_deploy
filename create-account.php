@@ -22,36 +22,26 @@ $debug_info = '';
 if (isset($_GET['debug'])) {
     $debug_info .= "DEBUG INFO:\n";
     $debug_info .= "Session ID: " . session_id() . "\n";
-    $debug_info .= "Session personal data: " . (isset($_SESSION["personal"]) ? "EXISTS" : "MISSING") . "\n";
-    if (isset($_SESSION["personal"])) {
-        $debug_info .= "Personal data: " . print_r($_SESSION["personal"], true) . "\n";
-    }
     $debug_info .= "POST data: " . print_r($_POST, true) . "\n";
 }
 
-// Create dummy session data for testing (REMOVE IN PRODUCTION)
-if (!isset($_SESSION["personal"])) {
-    $_SESSION["personal"] = [
-        'fname' => 'Test',
-        'lname' => 'User',
-        'address' => '123 Test Street',
-        'dob' => '1990-01-01'
-    ];
-    $debug_info .= "Created dummy session data for testing\n";
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = isset($_POST['newemail']) ? trim($_POST['newemail']) : '';
-    $password = isset($_POST['newpassword']) ? $_POST['newpassword'] : '';
-    $cpassword = isset($_POST['cpassword']) ? $_POST['cpassword'] : '';
-    $tel = isset($_POST['newtel']) ? trim($_POST['newtel']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $cpassword = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
+    $tel = isset($_POST['phone']) ? trim($_POST['phone']) : '';
+    $fname = isset($_POST['fname']) ? trim($_POST['fname']) : '';
+    $lname = isset($_POST['lname']) ? trim($_POST['lname']) : '';
+    $address = isset($_POST['address']) ? trim($_POST['address']) : '';
+    $dob = isset($_POST['dob']) ? $_POST['dob'] : '';
 
     $debug_info .= "Form submitted with email: $email\n";
     $debug_info .= "Password length: " . strlen($password) . "\n";
     $debug_info .= "Phone: $tel\n";
 
     // Enhanced validation
-    if (empty($email) || empty($password) || empty($cpassword) || empty($tel)) {
+    if (empty($email) || empty($password) || empty($cpassword) || empty($tel) || 
+        empty($fname) || empty($lname) || empty($address) || empty($dob)) {
         $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please fill in all fields.</label>';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please enter a valid email address.</label>';
@@ -65,74 +55,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $debug_info .= "Starting database operations...\n";
             
-            // Check if email already exists
-            $stmt = $pdo->prepare("SELECT email FROM webuser WHERE email = ?");
-            $stmt->execute([$email]);
-            $result = $stmt->fetch();
+            // Check if webuser table exists
+            $stmt = $pdo->prepare("SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'webuser'
+            )");
+            $stmt->execute();
+            $table_exists = $stmt->fetchColumn();
             
-            if ($result) {
-                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">This email is already registered.</label>';
-                $debug_info .= "Email already exists in database\n";
+            if (!$table_exists) {
+                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database tables not created. Please contact administrator.</label>';
+                $debug_info .= "ERROR: webuser table does not exist\n";
             } else {
-                $debug_info .= "Email not found in database, proceeding with registration...\n";
+                // Check if email already exists in webuser table
+                $stmt = $pdo->prepare("SELECT email FROM webuser WHERE email = ?");
+                $stmt->execute([$email]);
+                $result = $stmt->fetch();
                 
-                // Get personal details from session
-                $personal = $_SESSION["personal"];
-                $fname = $personal['fname'];
-                $lname = $personal['lname'];
-                $address = $personal['address'];
-                $dob = $personal['dob'];
-                $name = $fname . ' ' . $lname;
-                
-                $debug_info .= "Personal details: Name=$name, Address=$address, DOB=$dob\n";
-                
-                // Hash the password
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $debug_info .= "Password hashed successfully\n";
-                
-                // Begin transaction
-                $pdo->beginTransaction();
-                $debug_info .= "Transaction started\n";
-                
-                try {
-                    // Insert into customer table first
-                    $stmt = $pdo->prepare("INSERT INTO customer (pemail, pname, ppassword, paddress, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?)");
-                    $success_customer = $stmt->execute([$email, $name, $hashed_password, $address, $dob, $tel]);
+                if ($result) {
+                    $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">This email is already registered.</label>';
+                    $debug_info .= "Email already exists in database\n";
+                } else {
+                    $debug_info .= "Email not found in database, proceeding with registration...\n";
                     
-                    $debug_info .= "Customer insert result: " . ($success_customer ? "SUCCESS" : "FAILED") . "\n";
+                    // Combine first and last name
+                    $name = $fname . ' ' . $lname;
                     
-                    if (!$success_customer) {
-                        throw new Exception("Failed to create customer record");
+                    $debug_info .= "Personal details: Name=$name, Address=$address, DOB=$dob\n";
+                    
+                    // Hash the password
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                    $debug_info .= "Password hashed successfully\n";
+                    
+                    // Begin transaction
+                    $pdo->beginTransaction();
+                    $debug_info .= "Transaction started\n";
+                    
+                    try {
+                        // Insert into customer table first
+                        $stmt = $pdo->prepare("INSERT INTO customer (pemail, pname, ppassword, paddress, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?)");
+                        $success_customer = $stmt->execute([$email, $name, $hashed_password, $address, $dob, $tel]);
+                        
+                        $debug_info .= "Customer insert result: " . ($success_customer ? "SUCCESS" : "FAILED") . "\n";
+                        
+                        if (!$success_customer) {
+                            throw new Exception("Failed to create customer record");
+                        }
+                        
+                        // Insert into webuser table
+                        $stmt = $pdo->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'p')");
+                        $success_webuser = $stmt->execute([$email]);
+                        
+                        $debug_info .= "Webuser insert result: " . ($success_webuser ? "SUCCESS" : "FAILED") . "\n";
+                        
+                        if (!$success_webuser) {
+                            throw new Exception("Failed to create webuser record");
+                        }
+                        
+                        // Commit transaction
+                        $pdo->commit();
+                        $debug_info .= "Transaction committed successfully\n";
+                        
+                        $success = '<label class="form-label" style="color:rgb(0, 255, 0);text-align:center;">Account created successfully! Redirecting to login...</label>';
+                        
+                        // Redirect to login page after a delay
+                        echo '<script>setTimeout(function(){ window.location.href = "login.php"; }, 3000);</script>';
+                        
+                    } catch (Exception $e) {
+                        // Rollback transaction on error
+                        $pdo->rollback();
+                        $debug_info .= "Transaction rolled back due to error: " . $e->getMessage() . "\n";
+                        error_log("Transaction error: " . $e->getMessage());
+                        throw $e;
                     }
-                    
-                    // Insert into webuser table
-                    $stmt = $pdo->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'p')");
-                    $success_webuser = $stmt->execute([$email]);
-                    
-                    $debug_info .= "Webuser insert result: " . ($success_webuser ? "SUCCESS" : "FAILED") . "\n";
-                    
-                    if (!$success_webuser) {
-                        throw new Exception("Failed to create webuser record");
-                    }
-                    
-                    // Commit transaction
-                    $pdo->commit();
-                    $debug_info .= "Transaction committed successfully\n";
-                    
-                    // Clear session data
-                    unset($_SESSION["personal"]);
-                    
-                    $success = '<label class="form-label" style="color:rgb(0, 255, 0);text-align:center;">Account created successfully! You can now login.</label>';
-                    
-                    // Optional: Redirect to login page after a delay
-                    echo '<script>setTimeout(function(){ window.location.href = "login.php"; }, 3000);</script>';
-                    
-                } catch (Exception $e) {
-                    // Rollback transaction on error
-                    $pdo->rollback();
-                    $debug_info .= "Transaction rolled back due to error: " . $e->getMessage() . "\n";
-                    error_log("Transaction error: " . $e->getMessage());
-                    throw $e;
                 }
             }
         } catch (PDOException $e) {
@@ -143,15 +139,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Check for specific database errors
             if (strpos($error_details, 'duplicate key') !== false) {
                 $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">This email is already registered.</label>';
+            } elseif (strpos($error_details, 'relation') !== false && strpos($error_details, 'does not exist') !== false) {
+                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database tables not found. Please run create_tables.php first.</label>';
             } elseif (strpos($error_details, 'connection') !== false) {
                 $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database connection error. Please try again later.</label>';
             } else {
-                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database error: ' . htmlspecialchars($error_details) . '</label>';
+                $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Database error. Please contact support.</label>';
+                if (isset($_GET['debug'])) {
+                    $error .= '<br><small>' . htmlspecialchars($error_details) . '</small>';
+                }
             }
         } catch (Exception $e) {
             $debug_info .= "General Error: " . $e->getMessage() . "\n";
             error_log("General account creation error: " . $e->getMessage());
-            $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Account creation failed: ' . htmlspecialchars($e->getMessage()) . '</label>';
+            $error = '<label class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Account creation failed. Please try again.</label>';
         }
     }
 }
@@ -225,7 +226,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <tr>
                         <td colspan="2">
                             <p class="header-text">Create Account</p>
-                            <p class="sub-text">Add Your Login Details to Continue</p>
+                            <p class="sub-text">Add Your Details to Continue</p>
                         </td>
                     </tr>
                     
@@ -239,43 +240,79 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <form action="" method="POST">
                         <tr>
-                            <td class="label-td" colspan="2">
-                                <label for="newemail" class="form-label">Email: </label>
+                            <td class="label-td">
+                                <label for="fname" class="form-label">First Name: </label>
+                            </td>
+                            <td class="label-td">
+                                <label for="lname" class="form-label">Last Name: </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <input type="text" name="fname" class="input-text" placeholder="First Name" required value="<?php echo isset($_POST['fname']) ? htmlspecialchars($_POST['fname']) : ''; ?>">
+                            </td>
+                            <td class="label-td">
+                                <input type="text" name="lname" class="input-text" placeholder="Last Name" required value="<?php echo isset($_POST['lname']) ? htmlspecialchars($_POST['lname']) : ''; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="email" name="newemail" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['newemail']) ? htmlspecialchars($_POST['newemail']) : ''; ?>">
+                                <label for="address" class="form-label">Address: </label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="newtel" class="form-label">Phone Number: </label>
+                                <input type="text" name="address" class="input-text" placeholder="Address" required value="<?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="tel" name="newtel" class="input-text" placeholder="Phone Number (10-11 digits)" required pattern="[0-9]{10,11}" value="<?php echo isset($_POST['newtel']) ? htmlspecialchars($_POST['newtel']) : ''; ?>">
+                                <label for="dob" class="form-label">Date of Birth: </label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="newpassword" class="form-label">Password: </label>
+                                <input type="date" name="dob" class="input-text" required value="<?php echo isset($_POST['dob']) ? htmlspecialchars($_POST['dob']) : ''; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="password" name="newpassword" class="input-text" placeholder="Password (minimum 8 characters)" required minlength="8">
+                                <label for="email" class="form-label">Email: </label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="cpassword" class="form-label">Confirm Password: </label>
+                                <input type="email" name="email" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required minlength="8">
+                                <label for="phone" class="form-label">Phone Number: </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <input type="tel" name="phone" class="input-text" placeholder="Phone Number (10-11 digits)" required pattern="[0-9]{10,11}" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <label for="password" class="form-label">Password: </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <input type="password" name="password" class="input-text" placeholder="Password (minimum 8 characters)" required minlength="8">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <label for="confirm_password" class="form-label">Confirm Password: </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <input type="password" name="confirm_password" class="input-text" placeholder="Confirm Password" required minlength="8">
                             </td>
                         </tr>
                         <tr>

@@ -1,3 +1,38 @@
+<?php
+// Move all PHP code to the top, before any HTML output
+session_start();
+
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        header("location: ../login.php");
+        exit();
+    }else{
+        $useremail=$_SESSION["user"];
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+
+//import database
+include("../connection.php");
+$userrow = $database->query("select * from customer where pemail='$useremail'");
+$userfetch=$userrow->fetch_assoc();
+$userid= $userfetch["pid"];
+$username=$userfetch["pname"];
+
+$sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  where  customer.pid=$userid ";
+
+if($_POST){
+    if(!empty($_POST["sheduledate"])){
+        $sheduledate=$_POST["sheduledate"];
+        $sqlmain.=" and schedule.scheduledate='$sheduledate' ";
+    };
+}
+
+$sqlmain.="order by appointment.appodate  asc";
+$result= $database->query($sqlmain);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,58 +54,6 @@
 </style>
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from customer where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
-
-
-    //echo $userid;
-    //echo $username;
-
-
-    $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  where  customer.pid=$userid ";
-
-    if($_POST){
-        //print_r($_POST);
-        
-
-
-        
-        if(!empty($_POST["sheduledate"])){
-            $sheduledate=$_POST["sheduledate"];
-            $sqlmain.=" and schedule.scheduledate='$sheduledate' ";
-        };
-
-    
-
-        //echo $sqlmain;
-
-    }
-
-    $sqlmain.="order by appointment.appodate  asc";
-    $result= $database->query($sqlmain);
-    ?>
     <div class="container">
         <div class="menu">
         <table class="menu-container" border="0">
@@ -139,38 +122,21 @@
                         </p>
                         <p class="heading-sub12" style="padding: 0;margin: 0;">
                             <?php 
-
                         date_default_timezone_set('Asia/Kolkata');
-
                         $today = date('Y-m-d');
                         echo $today;
-
-                        
                         ?>
                         </p>
                     </td>
                     <td width="10%">
                         <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
                     </td>
-
-
                 </tr>
                
-                <!-- <tr>
-                    <td colspan="4" >
-                        <div style="display: flex;margin-top: 40px;">
-                        <div class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;">Schedule a Session</div>
-                        <a href="?action=add-session&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
-                        </a>
-                        </div>
-                    </td>
-                </tr> -->
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;" >
-                    
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Bookings (<?php echo $result->num_rows; ?>)</p>
                     </td>
-                    
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:0px;width: 100%;" >
@@ -178,46 +144,31 @@
                         <table class="filter-container" border="0" >
                         <tr>
                            <td width="10%">
-
                            </td> 
                         <td width="5%" style="text-align: center;">
                         Date:
                         </td>
                         <td width="30%">
                         <form action="" method="post">
-                            
                             <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
-
                         </td>
-                        
-                    <td width="12%">
+                        <td width="12%">
                         <input type="submit"  name="filter" value=" Filter" class=" btn-primary-soft btn button-icon btn-filter"  style="padding: 15px; margin :0;width:100%">
                         </form>
                     </td>
-
                     </tr>
                             </table>
-
                         </center>
                     </td>
-                    
                 </tr>
                 
-               
-                  
                 <tr>
                    <td colspan="4">
                        <center>
                         <div class="abc scroll">
                         <table width="93%" class="sub-table scrolldown" border="0" style="border:none">
-                        
                         <tbody>
-                        
                             <?php
-
-                                
-                                
-
                                 if($result->num_rows==0){
                                     echo '<tr>
                                     <td colspan="7">
@@ -233,10 +184,8 @@
                                     <br><br><br><br>
                                     </td>
                                     </tr>';
-                                    
                                 }
                                 else{
-
                                     for ( $x=0; $x<($result->num_rows);$x++){
                                         echo "<tr>";
                                         for($q=0;$q<3;$q++){
@@ -286,66 +235,17 @@
                                                                 
                                                     </div>
                                                 </td>';
-    
                                         }
                                         echo "</tr>";
-                           
-                                // for ( $x=0; $x<$result->num_rows;$x++){
-                                //     $row=$result->fetch_assoc();
-                                //     $appoid=$row["appoid"];
-                                //     $scheduleid=$row["scheduleid"];
-                                //     $title=$row["title"];
-                                //     $docname=$row["docname"];
-                                //     $scheduledate=$row["scheduledate"];
-                                //     $scheduletime=$row["scheduletime"];
-                                //     $pname=$row["pname"];
-                                //     
-                                //     
-                                //     echo '<tr >
-                                //         <td style="font-weight:600;"> &nbsp;'.
-                                        
-                                //         substr($pname,0,25)
-                                //         .'</td >
-                                //         <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                //         '.$apponum.'
-                                        
-                                //         </td>
-                                //         <td>
-                                //         '.substr($title,0,15).'
-                                //         </td>
-                                //         <td style="text-align:center;;">
-                                //             '.substr($scheduledate,0,10).' @'.substr($scheduletime,0,5).'
-                                //         </td>
-                                        
-                                //         <td style="text-align:center;">
-                                //             '.$appodate.'
-                                //         </td>
-
-                                //         <td>
-                                //         <div style="display:flex;justify-content: center;">
-                                        
-                                //         <!--<a href="?action=view&id='.$appoid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                //        &nbsp;&nbsp;&nbsp;-->
-                                //        <a href="?action=drop&id='.$appoid.'&name='.$pname.'&session='.$title.'&apponum='.$apponum.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>
-                                //        &nbsp;&nbsp;&nbsp;</div>
-                                //         </td>
-                                //     </tr>';
-                                    
+                                    }
                                 }
-                            }
-                                 
                             ?>
- 
                             </tbody>
-
                         </table>
                         </div>
                         </center>
                    </td> 
                 </tr>
-                       
-                        
-                        
             </table>
         </div>
     </div>
@@ -481,11 +381,8 @@
             </div>
             </div>
             ';  
+        }
     }
-}
-
     ?>
-    </div>
-
 </body>
 </html>

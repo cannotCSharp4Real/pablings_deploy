@@ -1,16 +1,19 @@
-<?php 
+<?php
+// Start session
+session_start();
 
-	session_start();
+// Unset all session variables
+session_unset();
 
-	$_SESSION = array();
+// Destroy the session
+session_destroy();
 
-	if (isset($_COOKIE[session_name()])) {
-		setcookie(session_name(), '', time()-86400, '/');
-	}
+// Clear any session cookies
+if (isset($_COOKIE[session_name()])) {
+    setcookie(session_name(), '', time() - 3600, '/');
+}
 
-	session_destroy();
-
-	// redirecting the user to the login page
-	header('Location: login.php?action=logout');
-
- ?>
+// Redirect to login page
+header("Location: login.php");
+exit();
+?>

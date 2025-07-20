@@ -1,3 +1,87 @@
+<?php
+// Start session before any HTML output
+session_start();
+
+// Import database connection
+include("../connection.php");
+
+// Check if user is logged in and is a customer
+if (isset($_SESSION["user"])) {
+    if (($_SESSION["user"]) == "" or $_SESSION['usertype'] != 'p') {
+        header("location: ../login.php");
+        exit();
+    } else {
+        $useremail = $_SESSION["user"];
+    }
+} else {
+    header("location: ../login.php");
+    exit();
+}
+
+// Get user information using PDO
+try {
+    $stmt = $pdo->prepare("SELECT * FROM customer WHERE pemail = ?");
+    $stmt->execute([$useremail]);
+    $userfetch = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($userfetch) {
+        $userid = $userfetch["id"]; // Using 'id' as per create_tables.php
+        $username = $userfetch["pname"];
+    } else {
+        // If user not found, redirect to login
+        header("location: ../login.php");
+        exit();
+    }
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    die("Database error occurred. Please try again later.");
+}
+
+// Set timezone and get today's date
+date_default_timezone_set('Asia/Manila');
+$today = date('Y-m-d');
+
+// Get statistics using PDO
+try {
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM customer");
+    $stmt->execute();
+    $customer_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM barber");
+    $stmt->execute();
+    $barber_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+
+    // Note: These tables might not exist yet, so we'll handle gracefully
+    $appointment_count = 0;
+    $schedule_count = 0;
+    
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM appointment WHERE appodate >= ?");
+        $stmt->execute([$today]);
+        $appointment_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    } catch (PDOException $e) {
+        // Table might not exist, default to 0
+        $appointment_count = 0;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM schedule WHERE scheduledate = ?");
+        $stmt->execute([$today]);
+        $schedule_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    } catch (PDOException $e) {
+        // Table might not exist, default to 0
+        $schedule_count = 0;
+    }
+
+} catch (PDOException $e) {
+    // Set default values if queries fail
+    $customer_count = 0;
+    $barber_count = 0;
+    $appointment_count = 0;
+    $schedule_count = 0;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,40 +104,8 @@
             animation: transitionIn-Y-bottom 0.5s;
         }
     </style>
-    
-    
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from customer where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
-
-
-    //echo $userid;
-    //echo $username;
-    
-    ?>
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -65,8 +117,8 @@
                                     <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
                                 </td>
                                 <td style="padding:0px;margin:0px;">
-                                    <p class="profile-title"><?php echo substr($username,0,13)  ?>..</p>
-                                    <p class="profile-subtitle"><?php echo substr($useremail,0,22)  ?></p>
+                                    <p class="profile-title"><?php echo htmlspecialchars(substr($username,0,13))  ?>..</p>
+                                    <p class="profile-subtitle"><?php echo htmlspecialchars(substr($useremail,0,22))  ?></p>
                                 </td>
                             </tr>
                             <tr>
@@ -74,20 +126,19 @@
                                     <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
                                 </td>
                             </tr>
-                    </table>
+                        </table>
                     </td>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-home menu-active menu-icon-home-active" >
-                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Home</p></a></div></a>
+                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Home</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-barber">
-                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">All Barber</p></a></div>
+                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">All Barber</p></div></a>
                     </td>
                 </tr>
-                
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Scheduled Sessions</p></div></a>
@@ -95,115 +146,84 @@
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-settings">
-                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a>
                     </td>
                 </tr>
-                
             </table>
         </div>
         <div class="dash-body" style="margin-top: 15px">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;" >
-                        
-                        <tr >
-                            
-                            <td colspan="1" class="nav-bar" >
-                            <p style="font-size: 23px;padding-left:12px;font-weight: 600;margin-left:20px;">Home</p>
-                          
-                            </td>
-                            <td width="25%">
-
-                            </td>
-                            <td width="15%">
-                                <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                                    Today's Date
-                                </p>
-                                <p class="heading-sub12" style="padding: 0;margin: 0;">
-                                    <?php 
-                                date_default_timezone_set('Asia/Kolkata');
-        
-                                $today = date('Y-m-d');
-                                echo $today;
-
-
-                                $customerrow = $database->query("select  * from  customer;");
-                                $barberrow = $database->query("select  * from  barber;");
-                                $appointmentrow = $database->query("select  * from  appointment where appodate>='$today';");
-                                $schedulerow = $database->query("select  * from  schedule where scheduledate='$today';");
-
-
-                                ?>
-                                </p>
-                            </td>
-                            <td width="10%">
-                                <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                            </td>
-        
-        
-                        </tr>
+                <tr>
+                    <td colspan="1" class="nav-bar" >
+                        <p style="font-size: 23px;padding-left:12px;font-weight: 600;margin-left:20px;">Home</p>
+                    </td>
+                    <td width="25%"></td>
+                    <td width="15%">
+                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
+                            Today's Date
+                        </p>
+                        <p class="heading-sub12" style="padding: 0;margin: 0;">
+                            <?php echo $today; ?>
+                        </p>
+                    </td>
+                    <td width="10%">
+                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="4" >
-                        
-                    <center>
-                    <table class="filter-container barber-header customer-header" style="border: none;width:95%" border="0" >
-                    <tr>
-                        <td >
-                            <h3>Welcome!</h3>
-                            <h1><?php echo $username  ?>.</h1>
-                            <p>Haven't any idea about barber? no problem let's jumping to 
-                                <a href="barber.php" class="non-style-link"><b>"All <B></B>arber"</b></a> section or 
-                                <a href="schedule.php" class="non-style-link"><b>"Sessions"</b> </a><br>
-                                Track your past and future appointments history.<br>Also find out the expected arrival time of your barber or medical consultant.<br><br>
-                            </p>
-                            
-                            <h3>Channel a Barber Here</h3>
-                            <form action="schedule.php" method="post" style="display: flex">
-
-                                <input type="search" name="search" class="input-text " placeholder="Search barber and We will Find The Session Available" list="barber" style="width:45%;">&nbsp;&nbsp;
-                                
-                                <?php
-                                    echo '<datalist id="barber">';
-                                    $list11 = $database->query("select  docname,docemail from  barber;");
-    
-                                    for ($y=0;$y<$list11->num_rows;$y++){
-                                        $row00=$list11->fetch_assoc();
-                                        $d=$row00["docname"];
+                        <center>
+                            <table class="filter-container barber-header customer-header" style="border: none;width:95%" border="0" >
+                                <tr>
+                                    <td >
+                                        <h3>Welcome!</h3>
+                                        <h1><?php echo htmlspecialchars($username)  ?>.</h1>
+                                        <p>Haven't any idea about barber? no problem let's jumping to 
+                                            <a href="barber.php" class="non-style-link"><b>"All Barber"</b></a> section or 
+                                            <a href="schedule.php" class="non-style-link"><b>"Sessions"</b> </a><br>
+                                            Track your past and future appointments history.<br>Also find out the expected arrival time of your barber or medical consultant.<br><br>
+                                        </p>
                                         
-                                        echo "<option value='$d'><br/>";
-                                        
-                                    };
-    
-                                echo ' </datalist>';
-    ?>
-                                
-                           
-                                <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                            
-                            <br>
-                            <br>
-                            
-                        </td>
-                    </tr>
-                    </table>
-                    </center>
-                    
-                </td>
+                                        <h3>Channel a Barber Here</h3>
+                                        <form action="schedule.php" method="post" style="display: flex">
+                                            <input type="search" name="search" class="input-text " placeholder="Search barber and We will Find The Session Available" list="barber" style="width:45%;">&nbsp;&nbsp;
+                                            
+                                            <?php
+                                            echo '<datalist id="barber">';
+                                            try {
+                                                $stmt = $pdo->prepare("SELECT docname, docemail FROM barber");
+                                                $stmt->execute();
+                                                $barbers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                                
+                                                foreach ($barbers as $barber) {
+                                                    $d = htmlspecialchars($barber["docname"]);
+                                                    echo "<option value='$d'><br/>";
+                                                }
+                                            } catch (PDOException $e) {
+                                                // If barber table doesn't exist or query fails, just show empty datalist
+                                            }
+                                            echo '</datalist>';
+                                            ?>
+                                            
+                                            <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                                            <br><br>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </center>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <table border="0" width="100%"">
+                        <table border="0" width="100%">
                             <tr>
                                 <td width="50%">
-
-                                    
-
-
-
-
                                     <center>
                                         <table class="filter-container" style="border: none;" border="0">
                                             <tr>
@@ -215,187 +235,154 @@
                                                 <td style="width: 25%;">
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex">
                                                         <div>
-                                                                <div class="h1-dashboard">
-                                                                    <?php    echo $barberrow->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard">
-                                                                    All Barber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                </div>
+                                                            <div class="h1-dashboard">
+                                                                <?php echo $barber_count; ?>
+                                                            </div><br>
+                                                            <div class="h3-dashboard">
+                                                                All Barber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/barber-hover.svg');"></div>
+                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/barber-hover.svg');"></div>
                                                     </div>
                                                 </td>
                                                 <td style="width: 25%;">
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex;">
                                                         <div>
-                                                                <div class="h1-dashboard">
-                                                                    <?php    echo $customerrow->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard">
-                                                                    All Customer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                </div>
+                                                            <div class="h1-dashboard">
+                                                                <?php echo $customer_count; ?>
+                                                            </div><br>
+                                                            <div class="h3-dashboard">
+                                                                All Customer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/customer-hover.svg');"></div>
+                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/customer-hover.svg');"></div>
                                                     </div>
                                                 </td>
-                                                </tr>
-                                                <tr>
+                                            </tr>
+                                            <tr>
                                                 <td style="width: 25%;">
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex; ">
                                                         <div>
-                                                                <div class="h1-dashboard" >
-                                                                    <?php    echo $appointmentrow ->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard" >
-                                                                    NewBooking &nbsp;&nbsp;
-                                                                </div>
+                                                            <div class="h1-dashboard" >
+                                                                <?php echo $appointment_count; ?>
+                                                            </div><br>
+                                                            <div class="h3-dashboard" >
+                                                                New Booking &nbsp;&nbsp;
+                                                            </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="margin-left: 0px;background-image: url('../img/icons/book-hover.svg');"></div>
+                                                        <div class="btn-icon-back dashboard-icons" style="margin-left: 0px;background-image: url('../img/icons/book-hover.svg');"></div>
                                                     </div>
-                                                    
                                                 </td>
-
                                                 <td style="width: 25%;">
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex;padding-top:21px;padding-bottom:21px;">
                                                         <div>
-                                                                <div class="h1-dashboard">
-                                                                    <?php    echo $schedulerow ->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard" style="font-size: 15px">
-                                                                    Today Sessions
-                                                                </div>
+                                                            <div class="h1-dashboard">
+                                                                <?php echo $schedule_count; ?>
+                                                            </div><br>
+                                                            <div class="h3-dashboard" style="font-size: 15px">
+                                                                Today Sessions
+                                                            </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
+                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
                                                     </div>
                                                 </td>
-                                                
                                             </tr>
                                         </table>
                                     </center>
-
-
-
-
-
-
-
-
                                 </td>
                                 <td>
-
-
-                            
                                     <p style="font-size: 20px;font-weight:600;padding-left: 40px;" class="anime">Your Upcoming Booking</p>
                                     <center>
                                         <div class="abc scroll" style="height: 250px;padding: 0;margin: 0;">
-                                        <table width="85%" class="sub-table scrolldown" border="0" >
-                                        <thead>
-                                            
-                                        <tr>
-                                        <th class="table-headin">
-                                                    
-                                                
-                                                    Appoint. Number
-                                                    
-                                                    </th>
-                                                <th class="table-headin">
-                                                    
-                                                
-                                                Session Title
-                                                
-                                                </th>
-                                                
-                                                <th class="table-headin">
-                                                    Barber
-                                                </th>
-                                                <th class="table-headin">
-                                                    
-                                                    Sheduled Date & Time
-                                                    
-                                                </th>
-                                                    
-                                                </tr>
-                                        </thead>
-                                        <tbody>
-                                        
-                                            <?php
-                                            $nextweek=date("Y-m-d",strtotime("+1 week"));
-                                                $sqlmain= "select * from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  where  customer.pid=$userid  and schedule.scheduledate>='$today' order by schedule.scheduledate asc";
-                                                //echo $sqlmain;
-                                                $result= $database->query($sqlmain);
-                
-                                                if($result->num_rows==0){
-                                                    echo '<tr>
-                                                    <td colspan="4">
-                                                    <br><br><br><br>
-                                                    <center>
-                                                    <img src="../img/notfound2.svg" width="30%"> 
-                                                
-                                                    
-                                                    <br>
-                                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
-                                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Channel a Barber &nbsp;</font></button>
-                                                    </a>
-                                                    </center>
-                                                    <br><br><br><br>
-                                                    </td>
-                                                    </tr>';
-                                                    
-                                                }
-                                                else{
-                                                for ( $x=0; $x<$result->num_rows;$x++){
-                                                    $row=$result->fetch_assoc();
-                                                    $scheduleid=$row["scheduleid"];
-                                                    $title=$row["title"];
-                                                    $apponum=$row["apponum"];
-                                                    $docname=$row["docname"];
-                                                    $scheduledate=$row["scheduledate"];
-                                                    $scheduletime=$row["scheduletime"];
-                                                   
-                                                    echo '<tr>
-                                                        <td style="padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
-                                                        $apponum
-                                                        .'</td>
-                                                        <td style="padding:20px;"> &nbsp;'.
-                                                        substr($title,0,30)
-                                                        .'</td>
-                                                        <td>
-                                                        '.substr($docname,0,20).'
-                                                        </td>
-                                                        <td style="text-align:center;">
-                                                            '.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'
-                                                        </td>
-
-                
-                                                       
-                                                    </tr>';
-                                                    
-                                                }
-                                            }
-                                                 
-                                            ?>
-                 
-                                            </body>
-                
-                                        </table>
+                                            <table width="85%" class="sub-table scrolldown" border="0" >
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-headin">Appoint. Number</th>
+                                                        <th class="table-headin">Session Title</th>
+                                                        <th class="table-headin">Barber</th>
+                                                        <th class="table-headin">Scheduled Date & Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    try {
+                                                        // This query joins multiple tables that might not exist yet
+                                                        $stmt = $pdo->prepare("
+                                                            SELECT s.scheduleid, s.title, s.scheduledate, s.scheduletime, 
+                                                                   a.apponum, b.docname 
+                                                            FROM schedule s 
+                                                            INNER JOIN appointment a ON s.scheduleid = a.scheduleid 
+                                                            INNER JOIN customer c ON c.id = a.pid 
+                                                            INNER JOIN barber b ON s.docid = b.id  
+                                                            WHERE c.id = ? AND s.scheduledate >= ? 
+                                                            ORDER BY s.scheduledate ASC
+                                                        ");
+                                                        $stmt->execute([$userid, $today]);
+                                                        $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                                        
+                                                        if (empty($appointments)) {
+                                                            echo '<tr>
+                                                                <td colspan="4">
+                                                                    <br><br><br><br>
+                                                                    <center>
+                                                                        <img src="../img/notfound2.svg" width="30%"> 
+                                                                        <br>
+                                                                        <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
+                                                                        <a class="non-style-link" href="schedule.php">
+                                                                            <button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">
+                                                                                &nbsp; Channel a Barber &nbsp;
+                                                                            </button>
+                                                                        </a>
+                                                                    </center>
+                                                                    <br><br><br><br>
+                                                                </td>
+                                                            </tr>';
+                                                        } else {
+                                                            foreach ($appointments as $appointment) {
+                                                                echo '<tr>
+                                                                    <td style="padding:30px;font-size:25px;font-weight:700;"> &nbsp;' .
+                                                                    htmlspecialchars($appointment['apponum']) .
+                                                                    '</td>
+                                                                    <td style="padding:20px;"> &nbsp;' .
+                                                                    htmlspecialchars(substr($appointment['title'], 0, 30)) .
+                                                                    '</td>
+                                                                    <td>' .
+                                                                    htmlspecialchars(substr($appointment['docname'], 0, 20)) .
+                                                                    '</td>
+                                                                    <td style="text-align:center;">' .
+                                                                    htmlspecialchars(substr($appointment['scheduledate'], 0, 10)) . ' ' . 
+                                                                    htmlspecialchars(substr($appointment['scheduletime'], 0, 5)) .
+                                                                    '</td>
+                                                                </tr>';
+                                                            }
+                                                        }
+                                                    } catch (PDOException $e) {
+                                                        // If tables don't exist, show the no appointments message
+                                                        echo '<tr>
+                                                            <td colspan="4">
+                                                                <br><br><br><br>
+                                                                <center>
+                                                                    <img src="../img/notfound2.svg" width="30%"> 
+                                                                    <br>
+                                                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Database tables not ready!</p>
+                                                                    <p>Please contact administrator to set up the system.</p>
+                                                                </center>
+                                                                <br><br><br><br>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        </center>
-
-
-
-
-
-
-
+                                    </center>
                                 </td>
                             </tr>
                         </table>
                     </td>
-                <tr>
+                </tr>
             </table>
         </div>
     </div>
-
-
 </body>
 </html>

@@ -90,9 +90,9 @@ DATABASE NAME: 'edoc'
 
 # BUILDIN USER ACCOUNTS OF THIS PROJECT
 
-ADMIN EMAIL:		admin@edoc.com
+ADMIN EMAIL:		admin@pablings.com
 
-ADMNIN PASSWORD:	123
+ADMNIN PASSWORD:	admin123
 
 
 DOCTOR EMAIL:		doctor@edoc.com

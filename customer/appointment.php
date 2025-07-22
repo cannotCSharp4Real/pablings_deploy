@@ -17,7 +17,7 @@ if(isset($_SESSION["user"])){
 //import database
 include("../connection.php");
 $userrow = $database->query("select * from customer where pemail='$useremail'");
-$userfetch=$userrow->fetch_assoc();
+$userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
 $userid= $userfetch["pid"];
 $username=$userfetch["pname"];
 
@@ -189,7 +189,7 @@ $result= $database->query($sqlmain);
                                     for ( $x=0; $x<($result->num_rows);$x++){
                                         echo "<tr>";
                                         for($q=0;$q<3;$q++){
-                                            $row=$result->fetch_assoc();
+                                            $row=$result->fetch(PDO::FETCH_ASSOC);
                                             if (!isset($row)){
                                             break;
                                             };
@@ -304,13 +304,13 @@ $result= $database->query($sqlmain);
         }elseif($action=='view'){
             $sqlmain= "select * from barber where docid='$id'";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];
             $email=$row["docemail"];
             $spe=$row["specialties"];
             
             $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch_assoc();
+            $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
             $spcil_name=$spcil_array["sname"];
             echo '
             <div id="popup1" class="overlay">

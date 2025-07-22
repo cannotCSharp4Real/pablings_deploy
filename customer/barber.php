@@ -18,7 +18,7 @@ if(isset($_SESSION["user"])){
 include("../connection.php");
 $userrow = $database->query("select * from customer where pemail='$useremail'");
 $userfetch=$userrow->fetch();
-$userid= $userfetch["pid"];
+$userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
 // Get the list of doctors for the datalist
@@ -30,7 +30,7 @@ if($_POST){
     $keyword=$_POST["search"];
     $sqlmain= "select * from barber where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
 }else{
-    $sqlmain= "select * from barber order by docid desc";
+    $sqlmain= "select * from barber order by id desc";
 }
 
 $result= $database->query($sqlmain);
@@ -203,7 +203,7 @@ $result= $database->query($sqlmain);
                                 }
                                 else{
                                 foreach ($barberRows as $row) {
-                                    $docid = $row["docid"];
+                                    $docid = $row["id"];
                                     $name = $row["docname"];
                                     $email = $row["docemail"];
                                     $spe = $row["specialties"];

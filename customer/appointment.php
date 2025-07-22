@@ -18,6 +18,10 @@ if(isset($_SESSION["user"])){
 include("../connection.php");
 $userrow = $database->query("select * from customer where pemail='$useremail'");
 $userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
+if (!$userfetch || !isset($userfetch["pid"])) {
+    header("location: ../login.php");
+    exit();
+}
 $userid= $userfetch["pid"];
 $username=$userfetch["pname"];
 
@@ -30,8 +34,9 @@ if($_POST){
     };
 }
 
-$sqlmain.="order by appointment.appodate  asc";
+$sqlmain.=" order by appointment.appodate  asc";
 $result= $database->query($sqlmain);
+$rowCount = $result->rowCount();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -135,7 +140,7 @@ $result= $database->query($sqlmain);
                
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;" >
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Bookings (<?php echo $result->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Bookings (<?php echo $rowCount; ?>)</p>
                     </td>
                 </tr>
                 <tr>
@@ -169,7 +174,7 @@ $result= $database->query($sqlmain);
                         <table width="93%" class="sub-table scrolldown" border="0" style="border:none">
                         <tbody>
                             <?php
-                                if($result->num_rows==0){
+                                if($rowCount==0){
                                     echo '<tr>
                                     <td colspan="7">
                                     <br><br><br><br>
@@ -186,7 +191,7 @@ $result= $database->query($sqlmain);
                                     </tr>';
                                 }
                                 else{
-                                    for ( $x=0; $x<($result->num_rows);$x++){
+                                    for ( $x=0; $x<($rowCount);$x++){
                                         echo "<tr>";
                                         for($q=0;$q<3;$q++){
                                             $row=$result->fetch(PDO::FETCH_ASSOC);

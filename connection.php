@@ -99,9 +99,9 @@ try {
     $database = $pdo;
     
     // Success message (only in development)
-    if (isset($_GET['debug']) || (defined('DEBUG') && DEBUG)) {
-        echo "<!-- DEBUG: Database connection successful -->\n";
-    }
+    // if (isset($_GET['debug']) || (defined('DEBUG') && DEBUG)) {
+    //     echo "<!-- DEBUG: Database connection successful -->\n";
+    // }
     
 } catch(PDOException $e) {
     $error_message = $e->getMessage();

@@ -242,4 +242,4 @@ $result= $database->query($sqlmain);
         </div>
     </div>
     <?php 
-    if($_GET){
+  

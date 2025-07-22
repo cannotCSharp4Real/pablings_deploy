@@ -17,12 +17,13 @@ if(isset($_SESSION["user"])){
 //import database
 include("../connection.php");
 $userrow = $database->query("select * from customer where pemail='$useremail'");
-$userfetch=$userrow->fetch_assoc();
+$userfetch=$userrow->fetch();
 $userid= $userfetch["pid"];
 $username=$userfetch["pname"];
 
 // Get the list of doctors for the datalist
-$list11 = $database->query("select  docname,docemail from  barber;");
+$barberList = $database->query("select docname,docemail from barber;")->fetchAll();
+$barberCount = count($barberList);
 
 // Handle search functionality
 if($_POST){
@@ -122,15 +123,14 @@ $result= $database->query($sqlmain);
                             
                             <?php
                                 echo '<datalist id="barber">';
-                                // Reset the result pointer for the datalist
-                                $list11->data_seek(0);
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $d=$row00["docname"];
-                                    $c=$row00["docemail"];
+                                // Replace $list11->data_seek(0); as PDO does not support data_seek
+                                // Replace $list11->num_rows with a PDO-compatible row count
+                                foreach ($barberList as $row00) {
+                                    $d = $row00["docname"];
+                                    $c = $row00["docemail"];
                                     echo "<option value='$d'><br/>";
                                     echo "<option value='$c'><br/>";
-                                };
+                                }
                                 echo ' </datalist>';
                             ?>
                             
@@ -156,7 +156,7 @@ $result= $database->query($sqlmain);
                
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Barber (<?php echo $list11->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Barber (<?php echo $barberCount; ?>)</p>
                     </td>
                 </tr>
                   
@@ -183,7 +183,9 @@ $result= $database->query($sqlmain);
                         </thead>
                         <tbody>
                             <?php
-                                if($result->num_rows==0){
+                                // For $result->num_rows, fetch all rows first
+                                $barberRows = $result->fetchAll();
+                                if (count($barberRows) == 0) {
                                     echo '<tr>
                                     <td colspan="4">
                                     <br><br><br><br>
@@ -200,15 +202,14 @@ $result= $database->query($sqlmain);
                                     </tr>';
                                 }
                                 else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $docid=$row["docid"];
-                                    $name=$row["docname"];
-                                    $email=$row["docemail"];
-                                    $spe=$row["specialties"];
-                                    $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                                    $spcil_array= $spcil_res->fetch_assoc();
-                                    $spcil_name=$spcil_array["sname"];
+                                foreach ($barberRows as $row) {
+                                    $docid = $row["docid"];
+                                    $name = $row["docname"];
+                                    $email = $row["docemail"];
+                                    $spe = $row["specialties"];
+                                    $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                                    $spcil_array = $spcil_res->fetch();
+                                    $spcil_name = $spcil_array["sname"];
                                     echo '<tr>
                                         <td> &nbsp;'.
                                         substr($name,0,30)

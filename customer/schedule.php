@@ -25,7 +25,7 @@ date_default_timezone_set('Asia/Kolkata');
 $today = date('Y-m-d');
 
 // Prepare main query
-$sqlmain= "select * from schedule inner join barber on schedule.id=barber.id where schedule.scheduledate>='$today'  order by schedule.scheduledate asc";
+$sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today'  order by schedule.scheduledate asc";
 $sqlpt1="";
 $insertkey="";
 $q='';
@@ -33,7 +33,7 @@ $searchtype="All";
 if($_POST){
     if(!empty($_POST["search"])){
         $keyword=$_POST["search"];
-        $sqlmain= "select * from schedule inner join barber on schedule.id=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
+        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
         $insertkey=$keyword;
         $searchtype="Search Result : ";
         $q='"';

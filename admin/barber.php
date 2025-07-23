@@ -117,10 +117,12 @@
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
             header("location: ../login.php");
+            exit();
         }
 
     }else{
         header("location: ../login.php");
+        exit();
     }
     
     
@@ -257,7 +259,7 @@
                         
                         $sqlmain= "select * from barber where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
                     }else{
-                        $sqlmain= "select * from barber order by docid desc";
+                        $sqlmain= "select * from barber order by id desc";
 
                     }
 
@@ -292,7 +294,7 @@
                                 else{
                                 for ( $x=0; $x<$result->rowCount();$x++){
                                     $row=$result->fetch_assoc();
-                                    $docid=$row["docid"];
+                                    $docid=$row["id"];
                                     $name=$row["docname"];
                                     $email=$row["docemail"];
                                     $spe=$row["specialties"];
@@ -357,7 +359,7 @@
             </div>
             ';
         }elseif($action=='view'){
-            $sqlmain= "select * from barber where docid='$id'";
+            $sqlmain= "select * from barber where id='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
             $name=$row["docname"];
@@ -580,7 +582,7 @@
         ';
             }
         }elseif($action=='edit'){
-            $sqlmain= "select * from barber where docid='$id'";
+            $sqlmain= "select * from barber where id='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
             $name=$row["docname"];

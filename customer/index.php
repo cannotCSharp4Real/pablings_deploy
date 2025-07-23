@@ -115,7 +115,7 @@ try {
         }
         .dash-body {
             flex: 1;
-            padding: 32px 24px 24px 24px;
+            padding: 16px 8px 16px 8px;
             background: #f7f7f7;
             min-width: 0;
         }
@@ -198,8 +198,8 @@ try {
                                     <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
                                 </td>
                                 <td style="padding:0px;margin:0px;">
-                                    <p class="profile-title"><?php echo htmlspecialchars(substr($username,0,13))  ?>..</p>
-                                    <p class="profile-subtitle"><?php echo htmlspecialchars(substr($useremail,0,22))  ?></p>
+                                    <p class="profile-title" style="white-space:normal;word-break:break-all;"><?php echo htmlspecialchars($username) ?></p>
+                                    <p class="profile-subtitle" style="white-space:normal;word-break:break-all;"><?php echo htmlspecialchars($useremail) ?></p>
                                 </td>
                             </tr>
                             <tr>
@@ -241,7 +241,7 @@ try {
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;" >
                 <tr>
                     <td colspan="1" class="nav-bar" >
-                        <p style="font-size: 23px;padding-left:12px;font-weight: 600;margin-left:20px;">Home</p>
+                        <p style="font-size: 23px;font-weight: 600;margin:0;">Home</p>
                     </td>
                     <td width="25%"></td>
                     <td width="15%">
@@ -259,28 +259,25 @@ try {
                 <tr>
                     <td colspan="4" >
                         <center>
-                            <table class="filter-container barber-header customer-header" style="border: none;width:95%" border="0" >
+                            <table class="filter-container barber-header customer-header" style="border: none;width:95%;margin:0;" border="0" >
                                 <tr>
-                                    <td >
-                                        <h3>Welcome!</h3>
-                                        <h1><?php echo htmlspecialchars($username)  ?>.</h1>
-                                        <p>Haven't any idea about barber? no problem let's jumping to 
+                                    <td style="padding:0;">
+                                        <h3 style="margin:0 0 8px 0;">Welcome!</h3>
+                                        <h1 style="margin:0 0 8px 0;"><?php echo htmlspecialchars($username)  ?>.</h1>
+                                        <p style="margin:0 0 12px 0;">Haven't any idea about barber? no problem let's jumping to 
                                             <a href="barber.php" class="non-style-link"><b>"All Barber"</b></a> section or 
                                             <a href="schedule.php" class="non-style-link"><b>"Sessions"</b> </a><br>
-                                            Track your past and future appointments history.<br>Also find out the expected arrival time of your barber or medical consultant.<br><br>
+                                            Track your past and future appointments history.<br>Also find out the expected arrival time of your barber or medical consultant.
                                         </p>
-                                        
-                                        <h3>Channel a Barber Here</h3>
-                                        <form action="schedule.php" method="post" style="display: flex">
-                                            <input type="search" name="search" class="input-text " placeholder="Search barber and We will Find The Session Available" list="barber" style="width:45%;">&nbsp;&nbsp;
-                                            
+                                        <h3 style="margin:16px 0 8px 0;">Channel a Barber Here</h3>
+                                        <form action="schedule.php" method="post" style="display: flex;gap:8px;margin:0;">
+                                            <input type="search" name="search" class="input-text " placeholder="Search barber and We will Find The Session Available" list="barber" style="width:45%;">
                                             <?php
                                             echo '<datalist id="barber">';
                                             try {
                                                 $stmt = $pdo->prepare("SELECT docname, docemail FROM barber");
                                                 $stmt->execute();
                                                 $barbers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                                
                                                 foreach ($barbers as $barber) {
                                                     $d = htmlspecialchars($barber["docname"]);
                                                     echo "<option value='$d'><br/>";
@@ -290,9 +287,7 @@ try {
                                             }
                                             echo '</datalist>';
                                             ?>
-                                            
-                                            <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                            <br><br>
+                                            <input type="Submit" value="Search" class="login-btn btn-primary btn">
                                         </form>
                                     </td>
                                 </tr>

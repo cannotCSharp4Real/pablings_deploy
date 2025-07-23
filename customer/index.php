@@ -91,17 +91,98 @@ try {
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
-        
     <title>Dashboard</title>
     <style>
-        .dashbord-tables{
-            animation: transitionIn-Y-over 0.5s;
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f7;
         }
-        .filter-container{
-            animation: transitionIn-Y-bottom  0.5s;
+        .container {
+            display: flex;
+            min-height: 100vh;
         }
-        .sub-table,.anime{
-            animation: transitionIn-Y-bottom 0.5s;
+        .menu {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            min-height: 100vh;
+            padding-top: 0;
+            position: sticky;
+            top: 0;
+        }
+        .dash-body {
+            flex: 1;
+            padding: 32px 24px 24px 24px;
+            background: #f7f7f7;
+            min-width: 0;
+        }
+        .logout-btn {
+            width: 90%;
+            margin: 20px 5% 0 5%;
+        }
+        .heading-main12 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+        .heading-sub12 {
+            font-size: 16px;
+            color: #888;
+        }
+        .btn-primary-soft, .btn-primary {
+            min-width: 120px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-icon-back {
+            margin-bottom: 16px;
+        }
+        .filter-container {
+            margin: 16px 0 24px 0;
+        }
+        .abc.scroll {
+            max-height: 350px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 16px;
+        }
+        .sub-table {
+            width: 100%;
+        }
+        .notfound-img {
+            width: 120px;
+            margin: 24px 0 12px 0;
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .menu {
+                width: 100%;
+                min-height: unset;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .dash-body {
+                padding: 16px 8px;
+            }
+        }
+        @media (max-width: 600px) {
+            .heading-main12 {
+                font-size: 18px;
+            }
+            .dash-body {
+                padding: 8px 2px;
+            }
+            .logout-btn {
+                font-size: 14px;
+            }
         }
     </style>
 </head>

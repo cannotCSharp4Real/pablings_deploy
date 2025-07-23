@@ -673,7 +673,7 @@
                 
                 
                                                 
-                                echo     '       </select><br><br>
+                        echo     '       </select><br><br>
                                         </td>
                                     </tr>
                                     <tr>

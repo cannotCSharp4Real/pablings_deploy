@@ -9,14 +9,6 @@ if (!isset($pdo)) {
     die("Database connection failed. Please check your database configuration.");
 }
 
-// Redirect already-logged-in users to their dashboard
-if (isset($_SESSION['user']) && isset($_SESSION['usertype']) && $_SESSION['user'] !== "") {
-    if ($_SESSION['usertype'] == 'a') header('Location: admin/index.php');
-    if ($_SESSION['usertype'] == 'd') header('Location: barber/index.php');
-    if ($_SESSION['usertype'] == 'p') header('Location: customer/index.php');
-    exit();
-}
-
 // Set the timezone
 date_default_timezone_set('Asia/Manila'); // Changed to Philippines timezone
 $date = date('Y-m-d');

@@ -43,66 +43,81 @@
     }
 
     .hero {
-      height: 90vh;
+      min-height: 80vh;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      background: url('https://images.unsplash.com/photo-1519741491154-14c0f0df3d7e') center/cover no-repeat;
-      color: black;
-      padding: 0 20px;
-    }
-
-    .hero h1 {
-      font-size: 48px;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px whitesmoke;
-    }
-
-    .hero p {
-      font-size: 18px;
-      max-width: 600px;
-      margin-bottom: 30px;
-      text-shadow: 1px 1px 3px whitesmoke;
+      justify-content: center;
+      background: #fff;
+      padding: 40px 10px;
     }
 
     .hero-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  background-color: white;
-  padding: 100px;
-  border-radius: 10px;
-}
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 40px;
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      max-width: 1100px;
+      width: 100%;
+    }
 
-.hero-text {
-  max-width: 500px;
-  text-align: left;
-}
+    .hero-text {
+      max-width: 400px;
+      text-align: left;
+    }
 
-.hero-image img {
-  max-width: 500px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
+    .hero-text h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
 
-.btn {
-  display: inline-block;
-  padding: 12px 25px;
-  background-color: #1338be;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-}
+    .hero-text p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
 
-.btn:hover {
-  background-color: #1338be;
-}
+    .hero-image img {
+      max-width: 450px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
 
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #1338be;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #1338be;
+    }
+
+    @media (max-width: 900px) {
+      .hero-content {
+        flex-direction: column;
+        padding: 20px;
+        gap: 24px;
+      }
+      .hero-image img {
+        max-width: 100%;
+      }
+      .hero-text {
+        text-align: center;
+        max-width: 100%;
+      }
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+    }
 
     footer {
       background-color: #1b62b3;
@@ -110,8 +125,6 @@
       text-align: center;
       padding: 15px 0;
       font-size: 14px;
-
-      
     }
   </style>
 </head>

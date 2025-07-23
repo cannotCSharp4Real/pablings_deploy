@@ -196,7 +196,7 @@ $list110 = $database->query("select * from appointment;");
                     <?php 
                         $list11 = $database->query("select  * from  barber order by docname asc;");
                         for ($y=0;$y<$list11->rowCount();$y++){
-                            $row00=$list11->fetch_assoc();
+                            $row00=$list11->fetch(PDO::FETCH_ASSOC);
                             $sn=$row00["docname"];
                             $id00=$row00["id"];
                             echo "<option value=".$id00.">$sn</option>";
@@ -249,7 +249,7 @@ $list110 = $database->query("select * from appointment;");
                                 echo '<tr><td colspan="7" style="text-align:center; padding: 40px 0;">No appointments found.</td></tr>';
                             } else {
                                 for ($x=0; $x<$result->rowCount(); $x++) {
-                                    $row=$result->fetch_assoc();
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $appoid=$row["appoid"];
                                     $scheduleid=$row["scheduleid"];
                                     $title=$row["title"];
@@ -333,7 +333,7 @@ $list110 = $database->query("select * from appointment;");
                                             $list11 = $database->query("select  * from  barber;");
             
                                             for ($y=0;$y<$list11->rowCount();$y++){
-                                                $row00=$list11->fetch_assoc();
+                                                $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                                 $sn=$row00["docname"];
                                                 $id00=$row00["id"];
                                                 echo "<option value=".$id00.">$sn</option><br/>";
@@ -445,13 +445,13 @@ $list110 = $database->query("select * from appointment;");
                 }elseif($action=='view'){
                     $sqlmain= "select * from barber where id='$id'";
                     $result= $database->query($sqlmain);
-                    $row=$result->fetch_assoc();
+                    $row=$result->fetch(PDO::FETCH_ASSOC);
                     $name=$row["docname"];
                     $email=$row["docemail"];
                     $spe=$row["specialties"];
                     
                     $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                    $spcil_array= $spcil_res->fetch_assoc();
+                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
                     $spcil_name=$spcil_array["sname"];
                     echo '
                     <div id="popup1" class="overlay">

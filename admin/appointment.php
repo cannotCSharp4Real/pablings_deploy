@@ -189,8 +189,28 @@
                     <a href="appointment.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
                     </td>
                     <td>
-                        <p style="font-size: 23px;padding-left:12px;font-weight: 600;">Appointment Manager</p>
-                                           
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <span style="font-size: 28px; font-weight: 600; flex: 1; text-align: left;">Appointment Manager</span>
+                        </div>
+                        <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Appointments (<?php echo $list110->rowCount(); ?>)</p>
+                        <form action="" method="post" style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                            <label for="date" style="font-weight: 500;">Date:</label>
+                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="min-width: 160px;">
+                            <label for="barber" style="font-weight: 500;">Barber:</label>
+                            <select name="docid" id="barber" class="box filter-container-items" style="min-width: 220px;">
+                                <option value="" disabled selected hidden>Choose Barber Name from the list</option>
+                                <?php 
+                                    $list11 = $database->query("select  * from  barber order by docname asc;");
+                                    for ($y=0;$y<$list11->rowCount();$y++){
+                                        $row00=$list11->fetch_assoc();
+                                        $sn=$row00["docname"];
+                                        $id00=$row00["docid"];
+                                        echo "<option value=".$id00.">$sn</option>";
+                                    };
+                                ?>
+                            </select>
+                            <button type="submit" name="filter" class="btn-primary" style="min-width: 110px;">Filter</button>
+                        </form>
                     </td>
                     <td width="15%">
                         <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
@@ -226,233 +246,155 @@
                     </td>
                 </tr> -->
                 <tr>
-                    <td colspan="4" style="padding-top:10px;width: 100%;" >
-                    
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Appointments (<?php echo $list110->num_rows; ?>)</p>
-                    </td>
-                    
-                </tr>
-                <tr>
                     <td colspan="4" style="padding-top:0px;width: 100%;" >
                         <center>
-                        <table class="filter-container" border="0" >
-                        <tr>
-                           <td width="10%">
-
-                           </td> 
-                        <td width="5%" style="text-align: center;">
-                        Date:
-                        </td>
-                        <td width="30%">
-                        <form action="" method="post">
-                            
-                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
-
-                        </td>
-                        <td width="5%" style="text-align: center;">
-                        Barber:
-                        </td>
-                        <td width="30%">
-                        <select name="docid" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
-                            <option value="" disabled selected hidden>Choose Barber Name from the list</option><br/>
-                                
-                            <?php 
-                             
-                                $list11 = $database->query("select  * from  barber order by docname asc;");
-
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $sn=$row00["docname"];
-                                    $id00=$row00["docid"];
-                                    echo "<option value=".$id00.">$sn</option><br/>";
-                                };
+                        <div class="abc scroll" style="padding: 0;">
+                            <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #1976d2;">
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Customer name</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Appointment number</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Barber</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Session Title</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Session Date & Time</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Appointment Date</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Events</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        if($_POST){
+                                            //print_r($_POST);
+                                            $sqlpt1="";
+                                            if(!empty($_POST["sheduledate"])){
+                                                $sheduledate=$_POST["sheduledate"];
+                                                $sqlpt1=" schedule.scheduledate='$sheduledate' ";
+                                            }
 
 
-                                ?>
+                                            $sqlpt2="";
+                                            if(!empty($_POST["docid"])){
+                                                $docid=$_POST["docid"];
+                                                $sqlpt2=" barber.docid=$docid ";
+                                            }
+                                            //echo $sqlpt2;
+                                            //echo $sqlpt1;
+                                            $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid";
+                                            $sqllist=array($sqlpt1,$sqlpt2);
+                                            $sqlkeywords=array(" where "," and ");
+                                            $key2=0;
+                                            foreach($sqllist as $key){
 
-                        </select>
-                    </td>
-                    <td width="12%">
-                        <input type="submit"  name="filter" value=" Filter" class=" btn-primary-soft btn button-icon btn-filter"  style="padding: 15px; margin :0;width:100%">
-                        </form>
-                    </td>
+                                                if(!empty($key)){
+                                                    $sqlmain.=$sqlkeywords[$key2].$key;
+                                                    $key2++;
+                                                };
+                                            };
+                                            //echo $sqlmain;
 
-                    </tr>
-                            </table>
+                                            
+                                            
+                                            //
+                                        }else{
+                                            $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
 
-                        </center>
-                    </td>
-                    
-                </tr>
-                
-                <?php
-                    if($_POST){
-                        //print_r($_POST);
-                        $sqlpt1="";
-                        if(!empty($_POST["sheduledate"])){
-                            $sheduledate=$_POST["sheduledate"];
-                            $sqlpt1=" schedule.scheduledate='$sheduledate' ";
-                        }
-
-
-                        $sqlpt2="";
-                        if(!empty($_POST["docid"])){
-                            $docid=$_POST["docid"];
-                            $sqlpt2=" barber.docid=$docid ";
-                        }
-                        //echo $sqlpt2;
-                        //echo $sqlpt1;
-                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid";
-                        $sqllist=array($sqlpt1,$sqlpt2);
-                        $sqlkeywords=array(" where "," and ");
-                        $key2=0;
-                        foreach($sqllist as $key){
-
-                            if(!empty($key)){
-                                $sqlmain.=$sqlkeywords[$key2].$key;
-                                $key2++;
-                            };
-                        };
-                        //echo $sqlmain;
-
-                        
-                        
-                        //
-                    }else{
-                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
-
-                    }
+                                        }
 
 
 
-                ?>
-                  
-                <tr>
-                   <td colspan="4">
-                       <center>
-                        <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0">
-                        <thead>
-                        <tr>
-                                <th class="table-headin">
-                                    Customer name
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Appointment number
-                                    
-                                </th>
-                               
-                                
-                                <th class="table-headin">
-                                    Barber
-                                </th>
-                                <th class="table-headin">
-                                    
-                                
-                                    Session Title
-                                    
-                                    </th>
-                                
-                                <th class="table-headin" style="font-size:10px">
-                                    
-                                    Session Date & Time
-                                    
-                                </th>
-                                
-                                <th class="table-headin">
-                                    
-                                    Appointment Date
-                                    
-                                </th>
-                                
-                                <th class="table-headin">
-                                    
-                                    Events
-                                    
-                                </tr>
-                        </thead>
-                        <tbody>
-                        
-                            <?php
+                                    ?>
+                                      
+                                    <tr>
+                                       <td colspan="4">
+                                           <center>
+                                            <div class="abc scroll">
+                                            <table width="93%" class="sub-table scrolldown" border="0">
+                                            <thead>
+                                            <tr>
+                                                    <th class="table-headin">
+                                                        Customer name
+                                                    </th>
+                                                    <th class="table-headin">
+                                                        
+                                                        Appointment number
+                                                        
+                                                    </th>
+                                                   
+                                                    
+                                                    <th class="table-headin">
+                                                        Barber
+                                                    </th>
+                                                    <th class="table-headin">
+                                                        
+                                                    
+                                                        Session Title
+                                                        
+                                                        </th>
+                                                    
+                                                    <th class="table-headin" style="font-size:10px">
+                                                        
+                                                        Session Date & Time
+                                                        
+                                                    </th>
+                                                    
+                                                    <th class="table-headin">
+                                                        
+                                                        Appointment Date
+                                                        
+                                                    </th>
+                                                    
+                                                    <th class="table-headin">
+                                                        
+                                                        Events
+                                                        
+                                                    </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <?php
 
-                                
-                                $result= $database->query($sqlmain);
+                                                    
+                                                    $result= $database->query($sqlmain);
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="7">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound2.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $appoid=$row["appoid"];
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $pname=$row["pname"];
-                                    $apponum=$row["apponum"];
-                                    $appodate=$row["appodate"];
-                                    echo '<tr >
-                                        <td style="font-weight:600;"> &nbsp;'.
-                                        
-                                        substr($pname,0,25)
-                                        .'</td >
-                                        <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                        '.$apponum.'
-                                        
-                                        </td>
-                                        <td>
-                                        '.substr($docname,0,25).'
-                                        </td>
-                                        <td>
-                                        '.substr($title,0,15).'
-                                        </td>
-                                        <td style="text-align:center;font-size:12px;">
-                                            '.substr($scheduledate,0,10).' <br>'.substr($scheduletime,0,5).'
-                                        </td>
-                                        
-                                        <td style="text-align:center;">
-                                            '.$appodate.'
-                                        </td>
-
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        <!--<a href="?action=view&id='.$appoid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;-->
-                                       <a href="?action=drop&id='.$appoid.'&name='.$pname.'&session='.$title.'&apponum='.$apponum.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;</div>
-                                        </td>
-                                    </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
+                                                    if($result->rowCount()==0){
+                                                        echo '<tr><td colspan="7" style="text-align:center; padding: 40px 0;">No appointments found.</td></tr>';
+                                                    } else {
+                                                        for ($x=0; $x<$result->rowCount(); $x++) {
+                                                            $row=$result->fetch_assoc();
+                                                            $appoid=$row["appoid"];
+                                                            $scheduleid=$row["scheduleid"];
+                                                            $title=$row["title"];
+                                                            $docname=$row["docname"];
+                                                            $scheduledate=$row["scheduledate"];
+                                                            $scheduletime=$row["scheduletime"];
+                                                            $pname=$row["pname"];
+                                                            $apponum=$row["apponum"];
+                                                            $appodate=$row["appodate"];
+                                                            echo '<tr>';
+                                                            echo '<td style="font-weight:600; padding: 12px 8px;">'.htmlspecialchars($pname).'</td>';
+                                                            echo '<td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext); padding: 12px 8px;">'.htmlspecialchars($apponum).'</td>';
+                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($docname).'</td>';
+                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($title).'</td>';
+                                                            echo '<td style="text-align:center;font-size:12px; padding: 12px 8px;">'.htmlspecialchars($scheduledate).' <br>'.htmlspecialchars($scheduletime).'</td>';
+                                                            echo '<td style="text-align:center; padding: 12px 8px;">'.htmlspecialchars($appodate).'</td>';
+                                                            echo '<td style="padding: 12px 8px;">';
+                                                            echo '<div style="display: flex; gap: 8px;">';
+                                                            echo '<a href="?action=drop&id='.$appoid.'&name='.$pname.'&session='.$title.'&apponum='.$apponum.'" class="non-style-link"><button class="btn-primary">Cancel</button></a>';
+                                                            echo '</div>';
+                                                            echo '</td>';
+                                                            echo '</tr>';
+                                                        }
+                                                    }
+                                                 
+                                                ?>
  
-                            </tbody>
+                                                </tbody>
 
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
-                </tr>
+                                            </table>
+                                            </div>
+                                            </center>
+                                       </td> 
+                                    </tr>
                        
                         
                         
@@ -513,7 +455,7 @@
         
                                         $list11 = $database->query("select  * from  barber;");
         
-                                        for ($y=0;$y<$list11->num_rows;$y++){
+                                        for ($y=0;$y<$list11->rowCount();$y++){
                                             $row00=$list11->fetch_assoc();
                                             $sn=$row00["docname"];
                                             $id00=$row00["docid"];

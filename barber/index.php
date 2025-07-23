@@ -1,3 +1,33 @@
+<?php
+// Move all PHP code to the top before any HTML
+session_start();
+
+if (isset($_SESSION["user"])) {
+    if (($_SESSION["user"]) == "" || $_SESSION['usertype'] != 'd') {
+        header("location: ../login.php");
+        exit();
+    } else {
+        $useremail = $_SESSION["user"];
+    }
+} else {
+    header("location: ../login.php");
+    exit();
+}
+
+// Import database
+include("../connection.php");
+$userrow = $database->query("select * from barber where docemail='$useremail'");
+$userfetch = $userrow->fetch(PDO::FETCH_ASSOC);
+$userid = $userfetch["docid"];
+$username = $userfetch["docname"];
+
+// Fetch dashboard data
+$customerrow = $database->query("select * from customer;");
+$barberrow = $database->query("select * from barber;");
+$today = date('Y-m-d');
+$appointmentrow = $database->query("select * from appointment where appodate>='$today';");
+$schedulerow = $database->query("select * from schedule where scheduledate='$today';");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,36 +136,7 @@
     
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='d'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
     
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from barber where docemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["docid"];
-    $username=$userfetch["docname"];
-
-
-    //echo $userid;
-    //echo $username;
-    
-    ?>
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -272,7 +273,7 @@
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex">
                                                         <div>
                                                                 <div class="h1-dashboard">
-                                                                    <?php    echo $barberrow->num_rows  ?>
+                                                                    <?php    echo $barberrow->rowCount()  ?>
                                                                 </div><br>
                                                                 <div class="h3-dashboard">
                                                                     All Barber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -285,7 +286,7 @@
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex;">
                                                         <div>
                                                                 <div class="h1-dashboard">
-                                                                    <?php    echo $customerrow->num_rows  ?>
+                                                                    <?php    echo $customerrow->rowCount()  ?>
                                                                 </div><br>
                                                                 <div class="h3-dashboard">
                                                                     All Customer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -300,7 +301,7 @@
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex; ">
                                                         <div>
                                                                 <div class="h1-dashboard" >
-                                                                    <?php    echo $appointmentrow ->num_rows  ?>
+                                                                    <?php    echo $appointmentrow ->rowCount()  ?>
                                                                 </div><br>
                                                                 <div class="h3-dashboard" >
                                                                     NewBooking &nbsp;&nbsp;
@@ -315,7 +316,7 @@
                                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex;padding-top:21px;padding-bottom:21px;">
                                                         <div>
                                                                 <div class="h1-dashboard">
-                                                                    <?php    echo $schedulerow ->num_rows  ?>
+                                                                    <?php    echo $schedulerow ->rowCount()  ?>
                                                                 </div><br>
                                                                 <div class="h3-dashboard" style="font-size: 15px">
                                                                     Today Sessions
@@ -373,7 +374,7 @@
                                             $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid  where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc"; 
                                                 $result= $database->query($sqlmain);
                 
-                                                if($result->num_rows==0){
+                                                if($result->rowCount()==0){
                                                     echo '<tr>
                                                     <td colspan="4">
                                                     <br><br><br><br>
@@ -391,8 +392,8 @@
                                                     
                                                 }
                                                 else{
-                                                for ( $x=0; $x<$result->num_rows;$x++){
-                                                    $row=$result->fetch_assoc();
+                                                for ( $x=0; $x<$result->rowCount();$x++){
+                                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                                     $scheduleid=$row["scheduleid"];
                                                     $title=$row["title"];
                                                     $docname=$row["docname"];

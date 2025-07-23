@@ -44,6 +44,19 @@
     $userid= $userfetch["pid"];
     $username=$userfetch["pname"];
 
+    // Handle booking form submission
+    if(isset($_POST["booknow"])){
+        $scheduleid = $_POST["scheduleid"];
+        $apponum = $_POST["apponum"];
+        $date = $_POST["date"];
+        // Insert booking into appointment table
+        $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+        // Redirect to appointment.php with success message
+        header("Location: appointment.php?action=booking-added&id=$apponum");
+        exit();
+    }
+
 
     //echo $userid;
     //echo $username;
@@ -221,7 +234,7 @@
                                      $apponum=($result12->num_rows)+1;
                                     
                                     echo '
-                                        <form action="booking-complete.php" method="post">
+                                        <form action="booking.php" method="post">
                                             <input type="hidden" name="scheduleid" value="'.$scheduleid.'" >
                                             <input type="hidden" name="apponum" value="'.$apponum.'" >
                                             <input type="hidden" name="date" value="'.$today.'" >

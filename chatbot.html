@@ -4,110 +4,71 @@
   <meta charset="UTF-8">
   <title>Simple Chatbot</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
     body {
-      background-color: #f7f7f7;
-    }
-    header {
-      background-color: #1b62b3;
-      color: white;
-      padding: 15px 30px;
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2f;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      font-weight: 500;
-    }
-    nav a:hover {
-      color: whitesmoke;
-    }
-    .main-content {
-      min-height: 80vh;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      background: #fff;
-      padding: 40px 10px;
-    }
-    .content-wrapper {
-      display: flex;
-      flex-direction: row;
       align-items: center;
-      gap: 40px;
-      background-color: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      max-width: 1100px;
-      width: 100%;
+      height: 100vh;
+      margin: 0;
     }
-    .content-text {
-      max-width: 400px;
-      text-align: left;
+
+    .chat-container {
+      width: 700px;
+      background-color: black;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
     }
-    .content-text h1 {
-      font-size: 2.2rem;
-      margin-bottom: 20px;
-      line-height: 1.1;
-    }
-    .content-text p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-    }
-    .content-image img {
-      max-width: 450px;
-      width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 25px;
-      background-color: #1338be;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-    .btn:hover {
-      background-color: #1338be;
-    }
-    @media (max-width: 900px) {
-      .content-wrapper {
-        flex-direction: column;
-        padding: 20px;
-        gap: 24px;
-      }
-      .content-image img {
-        max-width: 100%;
-      }
-      .content-text {
-        text-align: center;
-        max-width: 100%;
-      }
-      .content-text h1 {
-        font-size: 1.5rem;
-      }
-    }
-    footer {
-      background-color: #1b62b3;
-      color: white;
+
+    h2 {
       text-align: center;
-      padding: 15px 0;
-      font-size: 14px;
+      color: #fbfbfb;
+    }
+
+    #chatbox {
+      height: 450px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      background-color: #fafafa;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+
+    .user {
+      color: #1b62b3;
+    }
+
+    .mrpabs {
+      color: black;
+      text-align: justify;
+    }
+
+    input[type="text"] {
+      width: 75%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 5px;
+    }
+
+    button {
+      padding: 10px 56px;
+      background-color: #1338be;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1338be;
     }
   </style>
 </head>

@@ -273,7 +273,7 @@ $list110 = $database->query("select * from appointment;");
                                             }
                                             //echo $sqlpt2;
                                             //echo $sqlpt1;
-                                            $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid";
+                                            $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.docid";
                                             $sqllist=array($sqlpt1,$sqlpt2);
                                             $sqlkeywords=array(" where "," and ");
                                             $key2=0;
@@ -290,7 +290,7 @@ $list110 = $database->query("select * from appointment;");
                                             
                                             //
                                         }else{
-                                            $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
+                                            $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
 
                                         }
 

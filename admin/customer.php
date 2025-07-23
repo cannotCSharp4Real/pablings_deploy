@@ -220,7 +220,7 @@ include("../connection.php");
                                             
                                             $sqlmain= "select * from customer where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
                                         }else{
-                                            $sqlmain= "select * from customer order by pid desc";
+                                            $sqlmain= "select * from customer order by id desc";
 
                                         }
 
@@ -269,7 +269,7 @@ include("../connection.php");
                                                     } else {
                                                         for ($x=0; $x<$result->rowCount(); $x++) {
                                                             $row=$result->fetch_assoc();
-                                                            $pid=$row["pid"];
+                                                            $id=$row["id"];
                                                             $name=$row["pname"];
                                                             $email=$row["pemail"];
                                                             $dob=$row["pdob"];
@@ -279,7 +279,7 @@ include("../connection.php");
                                                             echo '<td style="padding: 12px 8px;">'.htmlspecialchars($dob).'</td>';
                                                             echo '<td style="padding: 12px 8px;">';
                                                             echo '<div style="display: flex; gap: 8px;">';
-                                                            echo '<a href="?action=view&id='.$pid.'" class="non-style-link"><button class="btn-primary">View</button></a>';
+                                                            echo '<a href="?action=view&id='.$id.'" class="non-style-link"><button class="btn-primary">View</button></a>';
                                                             echo '</div>';
                                                             echo '</td>';
                                                             echo '</tr>';
@@ -332,7 +332,7 @@ include("../connection.php");
         
         $id=$_GET["id"];
         $action=$_GET["action"];
-            $sqlmain= "select * from customer where pid='$id'";
+            $sqlmain= "select * from customer where id='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
             $name=$row["pname"];

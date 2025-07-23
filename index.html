@@ -15,12 +15,22 @@
 
     html, body {
       height: 100%;
+      min-height: 100vh;
     }
     body {
       min-height: 100vh;
+      min-width: 100vw;
       display: flex;
       flex-direction: column;
       background-color: #1b62b3;
+    }
+    .page-flex {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
     }
 
     header {
@@ -30,6 +40,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .logo {
@@ -48,77 +60,74 @@
       color: whitesmoke;
     }
 
-    .hero {
-      min-height: 80vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .hero-card {
       background: #fff;
-      padding: 40px 10px;
-    }
-
-    .hero-content {
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      max-width: 1200px;
+      width: 90vw;
+      margin: 48px 0;
+      padding: 60px 60px 60px 60px;
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: 40px;
-      background-color: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      max-width: 1100px;
-      width: 100%;
+      gap: 48px;
     }
 
     .hero-text {
-      max-width: 400px;
+      max-width: 420px;
       text-align: left;
     }
 
     .hero-text h1 {
-      font-size: 2.8rem;
+      font-size: 3rem;
       margin-bottom: 20px;
       line-height: 1.1;
     }
 
     .hero-text p {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       margin-bottom: 30px;
     }
 
     .hero-image img {
-      max-width: 450px;
+      max-width: 500px;
       width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     }
 
     .btn {
       display: inline-block;
-      padding: 12px 25px;
+      padding: 14px 32px;
       background-color: #1338be;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 7px;
       font-weight: bold;
+      font-size: 1.1rem;
+      margin-top: 10px;
     }
 
     .btn:hover {
-      background-color: #1338be;
+      background-color: #0f2e8a;
     }
 
-    .main-wrapper {
-      flex: 1 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    footer {
+      background-color: #1b62b3;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: auto;
     }
 
-    @media (max-width: 900px) {
-      .hero-content {
+    @media (max-width: 1100px) {
+      .hero-card {
         flex-direction: column;
-        padding: 20px;
+        padding: 32px 12px;
         gap: 24px;
       }
       .hero-image img {
@@ -131,14 +140,6 @@
       .hero-text h1 {
         font-size: 2rem;
       }
-    }
-
-    footer {
-      background-color: #1b62b3;
-      color: white;
-      text-align: center;
-      padding: 15px 0;
-      font-size: 14px;
     }
   </style>
 </head>
@@ -153,22 +154,18 @@
       <a href="chatbot.html">Haircut Recommendation</a>
     </nav>
   </header>
-
-  <div class="main-wrapper">
-    <section class="hero">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1>Where Tradition Meets Style</h1>
-          <p>Experience expert grooming with a modern twist. Book your appointment now and feel the difference.</p>
-          <a href="login.php" class="btn">Book Now</a>
-        </div>
-        <div class="hero-image">
-          <img src="homepage.jpg" alt="Barbershop" />
-        </div>
+  <div class="page-flex">
+    <div class="hero-card">
+      <div class="hero-text">
+        <h1>Where Tradition Meets Style</h1>
+        <p>Experience expert grooming with a modern twist. Book your appointment now and feel the difference.</p>
+        <a href="login.php" class="btn">Book Now</a>
       </div>
-    </section>
+      <div class="hero-image">
+        <img src="homepage.jpg" alt="Barbershop" />
+      </div>
+    </div>
   </div>
-
   <footer>
     &copy; 2025 Pabling's Barbershop. All rights reserved.
   </footer>

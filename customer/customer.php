@@ -126,7 +126,7 @@
     include("../connection.php");
     $userrow = $database->query("select * from barber where docemail='$useremail'");
     $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["docid"];
+    $userid= $userfetch["id"];
     $username=$userfetch["docname"];
 
 
@@ -204,13 +204,13 @@
                                 $selecttype="All";
                                 $current="All customer";
                             }else{
-                                $sqlmain= "select * from appointment inner join customer on customer.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
+                                $sqlmain= "select * from appointment inner join customer on customer.id=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
                                 $selecttype="My";
                                 $current="My customer Only";
                             }
                         }
                     }else{
-                        $sqlmain= "select * from appointment inner join customer on customer.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
+                        $sqlmain= "select * from appointment inner join customer on customer.id=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
                         $selecttype="My";
                     }
 
@@ -410,7 +410,7 @@
         
         $id=$_GET["id"];
         $action=$_GET["action"];
-            $sqlmain= "select * from customer where pid='$id'";
+            $sqlmain= "select * from customer where id='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
             $name=$row["pname"];

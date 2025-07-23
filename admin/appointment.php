@@ -198,7 +198,7 @@ $list110 = $database->query("select * from appointment;");
                         for ($y=0;$y<$list11->rowCount();$y++){
                             $row00=$list11->fetch_assoc();
                             $sn=$row00["docname"];
-                            $id00=$row00["docid"];
+                            $id00=$row00["id"];
                             echo "<option value=".$id00.">$sn</option>";
                         };
                     ?>
@@ -229,9 +229,9 @@ $list110 = $database->query("select * from appointment;");
                                 $sqlpt2="";
                                 if(!empty($_POST["docid"])){
                                     $docid=$_POST["docid"];
-                                    $sqlpt2=" barber.docid=$docid ";
+                                    $sqlpt2=" barber.id=$docid ";
                                 }
-                                $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.docid";
+                                $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.id";
                                 $sqllist=array($sqlpt1,$sqlpt2);
                                 $sqlkeywords=array(" where "," and ");
                                 $key2=0;
@@ -242,7 +242,7 @@ $list110 = $database->query("select * from appointment;");
                                     };
                                 };
                             }else{
-                                $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
+                                $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.id  order by schedule.scheduledate desc";
                             }
                             $result= $database->query($sqlmain);
                             if($result->rowCount()==0){
@@ -335,7 +335,7 @@ $list110 = $database->query("select * from appointment;");
                                             for ($y=0;$y<$list11->rowCount();$y++){
                                                 $row00=$list11->fetch_assoc();
                                                 $sn=$row00["docname"];
-                                                $id00=$row00["docid"];
+                                                $id00=$row00["id"];
                                                 echo "<option value=".$id00.">$sn</option><br/>";
                                             };
             
@@ -443,7 +443,7 @@ $list110 = $database->query("select * from appointment;");
                     </div>
                     '; 
                 }elseif($action=='view'){
-                    $sqlmain= "select * from barber where docid='$id'";
+                    $sqlmain= "select * from barber where id='$id'";
                     $result= $database->query($sqlmain);
                     $row=$result->fetch_assoc();
                     $name=$row["docname"];

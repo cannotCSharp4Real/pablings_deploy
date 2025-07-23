@@ -120,19 +120,21 @@
 </head>
 <body>
     <?php
-    //learn from w3schools.com
     session_start();
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
             header("location: ../login.php");
+            exit();
         }
     }else{
         header("location: ../login.php");
+        exit();
     }
     
     
     //import database
     include("../connection.php");
+    $list110 = $database->query("select * from schedule;");
     
     ?>
     <div class="container">
@@ -210,7 +212,7 @@
                                     for ($y=0;$y<$list11->rowCount();$y++){
                                         $row00=$list11->fetch_assoc();
                                         $sn=$row00["docname"];
-                                        $id00=$row00["docid"];
+                                        $id00=$row00["id"];
                                         echo "<option value=".$id00.">$sn</option>";
                                     };
                                 ?>
@@ -241,11 +243,11 @@
                                             $sqlpt2="";
                                             if(!empty($_POST["docid"])){
                                                 $docid=$_POST["docid"];
-                                                $sqlpt2=" barber.docid=$docid ";
+                                                $sqlpt2=" barber.id=$docid ";
                                             }
                                             //echo $sqlpt2;
                                             //echo $sqlpt1;
-                                            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid ";
+                                            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id ";
                                             $sqllist=array($sqlpt1,$sqlpt2);
                                             $sqlkeywords=array(" where "," and ");
                                             $key2=0;
@@ -260,7 +262,7 @@
                                             
                                             //
                                         }else{
-                                            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
+                                            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  order by schedule.scheduledate desc";
                                         }
 
                                     ?>
@@ -400,7 +402,7 @@
                                                         for ($y=0;$y<$list11->rowCount();$y++){
                                                             $row00=$list11->fetch_assoc();
                                                             $sn=$row00["docname"];
-                                                            $id00=$row00["docid"];
+                                                            $id00=$row00["id"];
                                                             echo "<option value=".$id00.">$sn</option><br/>";
                                                         };
             
@@ -503,7 +505,7 @@
                                 </div>
                                 '; 
                             }elseif($action=='view'){
-                                $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid  where  schedule.scheduleid=$id";
+                                $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where  schedule.scheduleid=$id";
                                 $result= $database->query($sqlmain);
                                 $row=$result->fetch_assoc();
                                 $docname=$row["docname"];

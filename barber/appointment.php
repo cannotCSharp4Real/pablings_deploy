@@ -16,6 +16,20 @@
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
+        .dash-body {
+            flex: 1;
+            padding: 16px 8px 16px 8px;
+            background: #f7f7f7;
+            min-width: 0;
+        }
+        .logout-btn {
+            width: 90%;
+            margin: 20px 5% 0 5%;
+        }
+        .profile-title, .profile-subtitle {
+            white-space: normal;
+            word-break: break-all;
+        }
 </style>
 </head>
 <body>

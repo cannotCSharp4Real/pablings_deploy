@@ -188,7 +188,7 @@ include("../connection.php");
                                         echo '<datalist id="barber">';
                                         $list11 = $database->query("select  docname,docemail from  barber;");
         
-                                        for ($y=0;$y<$list11->num_rows;$y++){
+                                        for ($y=0;$y<$list11->rowCount();$y++){
                                             $row00=$list11->fetch_assoc();
                                             $d=$row00["docname"];
                                             $c=$row00["docemail"];
@@ -247,7 +247,7 @@ include("../connection.php");
                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex">
                                         <div>
                                                 <div class="h1-dashboard">
-                                                    <?php    echo $barberrow->num_rows  ?>
+                                                    <?php    echo $barberrow->rowCount()  ?>
                                                 </div><br>
                                                 <div class="h3-dashboard">
                                                     Barber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -260,7 +260,7 @@ include("../connection.php");
                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex;">
                                         <div>
                                                 <div class="h1-dashboard">
-                                                    <?php    echo $customerrow->num_rows  ?>
+                                                    <?php    echo $customerrow->rowCount()  ?>
                                                 </div><br>
                                                 <div class="h3-dashboard">
                                                     Customer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -273,7 +273,7 @@ include("../connection.php");
                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex; ">
                                         <div>
                                                 <div class="h1-dashboard" >
-                                                    <?php    echo $appointmentrow ->num_rows  ?>
+                                                    <?php    echo $appointmentrow->rowCount()  ?>
                                                 </div><br>
                                                 <div class="h3-dashboard" >
                                                     NewBooking &nbsp;&nbsp;
@@ -286,7 +286,7 @@ include("../connection.php");
                                     <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex;padding-top:26px;padding-bottom:26px;">
                                         <div>
                                                 <div class="h1-dashboard">
-                                                    <?php    echo $schedulerow ->num_rows  ?>
+                                                    <?php    echo $schedulerow->rowCount()  ?>
                                                 </div><br>
                                                 <div class="h3-dashboard" style="font-size: 15px">
                                                     Today Sessions
@@ -372,7 +372,7 @@ include("../connection.php");
 
                                                 $result= $database->query($sqlmain);
                 
-                                                if($result->num_rows==0){
+                                                if($result->rowCount()==0){
                                                     echo '<tr>
                                                     <td colspan="3">
                                                     <br><br><br><br>
@@ -390,7 +390,7 @@ include("../connection.php");
                                                     
                                                 }
                                                 else{
-                                                for ( $x=0; $x<$result->num_rows;$x++){
+                                                for ( $x=0; $x<$result->rowCount();$x++){
                                                     $row=$result->fetch_assoc();
                                                     $appoid=$row["appoid"];
                                                     $scheduleid=$row["scheduleid"];
@@ -467,7 +467,7 @@ include("../connection.php");
                                             $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc"; 
                                                 $result= $database->query($sqlmain);
                 
-                                                if($result->num_rows==0){
+                                                if($result->rowCount()==0){
                                                     echo '<tr>
                                                     <td colspan="4">
                                                     <br><br><br><br>
@@ -485,7 +485,7 @@ include("../connection.php");
                                                     
                                                 }
                                                 else{
-                                                for ( $x=0; $x<$result->num_rows;$x++){
+                                                for ( $x=0; $x<$result->rowCount();$x++){
                                                     $row=$result->fetch_assoc();
                                                     $scheduleid=$row["scheduleid"];
                                                     $title=$row["title"];

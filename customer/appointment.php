@@ -17,11 +17,15 @@ if(isset($_SESSION["user"])){
 //import database
 include("../connection.php");
 $userrow = $database->query("select * from customer where pemail='$useremail'");
-$userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
-$userid= $userfetch["pid"];
+$userfetch=$userrow->fetch();
+if (!$userfetch) {
+    header("location: ../login.php");
+    exit();
+}
+$userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
-$sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.docid  where  customer.pid=$userid ";
+$sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.docid  where  customer.id=$userid ";
 
 if($_POST){
     if(!empty($_POST["sheduledate"])){
@@ -32,6 +36,18 @@ if($_POST){
 
 $sqlmain.="order by appointment.appodate  asc";
 $result= $database->query($sqlmain);
+
+if(isset($_POST["booknow"])){
+    $scheduleid = $_POST["scheduleid"];
+    $apponum = $_POST["apponum"];
+    $date = $_POST["date"];
+    // Insert booking into appointment table
+    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+    // Redirect to appointment.php with success message
+    header("Location: appointment.php?action=booking-added&id=$apponum");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

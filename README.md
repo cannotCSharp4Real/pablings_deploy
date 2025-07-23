@@ -67,7 +67,7 @@ Copy the extracted source code folder and paste it into the XAMPP's "htdocs" dir
 
 Browse the PHPMyAdmin in a browser. i.e. http://localhost/phpmyadmin
 
-Create a new database naming edoc.
+Create a new database naming demo3.
 
 Import the provided SQL file. The file is known as DATABASE edoc.sql located inside the source code root folder.
 
@@ -92,7 +92,7 @@ DATABASE NAME: 'pablings'
 
 ADMIN EMAIL:		admin@pablings.com
 
-ADMNIN PASSWORD:	admin123
+ADMIN PASSWORD:	admin123
 
 
 BARBER EMAIL:		doctor@edoc.com

@@ -184,7 +184,7 @@ include("../connection.php");
                         echo '<datalist id="barber">';
                         $list11 = $database->query("select docname,docemail from barber;");
                         for ($y=0;$y<$list11->rowCount();$y++){
-                            $row00=$list11->fetch_assoc();
+                            $row00=$list11->fetch(PDO::FETCH_ASSOC);
                             $d=$row00["docname"];
                             $c=$row00["docemail"];
                             echo "<option value='$d'><br/>";
@@ -228,13 +228,13 @@ include("../connection.php");
                                 echo '<tr><td colspan="4" style="text-align:center; padding: 40px 0;">No barbers found.</td></tr>';
                             } else {
                                 for ($x=0; $x<$result->rowCount(); $x++) {
-                                    $row=$result->fetch_assoc();
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $docid=$row["id"];
                                     $name=$row["docname"];
                                     $email=$row["docemail"];
                                     $spe=$row["specialties"];
                                     $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                                    $spcil_array= $spcil_res->fetch_assoc();
+                                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
                                     $spcil_name=$spcil_array["sname"];
                                     echo '<tr>';
                                     echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
@@ -283,13 +283,13 @@ include("../connection.php");
                 }elseif($action=='view'){
                     $sqlmain= "select * from barber where id='$id'";
                     $result= $database->query($sqlmain);
-                    $row=$result->fetch_assoc();
+                    $row=$result->fetch(PDO::FETCH_ASSOC);
                     $name=$row["docname"];
                     $email=$row["docemail"];
                     $spe=$row["specialties"];
                     
                     $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                    $spcil_array= $spcil_res->fetch_assoc();
+                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
                     $spcil_name=$spcil_array["sname"];
                     echo '
                     <div id="popup1" class="overlay">
@@ -427,7 +427,7 @@ include("../connection.php");
                                                 $list11 = $database->query("select  * from  specialties order by sname asc;");
             
                                                 for ($y=0;$y<$list11->rowCount();$y++){
-                                                    $row00=$list11->fetch_assoc();
+                                                    $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                                     $sn=$row00["sname"];
                                                     $id00=$row00["id"];
                                                     echo "<option value=".$id00.">$sn</option><br/>";
@@ -506,13 +506,13 @@ include("../connection.php");
         }elseif($action=='edit'){
             $sqlmain= "select * from barber where id='$id'";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];
             $email=$row["docemail"];
             $spe=$row["specialties"];
             
             $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch_assoc();
+            $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
             $spcil_name=$spcil_array["sname"];
 
             $error_1=$_GET["error"];
@@ -586,7 +586,7 @@ include("../connection.php");
                                                 $list11 = $database->query("select  * from  specialties;");
                 
                                                 for ($y=0;$y<$list11->rowCount();$y++){
-                                                    $row00=$list11->fetch_assoc();
+                                                    $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                                     $sn=$row00["sname"];
                                                     $id00=$row00["id"];
                                                     echo "<option value=".$id00.">$sn</option><br/>";

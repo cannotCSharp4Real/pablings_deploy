@@ -1,3 +1,16 @@
+<?php
+session_start();
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
+        header("location: ../login.php");
+        exit();
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+include("../connection.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,27 +29,8 @@
 </style>
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
-            header("location: ../login.php");
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
     
     
-
-    //import database
-    include("../connection.php");
-
-
 
     if($_POST){
         //print_r($_POST);
@@ -50,7 +44,7 @@
         if ($password==$cpassword){
             $error='3';
             $result= $database->query("select * from webuser where email='$email';");
-            if($result->num_rows==1){
+            if($result->rowCount()==1){
                 $error='1';
             }else{
 

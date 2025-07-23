@@ -10,7 +10,6 @@ if(isset($_SESSION["user"])){
     exit();
 }
 include("../connection.php");
-$list110 = $database->query("select * from schedule;");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -211,7 +210,7 @@ $list110 = $database->query("select * from schedule;");
                     <?php 
                         $list11 = $database->query("select  * from  barber order by docname asc;");
                         for ($y=0;$y<$list11->rowCount();$y++){
-                            $row00=$list11->fetch_assoc();
+                            $row00=$list11->fetch(PDO::FETCH_ASSOC);
                             $sn=$row00["docname"];
                             $id00=$row00["id"];
                             echo "<option value=".$id00.">$sn</option>";
@@ -262,7 +261,7 @@ $list110 = $database->query("select * from schedule;");
                                 echo '<tr><td colspan="5" style="text-align:center; padding: 40px 0;">No sessions found.</td></tr>';
                             } else {
                                 for ($x=0; $x<$result->rowCount(); $x++) {
-                                    $row=$result->fetch_assoc();
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $scheduleid=$row["scheduleid"];
                                     $title=$row["title"];
                                     $docname=$row["docname"];
@@ -341,7 +340,7 @@ $list110 = $database->query("select * from schedule;");
                                             $list11 = $database->query("select  * from  barber order by docname asc;");
             
                                             for ($y=0;$y<$list11->rowCount();$y++){
-                                                $row00=$list11->fetch_assoc();
+                                                $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                                 $sn=$row00["docname"];
                                                 $id00=$row00["id"];
                                                 echo "<option value=".$id00.">$sn</option><br/>";
@@ -448,7 +447,7 @@ $list110 = $database->query("select * from schedule;");
                 }elseif($action=='view'){
                     $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where  schedule.scheduleid=$id";
                     $result= $database->query($sqlmain);
-                    $row=$result->fetch_assoc();
+                    $row=$result->fetch(PDO::FETCH_ASSOC);
                     $docname=$row["docname"];
                     $scheduleid=$row["scheduleid"];
                     $title=$row["title"];
@@ -482,7 +481,7 @@ $list110 = $database->query("select * from schedule;");
                         echo '<tr><td colspan="3" style="padding: 10px; text-align: center;">No customers registered yet.</td></tr>';
                     }else{
                         for ( $x=0; $x<$result12->rowCount();$x++){
-                            $row=$result12->fetch_assoc();
+                            $row=$result12->fetch(PDO::FETCH_ASSOC);
                             $apponum=$row["apponum"];
                             $pid=$row["pid"];
                             $pname=$row["pname"];
@@ -609,7 +608,7 @@ $list110 = $database->query("select * from schedule;");
                                             }
                                             else{
                                             for ( $x=0; $x<$result->rowCount();$x++){
-                                                $row=$result->fetch_assoc();
+                                                $row=$result->fetch(PDO::FETCH_ASSOC);
                                                 $apponum=$row["apponum"];
                                                 $pid=$row["pid"];
                                                 $pname=$row["pname"];

@@ -8,119 +8,103 @@ try {
         die("Database connection failed. Please check your database configuration.");
     }
 
-    // Barber account details
-    $barber_email = "barber1@pablings.com";
-    $barber_password = password_hash("barber123", PASSWORD_DEFAULT);
-    $barber_name = "John Smith";
-    $barber_nic = "123456789V";
-    $barber_tel = "0771234567";
-    $specialties = "Haircut, Beard Trim, Hair Styling";
+    echo "<h1>🔧 Fix Barber Table Structure</h1>";
+    echo "<hr>";
 
-    // Start transaction
-    $pdo->beginTransaction();
+    // Get current table structure
+    $stmt = $pdo->prepare("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = 'barber' ORDER BY ordinal_position");
+    $stmt->execute();
+    $current_columns = $stmt->fetchAll();
 
-    // First, check if the barber already exists
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM barber WHERE docemail = ?");
-    $stmt->execute([$barber_email]);
-    $barber_exists = $stmt->fetchColumn() > 0;
-
-    if ($barber_exists) {
-        echo "<h2 style='color: orange;'>⚠️ Barber account already exists!</h2>";
-        echo "<p>The barber account with email <strong>$barber_email</strong> already exists in the database.</p>";
+    echo "<h2>📋 Current barber table structure:</h2>";
+    if ($current_columns) {
+        echo "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+        echo "<tr><th>Column Name</th><th>Data Type</th><th>Nullable</th></tr>";
+        foreach ($current_columns as $column) {
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($column['column_name']) . "</td>";
+            echo "<td>" . htmlspecialchars($column['data_type']) . "</td>";
+            echo "<td>" . htmlspecialchars($column['is_nullable']) . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
     } else {
-        // Insert barber account
-        $stmt = $pdo->prepare("INSERT INTO barber (docemail, docname, docpassword, docnic, doctel, specialties) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([
-            $barber_email,
-            $barber_name,
-            $barber_password,
-            $barber_nic,
-            $barber_tel,
-            $specialties
-        ]);
+        echo "<p style='color: red;'>❌ Barber table not found!</p>";
+        echo "<p>Please run <a href='create_tables.php'>create_tables.php</a> first.</p>";
+        exit;
+    }
 
-        echo "<h2 style='color: green;'>✅ Barber account created successfully!</h2>";
+    // Check for missing columns
+    $column_names = array_column($current_columns, 'column_name');
+    $required_columns = ['docnic', 'doctel', 'specialties'];
+    $missing_columns = array_diff($required_columns, $column_names);
+
+    if (!empty($missing_columns)) {
+        echo "<h2>⚠️ Missing columns found:</h2>";
         echo "<ul>";
-        echo "<li><strong>Email:</strong> $barber_email</li>";
-        echo "<li><strong>Password:</strong> barber123</li>";
-        echo "<li><strong>Name:</strong> $barber_name</li>";
+        foreach ($missing_columns as $missing) {
+            echo "<li style='color: red;'>$missing</li>";
+        }
         echo "</ul>";
-    }
 
-    // Check if webuser entry exists
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM webuser WHERE email = ?");
-    $stmt->execute([$barber_email]);
-    $webuser_exists = $stmt->fetchColumn() > 0;
+        echo "<h2>🔨 Adding missing columns...</h2>";
 
-    if (!$webuser_exists) {
-        // Insert into webuser table
-        $stmt = $pdo->prepare("INSERT INTO webuser (email, usertype) VALUES (?, 'd')");
-        $stmt->execute([$barber_email]);
-        echo "<p style='color: green;'>✅ Webuser entry created for barber.</p>";
+        // Add missing columns
+        foreach ($missing_columns as $column) {
+            try {
+                switch ($column) {
+                    case 'docnic':
+                        $sql = "ALTER TABLE barber ADD COLUMN docnic VARCHAR(20)";
+                        $pdo->exec($sql);
+                        echo "<p style='color: green;'>✅ Added column: docnic</p>";
+                        break;
+                    case 'doctel':
+                        $sql = "ALTER TABLE barber ADD COLUMN doctel VARCHAR(15)";
+                        $pdo->exec($sql);
+                        echo "<p style='color: green;'>✅ Added column: doctel</p>";
+                        break;
+                    case 'specialties':
+                        $sql = "ALTER TABLE barber ADD COLUMN specialties TEXT";
+                        $pdo->exec($sql);
+                        echo "<p style='color: green;'>✅ Added column: specialties</p>";
+                        break;
+                }
+            } catch (PDOException $e) {
+                echo "<p style='color: red;'>❌ Error adding column $column: " . $e->getMessage() . "</p>";
+            }
+        }
     } else {
-        echo "<p style='color: blue;'>ℹ️ Webuser entry already exists for this barber.</p>";
+        echo "<h2 style='color: green;'>✅ All required columns exist!</h2>";
     }
 
-    // Commit transaction
-    $pdo->commit();
+    // Show updated table structure
+    echo "<hr>";
+    echo "<h2>📋 Updated barber table structure:</h2>";
+    $stmt = $pdo->prepare("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = 'barber' ORDER BY ordinal_position");
+    $stmt->execute();
+    $updated_columns = $stmt->fetchAll();
 
-    // Verify the accounts were created properly
-    echo "<h3>🔍 Account Verification:</h3>";
-    
-    // Check barber table
-    $stmt = $pdo->prepare("SELECT id, docemail, docname FROM barber WHERE docemail = ?");
-    $stmt->execute([$barber_email]);
-    $barber = $stmt->fetch();
-    
-    if ($barber) {
-        echo "<p style='color: green;'>✅ Barber found in barber table:</p>";
-        echo "<ul>";
-        echo "<li>ID: " . $barber['id'] . "</li>";
-        echo "<li>Email: " . $barber['docemail'] . "</li>";
-        echo "<li>Name: " . $barber['docname'] . "</li>";
-        echo "</ul>";
-    } else {
-        echo "<p style='color: red;'>❌ Barber NOT found in barber table!</p>";
+    echo "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+    echo "<tr><th>Column Name</th><th>Data Type</th><th>Nullable</th></tr>";
+    foreach ($updated_columns as $column) {
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($column['column_name']) . "</td>";
+        echo "<td>" . htmlspecialchars($column['data_type']) . "</td>";
+        echo "<td>" . htmlspecialchars($column['is_nullable']) . "</td>";
+        echo "</tr>";
     }
-    
-    // Check webuser table
-    $stmt = $pdo->prepare("SELECT email, usertype FROM webuser WHERE email = ?");
-    $stmt->execute([$barber_email]);
-    $webuser = $stmt->fetch();
-    
-    if ($webuser) {
-        echo "<p style='color: green;'>✅ User found in webuser table:</p>";
-        echo "<ul>";
-        echo "<li>Email: " . $webuser['email'] . "</li>";
-        echo "<li>User Type: " . $webuser['usertype'] . "</li>";
-        echo "</ul>";
-    } else {
-        echo "<p style='color: red;'>❌ User NOT found in webuser table!</p>";
-    }
+    echo "</table>";
 
     echo "<hr>";
-    echo "<h3>🎯 Now you can login with:</h3>";
-    echo "<ul>";
-    echo "<li><strong>Email:</strong> barber1@pablings.com</li>";
-    echo "<li><strong>Password:</strong> barber123</li>";
-    echo "</ul>";
-    echo "<p><a href='login.php'>← Go back to Login</a></p>";
+    echo "<h3>🎯 Next Steps:</h3>";
+    echo "<ol>";
+    echo "<li>Now run <a href='create_barber.php'>create_barber.php</a> to create the barber account</li>";
+    echo "<li>Then try logging in at <a href='login.php'>login.php</a></li>";
+    echo "</ol>";
 
 } catch (PDOException $e) {
-    // Rollback transaction on error
-    if ($pdo->inTransaction()) {
-        $pdo->rollback();
-    }
-    
     echo "<h2 style='color: red;'>❌ Database Error:</h2>";
     echo "<p style='background: #ffeeee; padding: 10px; border: 1px solid red;'>" . htmlspecialchars($e->getMessage()) . "</p>";
-    
-    // Show more details for debugging
-    echo "<h3>Debug Information:</h3>";
-    echo "<p><strong>Error Code:</strong> " . $e->getCode() . "</p>";
-    echo "<p><strong>File:</strong> " . $e->getFile() . "</p>";
-    echo "<p><strong>Line:</strong> " . $e->getLine() . "</p>";
-    
 } catch (Exception $e) {
     echo "<h2 style='color: red;'>❌ General Error:</h2>";
     echo "<p style='background: #ffeeee; padding: 10px; border: 1px solid red;'>" . htmlspecialchars($e->getMessage()) . "</p>";

@@ -191,30 +191,124 @@
                     </td>
                     <td>
                         
-                        <form action="" method="post" class="header-search">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <a href="customer.php"><button type="button" class="btn-primary" style="min-width: 110px;">&larr; Back</button></a>
+                            <form action="" method="post" class="header-search" style="flex: 1; display: flex; align-items: center; gap: 12px;">
+                                <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Customer name or Email" list="customer" style="flex: 1; min-width: 250px;">
+                                <?php
+                                    echo '<datalist id="customer">';
+                                    $list11 = $database->query("select  pname,pemail from customer;");
+                                    for ($y=0;$y<$list11->rowCount();$y++){
+                                        $row00=$list11->fetch_assoc();
+                                        $d=$row00["pname"];
+                                        $c=$row00["pemail"];
+                                        echo "<option value='$d'><br/>";
+                                        echo "<option value='$c'><br/>";
+                                    };
+                                    echo ' </datalist>';
+                                ?>
+                                <button type="submit" class="btn-primary" style="min-width: 110px;">Search</button>
+                            </form>
+                        </div>
+                        <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Customer (<?php echo $list11->rowCount(); ?>)</p>
+                        <div class="abc scroll" style="padding: 0;">
+                            <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #1976d2;">
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Name</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Email</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Date of Birth</th>
+                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Events</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        if($_POST){
+                                            $keyword=$_POST["search"];
+                                            
+                                            $sqlmain= "select * from customer where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
+                                        }else{
+                                            $sqlmain= "select * from customer order by pid desc";
 
-                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Customer name or Email" list="customer">&nbsp;&nbsp;
-                            
-                            <?php
-                                echo '<datalist id="customer">';
-                                $list11 = $database->query("select  pname,pemail from customer;");
+                                        }
 
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $d=$row00["pname"];
-                                    $c=$row00["pemail"];
-                                    echo "<option value='$d'><br/>";
-                                    echo "<option value='$c'><br/>";
-                                };
 
-                            echo ' </datalist>';
-?>
-                            
-                       
-                            <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                        
-                        </form>
-                        
+
+                                    ?>
+                                      
+                                    <tr>
+                                       <td colspan="4">
+                                           <center>
+                                            <div class="abc scroll">
+                                            <table width="93%" class="sub-table scrolldown"  style="border-spacing:0;">
+                                            <thead>
+                                            <tr>
+                                                    <th class="table-headin">
+                                                        
+                                                    
+                                                    Name
+                                                    
+                                                    </th>
+                                                    <th class="table-headin">
+                                                        
+                                                    
+                                                        Email
+                                                    </th>
+                                                    <th class="table-headin">
+                                                        
+                                                        Date of Birth
+                                                        
+                                                    </th>
+                                                    <th class="table-headin">
+                                                        
+                                                        Events
+                                                        
+                                                    </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <?php
+
+                                                    
+                                                    $result= $database->query($sqlmain);
+
+                                                    if($result->rowCount()==0){
+                                                        echo '<tr><td colspan="4" style="text-align:center; padding: 40px 0;">No customers found.</td></tr>';
+                                                    } else {
+                                                        for ($x=0; $x<$result->rowCount(); $x++) {
+                                                            $row=$result->fetch_assoc();
+                                                            $pid=$row["pid"];
+                                                            $name=$row["pname"];
+                                                            $email=$row["pemail"];
+                                                            $dob=$row["pdob"];
+                                                            echo '<tr>';
+                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
+                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($email).'</td>';
+                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($dob).'</td>';
+                                                            echo '<td style="padding: 12px 8px;">';
+                                                            echo '<div style="display: flex; gap: 8px;">';
+                                                            echo '<a href="?action=view&id='.$pid.'" class="non-style-link"><button class="btn-primary">View</button></a>';
+                                                            echo '</div>';
+                                                            echo '</td>';
+                                                            echo '</tr>';
+                                                        }
+                                                    }
+                                                 
+                                                ?>
+ 
+                                                </tbody>
+
+                                            </table>
+                                            </div>
+                                            </center>
+                                       </td> 
+                                    </tr>
+                                       
+                                        
+                                        
+                                </table>
+                            </div>
+                        </div>
                     </td>
                     <td width="15%">
                         <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
@@ -234,120 +328,6 @@
                     </td>
 
 
-                </tr>
-               
-                
-                <tr>
-                    <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Customer (<?php echo $list11->num_rows; ?>)</p>
-                    </td>
-                    
-                </tr>
-                <?php
-                    if($_POST){
-                        $keyword=$_POST["search"];
-                        
-                        $sqlmain= "select * from customer where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
-                    }else{
-                        $sqlmain= "select * from customer order by pid desc";
-
-                    }
-
-
-
-                ?>
-                  
-                <tr>
-                   <td colspan="4">
-                       <center>
-                        <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown"  style="border-spacing:0;">
-                        <thead>
-                        <tr>
-                                <th class="table-headin">
-                                    
-                                
-                                Name
-                                
-                                </th>
-                                <th class="table-headin">
-                                    
-                                
-                                    Email
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Date of Birth
-                                    
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Events
-                                    
-                                </tr>
-                        </thead>
-                        <tbody>
-                        
-                            <?php
-
-                                
-                                $result= $database->query($sqlmain);
-
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="4">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="customer.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Customer &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $pid=$row["pid"];
-                                    $name=$row["pname"];
-                                    $email=$row["pemail"];
-                                    $dob=$row["pdob"];
-                                    
-                                    echo '<tr>
-                                        <td> &nbsp;'.
-                                        substr($name,0,35)
-                                        .'</td>
-                                        <td>
-                                        '.substr($email,0,20).'
-                                         </td>
-                                        <td>
-                                        '.substr($dob,0,10).'
-                                        </td>
-                                        <td >
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        <a href="?action=view&id='.$pid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       
-                                        </div>
-                                        </td>
-                                    </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
- 
-                            </tbody>
-
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
                 </tr>
                        
                         

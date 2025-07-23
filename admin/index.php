@@ -391,7 +391,7 @@ include("../connection.php");
                                                 }
                                                 else{
                                                 for ( $x=0; $x<$result->rowCount();$x++){
-                                                    $row=$result->fetch_assoc();
+                                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                                     $appoid=$row["appoid"];
                                                     $scheduleid=$row["scheduleid"];
                                                     $title=$row["title"];
@@ -486,7 +486,7 @@ include("../connection.php");
                                                 }
                                                 else{
                                                 for ( $x=0; $x<$result->rowCount();$x++){
-                                                    $row=$result->fetch_assoc();
+                                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                                     $scheduleid=$row["scheduleid"];
                                                     $title=$row["title"];
                                                     $docname=$row["docname"];

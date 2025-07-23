@@ -80,7 +80,7 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
         }
         .dash-body {
             flex: 1;
-            padding: 32px 24px 24px 24px;
+            padding: 16px 8px 16px 8px;
             background: #f7f7f7;
             min-width: 0;
         }
@@ -123,6 +123,10 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
             width: 120px;
             margin: 24px 0 12px 0;
             display: block;
+        }
+        .profile-title, .profile-subtitle {
+            white-space: normal;
+            word-break: break-all;
         }
         @media (max-width: 900px) {
             .container {

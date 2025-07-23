@@ -190,15 +190,14 @@
                     </td>
                     <td>
                         
-                        <form action="" method="post" class="header-search">
-
-                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Barber name or Email" list="barber">&nbsp;&nbsp;
-                            
+                        <form action="" method="post" class="header-search" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <a href="barber.php"><button type="button" class="btn-primary" style="margin-right: 12px; min-width: 110px;">&larr; Back</button></a>
+                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Barber name or Email" list="barber" style="flex: 1; min-width: 250px;">
                             <?php
                                 echo '<datalist id="barber">';
                                 $list11 = $database->query("select  docname,docemail from  barber;");
 
-                                for ($y=0;$y<$list11->num_rows;$y++){
+                                for ($y=0;$y<$list11->rowCount();$y++){
                                     $row00=$list11->fetch_assoc();
                                     $d=$row00["docname"];
                                     $c=$row00["docemail"];
@@ -210,7 +209,7 @@
 ?>
                             
                        
-                            <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                            <button type="submit" class="btn-primary" style="min-width: 110px;">Search</button>
                         
                         </form>
                         
@@ -237,7 +236,10 @@
                
                 <tr >
                     <td colspan="2" style="padding-top:30px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Add New Barber</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h2 style="font-size: 24px; font-weight: 600; margin: 0;">Add New Barber</h2>
+                            <a href="?action=add&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 140px;">+ Add New</button></a>
+                        </div>
                     </td>
                     <td colspan="2">
                         <a href="?action=add&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="display: flex;justify-content: center;align-items: center;margin-left:75px;background-image: url('../img/icons/add.svg');">Add New</font></button>
@@ -245,7 +247,7 @@
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Barber (<?php echo $list11->num_rows; ?>)</p>
+                        <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Barber (<?php echo $list11->rowCount(); ?>)</p>
                     </td>
                     
                 </tr>
@@ -266,28 +268,14 @@
                 <tr>
                    <td colspan="4">
                        <center>
-                        <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0">
+                        <div class="abc scroll" style="padding: 0;">
+                        <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                         <thead>
-                        <tr>
-                                <th class="table-headin">
-                                    
-                                
-                                Barber Name
-                                
-                                </th>
-                                <th class="table-headin">
-                                    Email
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Specialties
-                                    
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Events
-                                    
+                        <tr style="border-bottom: 2px solid #1976d2;">
+                                <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Barber Name</th>
+                                <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Email</th>
+                                <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Specialties</th>
+                                <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Events</th>
                                 </tr>
                         </thead>
                         <tbody>
@@ -297,25 +285,12 @@
                                 
                                 $result= $database->query($sqlmain);
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="4">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="barber.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Barber &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
+                                if($result->rowCount()==0){
+                                    echo '<tr><td colspan="4" style="text-align:center; padding: 40px 0;">No barbers found.</td></tr>';
                                     
                                 }
                                 else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
+                                for ( $x=0; $x<$result->rowCount();$x++){
                                     $row=$result->fetch_assoc();
                                     $docid=$row["docid"];
                                     $name=$row["docname"];
@@ -324,27 +299,18 @@
                                     $spcil_res= $database->query("select sname from specialties where id='$spe'");
                                     $spcil_array= $spcil_res->fetch_assoc();
                                     $spcil_name=$spcil_array["sname"];
-                                    echo '<tr>
-                                        <td> &nbsp;'.
-                                        substr($name,0,30)
-                                        .'</td>
-                                        <td>
-                                        '.substr($email,0,20).'
-                                        </td>
-                                        <td>
-                                            '.substr($spcil_name,0,20).'
-                                        </td>
-
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        <a href="?action=edit&id='.$docid.'&error=0" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-edit"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Edit</font></button></a>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <a href="?action=view&id='.$docid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;
-                                       <a href="?action=drop&id='.$docid.'&name='.$name.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Remove</font></button></a>
-                                        </div>
-                                        </td>
-                                    </tr>';
+                                    echo '<tr>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars($email).'</td>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars($spcil_name).'</td>';
+                                    echo '<td style="padding: 12px 8px;">';
+                                    echo '<div style="display: flex; gap: 8px;">';
+                                    echo '<a href="?action=edit&id='.$docid.'&error=0" class="non-style-link"><button class="btn-primary">Edit</button></a>';
+                                    echo '<a href="?action=view&id='.$docid.'" class="non-style-link"><button class="btn-primary">View</button></a>';
+                                    echo '<a href="?action=drop&id='.$docid.'&name='.$name.'" class="non-style-link"><button class="btn-primary">Remove</button></a>';
+                                    echo '</div>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                     
                                 }
                             }
@@ -536,7 +502,7 @@
         
                                         $list11 = $database->query("select  * from  specialties order by sname asc;");
         
-                                        for ($y=0;$y<$list11->num_rows;$y++){
+                                        for ($y=0;$y<$list11->rowCount();$y++){
                                             $row00=$list11->fetch_assoc();
                                             $sn=$row00["sname"];
                                             $id00=$row00["id"];
@@ -695,7 +661,7 @@
                 
                                                 $list11 = $database->query("select  * from  specialties;");
                 
-                                                for ($y=0;$y<$list11->num_rows;$y++){
+                                                for ($y=0;$y<$list11->rowCount();$y++){
                                                     $row00=$list11->fetch_assoc();
                                                     $sn=$row00["sname"];
                                                     $id00=$row00["id"];

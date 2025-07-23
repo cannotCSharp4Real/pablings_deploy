@@ -18,7 +18,7 @@ if (isset($_SESSION["user"])) {
 include("../connection.php");
 $userrow = $database->query("select * from barber where docemail='$useremail'");
 $userfetch = $userrow->fetch(PDO::FETCH_ASSOC);
-$userid = $userfetch["docid"];
+$userid = $userfetch["id"];
 $username = $userfetch["docname"];
 
 // Fetch dashboard data
@@ -371,7 +371,7 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                                         
                                             <?php
                                             $nextweek=date("Y-m-d",strtotime("+1 week"));
-                                            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid  where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc"; 
+                                            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc"; 
                                                 $result= $database->query($sqlmain);
                 
                                                 if($result->rowCount()==0){

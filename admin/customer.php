@@ -174,266 +174,184 @@ include("../connection.php");
             </table>
         </div>
         <div class="dash-body">
-            <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <td width="13%">
-
-                    <a href="customer.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                        
-                    </td>
-                    <td>
-                        
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                            <a href="customer.php"><button type="button" class="btn-primary" style="min-width: 110px;">&larr; Back</button></a>
-                            <form action="" method="post" class="header-search" style="flex: 1; display: flex; align-items: center; gap: 12px;">
-                                <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Customer name or Email" list="customer" style="flex: 1; min-width: 250px;">
-                                <?php
-                                    echo '<datalist id="customer">';
-                                    $list11 = $database->query("select  pname,pemail from customer;");
-                                    for ($y=0;$y<$list11->rowCount();$y++){
-                                        $row00=$list11->fetch_assoc();
-                                        $d=$row00["pname"];
-                                        $c=$row00["pemail"];
-                                        echo "<option value='$d'><br/>";
-                                        echo "<option value='$c'><br/>";
-                                    };
-                                    echo ' </datalist>';
-                                ?>
-                                <button type="submit" class="btn-primary" style="min-width: 110px;">Search</button>
-                            </form>
-                        </div>
-                        <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Customer (<?php echo $list11->rowCount(); ?>)</p>
-                        <div class="abc scroll" style="padding: 0;">
-                            <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
-                                <thead>
-                                    <tr style="border-bottom: 2px solid #1976d2;">
-                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Name</th>
-                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Email</th>
-                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Date of Birth</th>
-                                        <th class="table-headin" style="font-size: 16px; font-weight: 600; padding: 12px 8px;">Events</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                        if($_POST){
-                                            $keyword=$_POST["search"];
-                                            
-                                            $sqlmain= "select * from customer where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
-                                        }else{
-                                            $sqlmain= "select * from customer order by id desc";
-
-                                        }
-
-
-
-                                    ?>
-                                      
-                                    <tr>
-                                       <td colspan="4">
-                                           <center>
-                                            <div class="abc scroll">
-                                            <table width="93%" class="sub-table scrolldown"  style="border-spacing:0;">
-                                            <thead>
-                                            <tr>
-                                                    <th class="table-headin">
-                                                        
-                                                    
-                                                    Name
-                                                    
-                                                    </th>
-                                                    <th class="table-headin">
-                                                        
-                                                    
-                                                        Email
-                                                    </th>
-                                                    <th class="table-headin">
-                                                        
-                                                        Date of Birth
-                                                        
-                                                    </th>
-                                                    <th class="table-headin">
-                                                        
-                                                        Events
-                                                        
-                                                    </tr>
-                                            </thead>
-                                            <tbody>
-                                            
-                                                <?php
-
-                                                    
-                                                    $result= $database->query($sqlmain);
-
-                                                    if($result->rowCount()==0){
-                                                        echo '<tr><td colspan="4" style="text-align:center; padding: 40px 0;">No customers found.</td></tr>';
-                                                    } else {
-                                                        for ($x=0; $x<$result->rowCount(); $x++) {
-                                                            $row=$result->fetch_assoc();
-                                                            $id=$row["id"];
-                                                            $name=$row["pname"];
-                                                            $email=$row["pemail"];
-                                                            $dob=$row["pdob"];
-                                                            echo '<tr>';
-                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
-                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($email).'</td>';
-                                                            echo '<td style="padding: 12px 8px;">'.htmlspecialchars($dob).'</td>';
-                                                            echo '<td style="padding: 12px 8px;">';
-                                                            echo '<div style="display: flex; gap: 8px;">';
-                                                            echo '<a href="?action=view&id='.$id.'" class="non-style-link"><button class="btn-primary">View</button></a>';
-                                                            echo '</div>';
-                                                            echo '</td>';
-                                                            echo '</tr>';
-                                                        }
-                                                    }
-                                                 
-                                                ?>
- 
-                                                </tbody>
-
-                                            </table>
-                                            </div>
-                                            </center>
-                                       </td> 
-                                    </tr>
-                                       
-                                        
-                                        
-                                </table>
-                            </div>
-                        </div>
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            Today's Date
-                        </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
-                        date_default_timezone_set('Asia/Kolkata');
-
-                        $date = date('Y-m-d');
-                        echo $date;
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                <a href="customer.php"><button type="button" class="btn-primary" style="min-width: 110px;">&#8592; Back</button></a>
+                <form action="" method="post" class="header-search" style="flex: 1; display: flex; align-items: center; gap: 12px;">
+                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Customer name or Email" list="customer" style="flex: 1; min-width: 250px;">
+                    <?php
+                        echo '<datalist id="customer">';
+                        $list11 = $database->query("select pname,pemail from customer;");
+                        for ($y=0;$y<$list11->rowCount();$y++){
+                            $row00=$list11->fetch_assoc();
+                            $d=$row00["pname"];
+                            $c=$row00["pemail"];
+                            echo "<option value='$d'><br/>";
+                            echo "<option value='$c'><br/>";
+                        };
+                        echo ' </datalist>';
+                    ?>
+                    <button type="submit" class="btn-primary" style="min-width: 110px;">Search</button>
+                </form>
+                <div style="flex: 1;"></div>
+                <div style="text-align: right;">
+                    <div style="font-size: 16px; color: #888;">Today's Date</div>
+                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
+                </div>
+            </div>
+            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Customer (<?php echo $list11->rowCount(); ?>)</p>
+            <div class="abc scroll" style="padding: 0;">
+                <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                    <thead>
+                        <tr style="border-bottom: 3px solid #1976d2;">
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Name</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Email</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Date of Birth</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Events</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            if($_POST){
+                                $keyword=$_POST["search"];
+                                $sqlmain= "select * from customer where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
+                            }else{
+                                $sqlmain= "select * from customer order by id desc";
+                            }
+                            $result= $database->query($sqlmain);
+                            if($result->rowCount()==0){
+                                echo '<tr><td colspan="4" style="text-align:center; padding: 40px 0;">No customers found.</td></tr>';
+                            } else {
+                                for ($x=0; $x<$result->rowCount(); $x++) {
+                                    $row=$result->fetch_assoc();
+                                    $id=$row["id"];
+                                    $name=$row["pname"];
+                                    $email=$row["pemail"];
+                                    $dob=$row["pdob"];
+                                    echo '<tr>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars($email).'</td>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars($dob).'</td>';
+                                    echo '<td style="padding: 12px 8px;">';
+                                    echo '<div style="display: flex; gap: 12px;">';
+                                    echo '<a href="?action=view&id='.$id.'" class="non-style-link"><button class="btn-primary" style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 18px;">&#128065;</span> View</button></a>';
+                                    echo '</div>';
+                                    echo '</td>';
+                                    echo '</tr>';
+                                }
+                            }
                         ?>
-                        </p>
-                    </td>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                    </td>
+                    </tbody>
+                </table>
+            </div>
+            <?php 
+            if($_GET){
+                
+                $id=$_GET["id"];
+                $action=$_GET["action"];
+                    $sqlmain= "select * from customer where id='$id'";
+                    $result= $database->query($sqlmain);
+                    $row=$result->fetch_assoc();
+                    $name=$row["pname"];
+                    $email=$row["pemail"];
+                    $dob=$row["pdob"];
+                    $address=$row["paddress"];
+                    echo '
+                    <div id="popup1" class="overlay">
+                            <div class="popup">
+                            <center>
+                                <a class="close" href="customer.php">&times;</a>
+                                <div class="content">
 
+                                </div>
+                                <div style="display: flex;justify-content: center;">
+                                <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                                
+                                    <tr>
+                                        <td>
+                                            <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td class="label-td" colspan="2">
+                                            <label for="name" class="form-label">Customer ID: </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            P-'.$id.'<br><br>
+                                        </td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                        <td class="label-td" colspan="2">
+                                            <label for="name" class="form-label">Name: </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            '.$name.'<br><br>
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            <label for="Email" class="form-label">Email: </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                        '.$email.'<br><br>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            <label for="spec" class="form-label">Address: </label>
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <td class="label-td" colspan="2">
+                                    '.$address.'<br><br>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td class="label-td" colspan="2">
+                                            <label for="name" class="form-label">Date of Birth: </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            '.$dob.'<br><br>
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <a href="customer.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
+                                        
+                                            
+                                        </td>
+                
+                                    </tr>
+                                   
 
-                </tr>
-                       
-                        
-                        
-            </table>
+                                </table>
+                                </div>
+                            </center>
+                            <br><br>
+                    </div>
+                    </div>
+                    ';
+                
+            };
+
+        ?>
         </div>
     </div>
-    <?php 
-    if($_GET){
-        
-        $id=$_GET["id"];
-        $action=$_GET["action"];
-            $sqlmain= "select * from customer where id='$id'";
-            $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
-            $name=$row["pname"];
-            $email=$row["pemail"];
-            $dob=$row["pdob"];
-            $address=$row["paddress"];
-            echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                        <a class="close" href="customer.php">&times;</a>
-                        <div class="content">
-
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                        <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
-                        
-                            <tr>
-                                <td>
-                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Customer ID: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    P-'.$id.'<br><br>
-                                </td>
-                                
-                            </tr>
-                            
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Name: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$name.'<br><br>
-                                </td>
-                                
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Email" class="form-label">Email: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$email.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label">Address: </label>
-                                    
-                                </td>
-                            </tr>
-                            <tr>
-                            <td class="label-td" colspan="2">
-                            '.$address.'<br><br>
-                            </td>
-                            </tr>
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Date of Birth: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$dob.'<br><br>
-                                </td>
-                                
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="customer.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
-                                
-                                    
-                                </td>
-                
-                            </tr>
-                           
-
-                        </table>
-                        </div>
-                    </center>
-                    <br><br>
-            </div>
-            </div>
-            ';
-        
-    };
-
-?>
 </div>
 
 </body>

@@ -1,9 +1,22 @@
+<?php
+session_start();
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
+        header("location: ../login.php");
+        exit();
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+include("../connection.php");
+?>
     <?php
     
     
 
     //import database
-    include("../connection.php");
+    //include("../connection.php");
 
 
 
@@ -22,8 +35,8 @@
             $error='3';
             $result= $database->query("select barber.docid from barber inner join webuser on barber.docemail=webuser.email where webuser.email='$email';");
             //$resultqq= $database->query("select * from barber where docid='$id';");
-            if($result->num_rows==1){
-                $id2=$result->fetch_assoc()["docid"];
+            if($result->rowCount()==1){
+                $id2=$result->fetch(PDO::FETCH_ASSOC)["docid"];
             }else{
                 $id2=$id;
             }

@@ -69,13 +69,17 @@ $result= $database->query($sqlmain);
         }
         .dash-body {
             flex: 1;
-            padding: 32px 24px 24px 24px;
+            padding: 16px 8px 16px 8px;
             background: #f7f7f7;
             min-width: 0;
         }
         .logout-btn {
             width: 90%;
             margin: 20px 5% 0 5%;
+        }
+        .profile-title, .profile-subtitle {
+            white-space: normal;
+            word-break: break-all;
         }
         .heading-main12 {
             font-size: 22px;

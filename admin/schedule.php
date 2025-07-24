@@ -11,19 +11,16 @@ if(isset($_SESSION["user"])){
 }
 include("../connection.php");
 // Move the session query logic here so $result is always defined before use
-$showAll = true;
-if($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['sheduledate']) || isset($_POST['docid']))) {
+if($_POST && (!empty($_POST["sheduledate"]) || !empty($_POST["docid"]))) {
     $sqlpt1="";
     if(!empty($_POST["sheduledate"])){
         $sheduledate=$_POST["sheduledate"];
         $sqlpt1=" schedule.scheduledate='$sheduledate' ";
-        $showAll = false;
     }
     $sqlpt2="";
     if(!empty($_POST["docid"])){
         $docid=$_POST["docid"];
         $sqlpt2=" barber.id=$docid ";
-        $showAll = false;
     }
     $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id ";
     $sqllist=array($sqlpt1,$sqlpt2);
@@ -35,10 +32,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['sheduledate']) || iss
             $key2++;
         };
     };
-    // If both filters are empty, show all
-    if($showAll) {
-        $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  order by schedule.scheduledate desc";
-    }
 } else {
     $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  order by schedule.scheduledate desc";
 }

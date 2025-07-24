@@ -176,28 +176,17 @@ include("../connection.php");
             </table>
         </div>
         <div class="dash-body">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-                <a href="barber.php"><button type="button" class="btn-primary" style="min-width: 110px;">&#8592; Back</button></a>
-                <form action="" method="post" class="header-search" style="flex: 1; display: flex; align-items: center; gap: 12px;">
-                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Barber name or Email" list="barber" style="flex: 1; min-width: 250px;">
-                    <?php
-                        echo '<datalist id="barber">';
-                        $list11 = $database->query("select docname,docemail from barber;");
-                        for ($y=0;$y<$list11->rowCount();$y++){
-                            $row00=$list11->fetch(PDO::FETCH_ASSOC);
-                            $d=$row00["docname"];
-                            $c=$row00["docemail"];
-                            echo "<option value='$d'><br/>";
-                            echo "<option value='$c'><br/>";
-                        };
-                        echo ' </datalist>';
-                    ?>
-                    <button type="submit" class="btn-primary" style="min-width: 110px;">Search</button>
-                </form>
-                <div style="flex: 1;"></div>
-                <div style="text-align: right;">
-                    <div style="font-size: 16px; color: #888;">Today's Date</div>
-                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; margin-bottom: 0; min-height: 56px;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <!-- Left content (e.g., title, buttons) -->
+                    <span class="heading-main12" style="font-size: 28px; font-weight: 600;">Add New Barber</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                    <span class="heading-sub12" style="font-size: 15px; color: #888; margin-bottom: 0;">Today's Date</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 24px; font-weight: 700; color: #222; letter-spacing: 1px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></span>
+                        <span style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0; padding: 4px 8px; display: flex; align-items: center;"><img src="../img/calendar.svg" width="22" style="display: block;"></span>
+                    </div>
                 </div>
             </div>
             <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">

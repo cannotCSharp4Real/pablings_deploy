@@ -243,7 +243,7 @@ $result= $database->query($sqlmain);
     
     <div class="container">
         <div class="menu">
-            <table class="menu-container" border="0" style="width:100%;">
+            <table class="menu-container" border="0">
                 <tr>
                     <td style="padding:10px" colspan="2">
                         <table border="0" class="profile-container">

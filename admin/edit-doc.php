@@ -25,7 +25,7 @@ include("../connection.php");
         $result= $database->query("select * from webuser");
         $name=$_POST['name'];
         $oldemail=$_POST["oldemail"];
-        $spec=$_POST['spec'];
+        $spec = isset($_POST['spec']) && is_numeric($_POST['spec']) ? intval($_POST['spec']) : 'NULL';
         $email=$_POST['email'];
         $password=$_POST['password'];
         $cpassword=$_POST['cpassword'];

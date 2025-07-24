@@ -292,17 +292,19 @@ $result= $database->query($sqlmain);
             </table>
         </div>
         <div class="dash-body">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 32px; margin-bottom: 0;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; margin-bottom: 0; min-height: 56px;">
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <a href="index.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
                     <span class="heading-main12" style="margin-left: 12px;">Shedule Manager</span>
                 </div>
-                <div style="text-align: right;">
+                <div style="display: flex; align-items: center; gap: 8px;">
                     <div class="heading-sub12" style="font-size: 16px;">Today's Date</div>
-                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
+                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-left: 4px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
+                    <div style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0; padding: 4px 8px; margin-left: 8px; display: flex; align-items: center;"><img src="../img/calendar.svg" width="22" style="display: block;"></div>
                 </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px; margin-top: 16px;">
+            <div class="heading-main12" style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 24px; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px; margin-top: 0;">
                 <span class="heading-main12" style="font-size: 20px; font-weight: 500;">Schedule a Session</span>
                 <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 160px; font-size: 16px; font-weight: 500; margin-left: 12px;">+ Add a Session</button></a>
             </div>
@@ -324,7 +326,6 @@ $result= $database->query($sqlmain);
                 </select>
                 <button type="submit" name="filter" class="btn-primary" style="min-width: 110px; display: flex; align-items: center; gap: 6px; font-size: 16px;">&#128269; Filter</button>
             </form>
-            <div class="heading-main12" style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 0; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>
             <div class="abc scroll" style="padding: 0;">
                 <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                     <thead>

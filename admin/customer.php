@@ -110,8 +110,8 @@
                                 echo '<datalist id="customer">';
                                 $list11 = $database->query("select  pname,pemail from customer;");
 
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
+                                for ($y=0;$y<$list11->rowCount();$y++){
+                                    $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                     $d=$row00["pname"];
                                     $c=$row00["pemail"];
                                     echo "<option value='$d'><br/>";
@@ -150,7 +150,7 @@
                 
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Customer (<?php echo $list11->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Customer (<?php echo $list11->rowCount(); ?>)</p>
                     </td>
                     
                 </tr>
@@ -160,7 +160,7 @@
                         
                         $sqlmain= "select * from customer where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
                     }else{
-                        $sqlmain= "select * from customer order by pid desc";
+                        $sqlmain= "select * from customer order by id desc";
 
                     }
 
@@ -204,7 +204,7 @@
                                 
                                 $result= $database->query($sqlmain);
 
-                                if($result->num_rows==0){
+                                if($result->rowCount()==0){
                                     echo '<tr>
                                     <td colspan="4">
                                     <br><br><br><br>
@@ -222,9 +222,9 @@
                                     
                                 }
                                 else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $pid=$row["pid"];
+                                for ( $x=0; $x<$result->rowCount();$x++){
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
+                                    $pid=$row["id"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
                                     $dob=$row["pdob"];
@@ -271,9 +271,9 @@
         
         $id=$_GET["id"];
         $action=$_GET["action"];
-            $sqlmain= "select * from customer where pid='$id'";
+            $sqlmain= "select * from customer where id='$id'";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["pname"];
             $email=$row["pemail"];
             $dob=$row["pdob"];

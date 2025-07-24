@@ -232,10 +232,14 @@ include("../connection.php");
                                     $docid=$row["id"];
                                     $name=$row["docname"];
                                     $email=$row["docemail"];
-                                    $spe=$row["specialties"];
-                                    $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
-                                    $spcil_name=$spcil_array["sname"];
+                                    $spe = isset($row["specialties"]) ? $row["specialties"] : '';
+                                    if ($spe !== '' && $spe !== null) {
+                                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                                        $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                                        $spcil_name = $spcil_array ? $spcil_array["sname"] : "Unknown";
+                                    } else {
+                                        $spcil_name = "None";
+                                    }
                                     echo '<tr>';
                                     echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
                                     echo '<td style="padding: 12px 8px;">'.htmlspecialchars($email).'</td>';

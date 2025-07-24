@@ -290,11 +290,14 @@ include("../connection.php");
                     $row=$result->fetch(PDO::FETCH_ASSOC);
                     $name=$row["docname"];
                     $email=$row["docemail"];
-                    $spe=$row["specialties"];
-                    
-                    $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
-                    $spcil_name=$spcil_array["sname"];
+                    $spe = isset($row["specialties"]) ? $row["specialties"] : '';
+                    if ($spe !== '' && $spe !== null) {
+                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                        $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                        $spcil_name = $spcil_array ? $spcil_array["sname"] : "Unknown";
+                    } else {
+                        $spcil_name = "None";
+                    }
                     echo '
                     <div id="popup1" class="overlay">
                             <div class="popup">
@@ -513,11 +516,14 @@ include("../connection.php");
             $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];
             $email=$row["docemail"];
-            $spe=$row["specialties"];
-            
-            $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
-            $spcil_name=$spcil_array["sname"];
+            $spe = isset($row["specialties"]) ? $row["specialties"] : '';
+            if ($spe !== '' && $spe !== null) {
+                $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                $spcil_name = $spcil_array ? $spcil_array["sname"] : "Unknown";
+            } else {
+                $spcil_name = "None";
+            }
 
             $error_1=$_GET["error"];
                 $errorlist= array(

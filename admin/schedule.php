@@ -1,3 +1,16 @@
+<?php
+session_start();
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
+        header("location: ../login.php");
+        exit();
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+include("../connection.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,23 +62,6 @@
     </script>
 </head>
 <body>
-    <?php
-    session_start();
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
-            header("location: ../login.php");
-            exit();
-        }
-    }else{
-        header("location: ../login.php");
-        exit();
-    }
-    
-    
-    //import database
-    include("../connection.php");
-    
-    ?>
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">

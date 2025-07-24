@@ -292,7 +292,7 @@ $result= $database->query($sqlmain);
             </table>
         </div>
         <div class="dash-body">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; margin-bottom: 0; min-height: 56px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 0; margin-bottom: 24px;">
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <a href="index.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
                     <span class="heading-main12" style="margin-left: 12px;">Shedule Manager</span>

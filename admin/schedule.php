@@ -200,7 +200,7 @@ include("../connection.php");
                 <h2 style="font-size: 22px; font-weight: 600; margin: 0;">Schedule a Session</h2>
                 <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 160px;">+ Add a Session</button></a>
             </div>
-            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sessions (<?php echo $list110->rowCount(); ?>)</p>
+            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sessions (<?php echo $result->rowCount(); ?>)</p>
             <form action="" method="post" style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
                 <label for="date" style="font-weight: 500;">Date:</label>
                 <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="min-width: 160px;">

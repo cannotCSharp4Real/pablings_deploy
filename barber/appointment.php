@@ -127,7 +127,8 @@ $username = $userfetch["docname"];
                         date_default_timezone_set('Asia/Kolkata');
                         $today = date('Y-m-d');
                         echo $today;
-                        $list110 = $database->query("select * from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.id  where  barber.id=$userid ");
+                        // Update SQL join for customer table
+                        $list110 = $database->query("select * from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.id  where  barber.id=$userid ");
                         ?>
                         </p>
                     </td>
@@ -164,7 +165,8 @@ $username = $userfetch["docname"];
                     </td>
                 </tr>
                 <?php
-                    $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.pid=appointment.pid inner join barber on schedule.docid=barber.id  where  barber.id=$userid ";
+                    // Update main SQL for appointments
+                    $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.id  where  barber.id=$userid ";
                     if($_POST){
                         if(!empty($_POST["sheduledate"])){
                             $sheduledate=$_POST["sheduledate"];

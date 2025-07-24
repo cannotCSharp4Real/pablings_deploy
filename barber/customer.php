@@ -230,12 +230,8 @@ if($_POST){
             echo '</form>';
             echo '</td>';
             echo '<td width="15%">';
-            echo '<p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's Date</p>';
-            echo '<p class="heading-sub12" style="padding: 0;margin: 0;">';
-            date_default_timezone_set('Asia/Kolkata');
-            $date = date('Y-m-d');
-            echo $date;
-            echo '</p>';
+            echo '<p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today\'s Date</p>';
+            echo '<p class="heading-sub12" style="padding: 0;margin: 0;">'.date('Y-m-d').'</p>';
             echo '</td>';
             echo '<td width="10%">';
             echo '<button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>';

@@ -44,12 +44,12 @@ include("../connection.php");
                                 </td>
                                 <td style="padding:0px;margin:0px;">
                                     <p class="profile-title">Administrator</p>
-                                    <p class="profile-subtitle">admin@edoc.com</p>
+                                    <p class="profile-subtitle">admin@pablings.com</p>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
                                 </td>
                             </tr>
                     </table>
@@ -61,8 +61,8 @@ include("../connection.php");
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-barber ">
-                        <a href="barber.php" class="non-style-link-menu "><div><p class="menu-text">Barber</p></a></div>
+                    <td class="menu-btn menu-icon-barber">
+                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">Barber</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -76,11 +76,10 @@ include("../connection.php");
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-customer  menu-active menu-icon-customer-active">
-                        <a href="customer.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">Customer</p></a></div>
+                    <td class="menu-btn menu-icon-customer menu-active menu-icon-customer-active">
+                        <a href="customer.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Customer</p></a></div>
                     </td>
                 </tr>
-
             </table>
         </div>
         <div class="dash-body">

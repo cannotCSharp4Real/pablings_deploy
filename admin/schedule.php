@@ -232,6 +232,7 @@ include("../connection.php");
                     </thead>
                     <tbody>
                         <?php
+                            // Move the session query logic here so $result is always defined before use
                             if($_POST){
                                 $sqlpt1="";
                                 if(!empty($_POST["sheduledate"])){

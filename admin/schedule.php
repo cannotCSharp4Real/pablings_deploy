@@ -50,14 +50,15 @@
 </head>
 <body>
     <?php
-    //learn from w3schools.com
     session_start();
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
             header("location: ../login.php");
+            exit();
         }
     }else{
         header("location: ../login.php");
+        exit();
     }
     
     
@@ -157,7 +158,7 @@
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;" >
                     
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Sessions (<?php echo $list110->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Sessions (<?php echo $list110->rowCount(); ?>)</p>
                     </td>
                     
                 </tr>
@@ -186,10 +187,10 @@
                             <?php 
                             
                                 $list11 = $database->query("select  * from  barber order by docname asc;");
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
+                                for ($y=0;$y<$list11->rowCount();$y++){
+                                    $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                     $sn=$row00["docname"];
-                                    $id00=$row00["docid"];
+                                    $id00=$row00["id"];
                                     echo "<option value=".$id00.">$sn</option><br/>";
                                 };
 
@@ -219,11 +220,11 @@
                         $sqlpt2="";
                         if(!empty($_POST["docid"])){
                             $docid=$_POST["docid"];
-                            $sqlpt2=" barber.docid=$docid ";
+                            $sqlpt2=" barber.id=$docid ";
                         }
                         //echo $sqlpt2;
                         //echo $sqlpt1;
-                        $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid ";
+                        $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id ";
                         $sqllist=array($sqlpt1,$sqlpt2);
                         $sqlkeywords=array(" where "," and ");
                         $key2=0;
@@ -238,7 +239,7 @@
                         
                         //
                     }else{
-                        $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid  order by schedule.scheduledate desc";
+                        $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  order by schedule.scheduledate desc";
                     }
 
                 ?>
@@ -282,7 +283,7 @@
                             <?php
                                 
                                 $result= $database->query($sqlmain);
-                                if($result->num_rows==0){
+                                if($result->rowCount()==0){
                                     echo '<tr>
                                     <td colspan="4">
                                     <br><br><br><br>
@@ -300,8 +301,8 @@
                                     
                                 }
                                 else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
+                                for ( $x=0; $x<$result->rowCount();$x++){
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $scheduleid=$row["scheduleid"];
                                     $title=$row["title"];
                                     $docname=$row["docname"];
@@ -401,10 +402,10 @@
         
                                         $list11 = $database->query("select  * from  barber order by docname asc;");
         
-                                        for ($y=0;$y<$list11->num_rows;$y++){
-                                            $row00=$list11->fetch_assoc();
+                                        for ($y=0;$y<$list11->rowCount();$y++){
+                                            $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                             $sn=$row00["docname"];
-                                            $id00=$row00["docid"];
+                                            $id00=$row00["id"];
                                             echo "<option value=".$id00.">$sn</option><br/>";
                                         };
         
@@ -507,9 +508,9 @@
             </div>
             '; 
         }elseif($action=='view'){
-            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.docid  where  schedule.scheduleid=$id";
+            $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where  schedule.scheduleid=$id";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $docname=$row["docname"];
             $scheduleid=$row["scheduleid"];
             $title=$row["title"];
@@ -539,11 +540,11 @@
             echo '<table width="100%" border="1" style="border-collapse: collapse;">';
             echo '<tr><th style="padding: 10px; text-align: center;">Customer ID</th><th style="padding: 10px; text-align: center;">Customer Name</th><th style="padding: 10px; text-align: center;">Appointment Number</th></tr>';
             
-            if($result12->num_rows==0){
+            if($result12->rowCount()==0){
                 echo '<tr><td colspan="3" style="padding: 10px; text-align: center;">No customers registered yet.</td></tr>';
             }else{
-                for ( $x=0; $x<$result12->num_rows;$x++){
-                    $row=$result12->fetch_assoc();
+                for ( $x=0; $x<$result12->rowCount();$x++){
+                    $row=$result12->fetch(PDO::FETCH_ASSOC);
                     $apponum=$row["apponum"];
                     $pid=$row["pid"];
                     $pname=$row["pname"];
@@ -619,7 +620,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label"><b>Customer that Already registerd for this session:</b> ('.$result12->num_rows."/".$nop.')</label>
+                                    <label for="spec" class="form-label"><b>Customer that Already registerd for this session:</b> ('.$result12->rowCount()."/".$nop.')</label>
                                     <br><br>
                                 </td>
                             </tr>
@@ -651,7 +652,7 @@
                                          
                                          $result= $database->query($sqlmain12);
                 
-                                         if($result->num_rows==0){
+                                         if($result->rowCount()==0){
                                              echo '<tr>
                                              <td colspan="7">
                                              <br><br><br><br>
@@ -669,8 +670,8 @@
                                              
                                          }
                                          else{
-                                         for ( $x=0; $x<$result->num_rows;$x++){
-                                             $row=$result->fetch_assoc();
+                                         for ( $x=0; $x<$result->rowCount();$x++){
+                                             $row=$result->fetch(PDO::FETCH_ASSOC);
                                              $apponum=$row["apponum"];
                                              $pid=$row["pid"];
                                              $pname=$row["pname"];

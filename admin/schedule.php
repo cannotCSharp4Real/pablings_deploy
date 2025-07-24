@@ -297,10 +297,12 @@ $result= $database->query($sqlmain);
                     <a href="index.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
                     <span class="heading-main12" style="margin-left: 12px;">Shedule Manager</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div class="heading-sub12" style="font-size: 16px;">Today's Date</div>
-                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-left: 4px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
-                    <div style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0; padding: 4px 8px; margin-left: 8px; display: flex; align-items: center;"><img src="../img/calendar.svg" width="22" style="display: block;"></div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                    <span class="heading-sub12" style="font-size: 15px; color: #888; margin-bottom: 0;">Today's Date</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 24px; font-weight: 700; color: #222; letter-spacing: 1px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></span>
+                        <span style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0; padding: 4px 8px; display: flex; align-items: center;"><img src="../img/calendar.svg" width="22" style="display: block;"></span>
+                    </div>
                 </div>
             </div>
             <div class="heading-main12" style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 24px; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>

@@ -193,7 +193,7 @@ include("../connection.php");
                 <a href="?action=add&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 140px;">+ Add New</button></a>
             </div>
             <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Add New Barber</h2>
-            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Barber (<?php echo $list11->rowCount(); ?>)</p>
+            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Barber (<?php echo $result ? $result->rowCount() : 0; ?>)</p>
             <div class="abc scroll" style="padding: 0;">
                 <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                     <thead>

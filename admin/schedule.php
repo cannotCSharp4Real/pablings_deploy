@@ -292,9 +292,15 @@ $result= $database->query($sqlmain);
             </table>
         </div>
         <div class="dash-body">
-            <div style="display: flex; align-items: center; gap: 16px; margin-top: 32px; margin-bottom: 0;">
-                <a href="index.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
-                <span class="heading-main12" style="margin-left: 12px;">Shedule Manager</span>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 32px; margin-bottom: 0;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <a href="index.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
+                    <span class="heading-main12" style="margin-left: 12px;">Shedule Manager</span>
+                </div>
+                <div style="text-align: right;">
+                    <div class="heading-sub12" style="font-size: 16px;">Today's Date</div>
+                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
+                </div>
             </div>
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px; margin-top: 16px;">
                 <span class="heading-main12" style="font-size: 20px; font-weight: 500;">Schedule a Session</span>

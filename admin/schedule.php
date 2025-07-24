@@ -305,11 +305,11 @@ $result= $database->query($sqlmain);
                     </div>
                 </div>
             </div>
-            <div class="heading-main12" style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 24px; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px; margin-top: 0;">
                 <span class="heading-main12" style="font-size: 20px; font-weight: 500;">Schedule a Session</span>
                 <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 160px; font-size: 16px; font-weight: 500; margin-left: 12px;">+ Add a Session</button></a>
             </div>
+            <div class="heading-main12" style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 0; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>
             <form action="" method="post" style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px; width: 100%;">
                 <label for="date" class="heading-sub12" style="font-weight: 500; font-size: 16px;">Date:</label>
                 <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="min-width: 160px; font-size: 16px;">

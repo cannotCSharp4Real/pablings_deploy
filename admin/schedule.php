@@ -65,12 +65,13 @@ $result= $database->query($sqlmain);
             background: #fff;
             border-right: 1px solid #e0e0e0;
             min-height: 100vh;
-            padding: 0;
+            padding-top: 0;
             position: sticky;
             top: 0;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: flex-start;
             box-shadow: 1px 0 0 #e0e0e0;
         }
         .profile-container {
@@ -127,7 +128,7 @@ $result= $database->query($sqlmain);
         }
         .dash-body {
             flex: 1;
-            padding: 0 24px 24px 24px;
+            padding: 32px 24px 24px 24px;
             background: #f7f7f7;
             min-width: 0;
             display: flex;
@@ -143,8 +144,10 @@ $result= $database->query($sqlmain);
         .all-sessions-header {
             font-size: 18px;
             font-weight: 500;
-            margin: 0 24px 0 0;
-            padding: 0;
+            margin-bottom: 8px;
+            margin-top: 0;
+            margin-left: 0;
+            padding-left: 0;
         }
         .schedule-title {
             font-size: 28px;
@@ -239,23 +242,57 @@ $result= $database->query($sqlmain);
     
     <div class="container">
         <div class="menu">
-            <div class="profile-container">
-                <img src="../img/user.png" alt="" width="80" style="border-radius:50%">
-                <p class="profile-title">Administrator</p>
-                <p class="profile-subtitle">admin@pablings.com</p>
-                <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="index.php" class="non-style-link-menu"><span class="menu-icon-dashbord"></span>Dashboard</a></li>
-                <li><a href="barber.php" class="non-style-link-menu"><span class="menu-icon-barber"></span>Barber</a></li>
-                <li><a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><span class="menu-icon-schedule"></span>Schedule</a></li>
-                <li><a href="appointment.php" class="non-style-link-menu"><span class="menu-icon-appoinment"></span>Appointment</a></li>
-                <li><a href="customer.php" class="non-style-link-menu"><span class="menu-icon-customer"></span>Customer</a></li>
-            </ul>
+            <table class="menu-container" border="0" style="width:100%;">
+                <tr>
+                    <td style="padding:10px" colspan="2">
+                        <table border="0" class="profile-container">
+                            <tr>
+                                <td width="30%" style="padding-left:20px" >
+                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                                </td>
+                                <td style="padding:0px;margin:0px;">
+                                    <p class="profile-title">Administrator</p>
+                                    <p class="profile-subtitle">admin@pablings.com</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                </td>
+                            </tr>
+                    </table>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-dashbord" >
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-barber ">
+                        <a href="barber.php" class="non-style-link-menu "><div><p class="menu-text">Barber</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-schedule menu-active menu-icon-schedule-active">
+                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Schedule</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-appoinment">
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-customer">
+                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></a></div>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="dash-body">
+            <?php echo '<p class="all-sessions-header">All Sessions ('.($result ? $result->rowCount() : 0).')</p>'; ?>
             <div class="header-row">
-                <span class="all-sessions-header">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</span>
                 <span class="schedule-title">Shedule Manager</span>
                 <div style="flex:1"></div>
                 <div style="text-align: right;">

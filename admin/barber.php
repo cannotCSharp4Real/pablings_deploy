@@ -193,7 +193,16 @@ include("../connection.php");
                 <a href="?action=add&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 140px;">+ Add New</button></a>
             </div>
             <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Add New Barber</h2>
-            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Barber (<?php echo $result ? $result->rowCount() : 0; ?>)</p>
+            <?php
+            if($_POST){
+                $keyword=$_POST["search"];
+                $sqlmain= "select * from barber where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
+            }else{
+                $sqlmain= "select * from barber order by id desc";
+            }
+            $result= $database->query($sqlmain);
+            ?>
+            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Barber (<?php echo $result->rowCount(); ?>)</p>
             <div class="abc scroll" style="padding: 0;">
                 <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                     <thead>
@@ -206,13 +215,6 @@ include("../connection.php");
                     </thead>
                     <tbody>
                         <?php
-                            if($_POST){
-                                $keyword=$_POST["search"];
-                                $sqlmain= "select * from barber where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
-                            }else{
-                                $sqlmain= "select * from barber order by id desc";
-                            }
-                            $result= $database->query($sqlmain);
                             if($result->rowCount()==0){
                                 echo '<tr><td colspan="4" style="text-align:center; padding: 40px 0;">No barbers found.</td></tr>';
                             } else {

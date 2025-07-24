@@ -36,7 +36,6 @@ if($_POST && (!empty($_POST["sheduledate"]) || !empty($_POST["docid"]))) {
     $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  order by schedule.scheduledate desc";
 }
 $result= $database->query($sqlmain);
-echo '<p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sessions ('.($result ? $result->rowCount() : 0).')</p>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,12 +68,19 @@ echo '<p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sess
             padding-top: 0;
             position: sticky;
             top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            box-shadow: 1px 0 0 #e0e0e0;
         }
         .dash-body {
             flex: 1;
-            padding: 16px 8px 16px 8px;
+            padding: 32px 24px 24px 24px;
             background: #f7f7f7;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
         }
         .logout-btn {
             width: 90%;
@@ -120,6 +126,14 @@ echo '<p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sess
             margin: 24px 0 12px 0;
             display: block;
         }
+        .all-sessions-header {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            margin-top: 0;
+            margin-left: 0;
+            padding-left: 0;
+        }
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -164,7 +178,7 @@ echo '<p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sess
     
     <div class="container">
         <div class="menu">
-            <table class="menu-container" border="0">
+            <table class="menu-container" border="0" style="width:100%;">
                 <tr>
                     <td style="padding:10px" colspan="2">
                         <table border="0" class="profile-container">
@@ -214,15 +228,7 @@ echo '<p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sess
             </table>
         </div>
         <div class="dash-body">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-                <a href="schedule.php"><button type="button" class="btn-primary" style="min-width: 110px;">&#8592; Back</button></a>
-                <span style="font-size: 28px; font-weight: 600; flex: 1; text-align: left;">Shedule Manager</span>
-                <div style="flex: 1;"></div>
-                <div style="text-align: right;">
-                    <div style="font-size: 16px; color: #888;">Today's Date</div>
-                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
-                </div>
-            </div>
+            <?php echo '<p class="all-sessions-header">All Sessions ('.($result ? $result->rowCount() : 0).')</p>'; ?>
             <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; gap: 16px; align-items: center;">
                 <h2 style="font-size: 22px; font-weight: 600; margin: 0;">Schedule a Session</h2>
                 <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 160px;">+ Add a Session</button></a>

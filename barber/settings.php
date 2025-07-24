@@ -1,3 +1,26 @@
+<?php
+// Move all PHP code to the top before any HTML
+session_start();
+
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" || $_SESSION['usertype']!='d'){
+        header("location: ../login.php");
+        exit();
+    }else{
+        $useremail=$_SESSION["user"];
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+
+// Import database
+include("../connection.php");
+$userrow = $database->query("select * from barber where docemail='$useremail'");
+$userfetch = $userrow->fetch(PDO::FETCH_ASSOC);
+$userid = $userfetch["id"];
+$username = $userfetch["docname"];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,10 +31,7 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-
-
     <title>Settings</title>
-    
     <style>
         body {
             margin: 0;
@@ -109,40 +129,8 @@
             }
         }
     </style>
-    
-    
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='d'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from barber where docemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["docid"];
-    $username=$userfetch["docname"];
-
-
-    //echo $userid;
-    //echo $username;
-    
-    ?>
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -351,15 +339,15 @@
             </div>
             ';
         }elseif($action=='view'){
-            $sqlmain= "select * from barber where docid='$id'";
+            $sqlmain= "select * from barber where id='$id'";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];
             $email=$row["docemail"];
             $spe=$row["specialties"];
             
             $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch_assoc();
+            $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
             $spcil_name=$spcil_array["sname"];
             echo '
             <div id="popup1" class="overlay">
@@ -431,15 +419,15 @@
             </div>
             ';
         }elseif($action=='edit'){
-            $sqlmain= "select * from barber where docid='$id'";
+            $sqlmain= "select * from barber where id='$id'";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];
             $email=$row["docemail"];
             $spe=$row["specialties"];
             
             $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch_assoc();
+            $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
             $spcil_name=$spcil_array["sname"];
 
             $error_1=$_GET["error"];
@@ -512,8 +500,8 @@
                 
                                                 $list11 = $database->query("select  * from  specialties;");
                 
-                                                for ($y=0;$y<$list11->num_rows;$y++){
-                                                    $row00=$list11->fetch_assoc();
+                                                for ($y=0;$y<$list11->rowCount();$y++){
+                                                    $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                                     $sn=$row00["sname"];
                                                     $id00=$row00["id"];
                                                     echo "<option value=".$id00.">$sn</option><br/>";

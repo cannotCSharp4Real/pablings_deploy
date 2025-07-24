@@ -188,13 +188,12 @@ include("../connection.php");
                                         echo '<datalist id="barber">';
                                         $list11 = $database->query("select  docname,docemail from  barber;");
         
-                                        for ($y=0;$y<$list11->rowCount();$y++){
-                                            $row00=$list11->fetch_assoc();
+                                        while($row00 = $list11->fetch(PDO::FETCH_ASSOC)){
                                             $d=$row00["docname"];
                                             $c=$row00["docemail"];
                                             echo "<option value='$d'><br/>";
                                             echo "<option value='$c'><br/>";
-                                        };
+                                        }
         
                                     echo ' </datalist>';
                                     ?>

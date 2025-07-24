@@ -82,8 +82,9 @@ $result= $database->query($sqlmain);
             align-items: center;
         }
         .profile-title {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 600;
+            font-family: 'Segoe UI', sans-serif;
             margin: 8px 0 0 0;
             text-align: center;
         }
@@ -291,23 +292,18 @@ $result= $database->query($sqlmain);
             </table>
         </div>
         <div class="dash-body">
-            <div style="display: flex; align-items: center; gap: 16px; margin-top: 32px; margin-bottom: 16px;">
-                <a href="schedule.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
-                <span style="font-size: 28px; font-weight: 600; margin-left: 12px;">Shedule Manager</span>
-                <div style="flex:1"></div>
-                <div style="text-align: right;">
-                    <div style="font-size: 16px; color: #888;">Today's Date</div>
-                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php date_default_timezone_set('Asia/Kolkata'); echo date('Y-m-d'); ?></div>
-                </div>
+            <div style="display: flex; align-items: center; gap: 16px; margin-top: 32px; margin-bottom: 0;">
+                <a href="index.php" style="text-decoration:none;"><button type="button" class="btn-primary" style="min-width: 110px; font-size: 16px; font-weight: 500;">&#8592; Back</button></a>
+                <span class="heading-main12" style="margin-left: 12px;">Shedule Manager</span>
             </div>
-            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-bottom: 8px;">
-                <span style="font-size: 20px; font-weight: 500;">Schedule a Session</span>
-                <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 160px; font-size: 16px; font-weight: 500;">+ Add a Session</button></a>
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px; margin-top: 16px;">
+                <span class="heading-main12" style="font-size: 20px; font-weight: 500;">Schedule a Session</span>
+                <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 160px; font-size: 16px; font-weight: 500; margin-left: 12px;">+ Add a Session</button></a>
             </div>
-            <form action="" method="post" style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-                <label for="date" style="font-weight: 500; font-size: 16px;">Date:</label>
+            <form action="" method="post" style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px; width: 100%;">
+                <label for="date" class="heading-sub12" style="font-weight: 500; font-size: 16px;">Date:</label>
                 <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="min-width: 160px; font-size: 16px;">
-                <label for="barber" style="font-weight: 500; font-size: 16px;">Barber:</label>
+                <label for="barber" class="heading-sub12" style="font-weight: 500; font-size: 16px;">Barber:</label>
                 <select name="docid" id="barber" class="box filter-container-items" style="min-width: 220px; font-size: 16px;">
                     <option value="" disabled selected hidden>Choose Barber Name from the list</option>
                     <?php 
@@ -322,7 +318,7 @@ $result= $database->query($sqlmain);
                 </select>
                 <button type="submit" name="filter" class="btn-primary" style="min-width: 110px; display: flex; align-items: center; gap: 6px; font-size: 16px;">&#128269; Filter</button>
             </form>
-            <div style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 0; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>
+            <div class="heading-main12" style="font-size: 18px; font-weight: 500; margin-bottom: 8px; margin-top: 0; margin-left: 0; padding-left: 0;">All Sessions (<?php echo ($result ? $result->rowCount() : 0); ?>)</div>
             <div class="abc scroll" style="padding: 0;">
                 <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                     <thead>

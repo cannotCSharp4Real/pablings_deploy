@@ -600,7 +600,7 @@ input[type=search]:focus {
 
 /* Sidebar menu styles for consistency across all admin pages */
 .menu {
-  width: 240px !important;
+  width: 200px;
   background: #fff !important;
   font-family: 'Segoe UI', sans-serif !important;
   font-size: 16px !important;

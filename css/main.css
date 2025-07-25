@@ -342,9 +342,7 @@ input[type=search]:focus {
 .menu-active{
   color: var(--primarycolor);
   border-right: 7px solid var(--primarycolor);
-  background-color: #d8ebfa25; /* Light blue background */
-  padding-top: 12px;
-  padding-bottom: 12px;
+  background-color: var();
 }
 
 .menu-btn:hover{
@@ -600,7 +598,34 @@ input[type=search]:focus {
   transition: 0.5s;
 }
 
+/* Sidebar menu styles for consistency across all admin pages */
 .menu {
-  width: 240px;
-  min-width: 240px;
+  width: 240px !important;
+  background: #fff !important;
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 16px !important;
+  min-height: 100vh;
+  border-right: 1px solid #e0e0e0;
+  padding-top: 0;
+  position: sticky;
+  top: 0;
+}
+
+.menu-container {
+  width: 100%;
+}
+
+.menu-text {
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 16px !important;
+}
+
+.profile-title, .profile-subtitle {
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
+/* Ensure sidebar padding/margin matches appointment.php */
+.menu .logout-btn {
+  width: 90%;
+  margin: 20px 5% 0 5%;
 }

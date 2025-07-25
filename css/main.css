@@ -629,3 +629,9 @@ input[type=search]:focus {
   width: 90%;
   margin: 20px 5% 0 5%;
 }
+
+/* Ensure all admin pages have the same container layout as appointment.php */
+.container {
+  display: flex;
+  min-height: 100vh;
+}

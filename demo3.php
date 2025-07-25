@@ -1,19 +1,16 @@
 <?php
-$servername = getenv("DB_HOST");
-$username = getenv("DB_USER");
-$password = getenv("DB_PASS");
-$dbname   = getenv("DB_NAME");
+// PostgreSQL connection details
+$host = "dpg-d1n4eper433s73bbh8g0-a.singapore-postgres.render.com";
+$dbname = "pablings_dp_jdd3";
+$user = "pablings_dp_jdd3_user";
+$password = "EDy75KM1w3BN7vbxxc1Par4i26N1ho9p";
+$port = "5432";
 
-if (!$servername || !$username || !$password || !$dbname) {
-    die("Database connection environment variables are not set. Please check your deployment settings.");
-}
+$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=require";
+$conn = pg_connect($conn_string);
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!$conn) {
+    die("Connection failed: " . pg_last_error());
 }
 
 // form values
@@ -27,25 +24,24 @@ if (empty($value) || empty($value2) || empty($value3) || empty($value4)) {
     echo "Note: Please fill the form properly. Kindly check if the details in the required fields are correct." ;
 } else {
     // Escape values to prevent SQL injection
-    $value = $conn->real_escape_string($value);
-    $value2 = $conn->real_escape_string($value2);
-    $value3 = $conn->real_escape_string($value3);
-    $value4 = $conn->real_escape_string($value4);
+    $value = pg_escape_string($conn, $value);
+    $value2 = pg_escape_string($conn, $value2);
+    $value3 = pg_escape_string($conn, $value3);
+    $value4 = pg_escape_string($conn, $value4);
 
     // Prepare SQL query
     $sql = "INSERT INTO form2 (Gcash, gcashnumber, Amount, DOP) VALUES ('$value', '$value2', '$value3', '$value4')";
 
     // Execute query and check result
-    if ($conn->query($sql) === TRUE) {
-        echo "<div style=\"text-align: center;\">
-            <img src=\"gcash.png\" alt=\"Image\" style=\"width: 1000px; height: auto; display: inline-block;\">
-          </div>";
+    $result = pg_query($conn, $sql);
+    if ($result) {
+        echo "<div style=\"text-align: center;\">\n            <img src=\"gcash.png\" alt=\"Image\" style=\"width: 1000px; height: auto; display: inline-block;\">\n          </div>";
         echo "";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . pg_last_error($conn);
     }
 }
 
 // Close connection
-$conn->close();
+pg_close($conn);
 ?>

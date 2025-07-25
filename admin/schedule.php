@@ -48,13 +48,6 @@ include("../connection.php");
                 display: none;
             }
         }
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-        .menu {
-            min-height: 100vh;
-        }
     </style>
     <script>
         function printPage() {

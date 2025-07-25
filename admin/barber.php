@@ -33,7 +33,7 @@ include("../connection.php");
 </head>
 <body>
     <div class="container">
-        <div class="menu" style="width:200px;min-width:200px;max-width:200px;">
+        <div class="menu">
             <table class="menu-container" border="0">
                 <tr>
                     <td style="padding:10px" colspan="2">

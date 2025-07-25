@@ -635,3 +635,32 @@ input[type=search]:focus {
   display: flex;
   min-height: 100vh;
 }
+
+.menu-btn {
+  padding: 10px 0 10px 16px !important;
+  color: #3b3b3b;
+  background-position: 16px center !important;
+  background-repeat: no-repeat !important;
+  background-size: 24px 24px !important;
+  transition: 0.5s;
+}
+
+.menu-text {
+  padding-left: 40px !important;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.menu-icon-dashbord,
+.menu-icon-barber,
+.menu-icon-schedule,
+.menu-icon-appoinment,
+.menu-icon-customer,
+.menu-icon-settings,
+.menu-icon-session,
+.menu-icon-home {
+  background-size: 24px 24px !important;
+  background-position: 16px center !important;
+  background-repeat: no-repeat !important;
+}

@@ -106,57 +106,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login - Pabling's Barbershop</title>
 </head>
 <body>
-    <center>
-        <div class="container">
-            <table border="0" style="margin: 0;padding: 0;width: 60%;">
-                <tr>
-                    <td><p class="header-text">Welcome Back!</p></td>
-                </tr>
-                <div class="form-body">
-                    <tr>
-                        <td><p class="sub-text">Login with your details to continue</p></td>
-                    </tr>
-                    <tr>
-                        <form action="" method="POST">
-                            <td class="label-td">
-                                <label for="useremail" class="form-label">Email: </label>
-                            </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td">
-                            <input type="email" name="useremail" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['useremail']) ? htmlspecialchars($_POST['useremail']) : ''; ?>">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td">
-                            <label for="userpassword" class="form-label">Password: </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td">
-                            <input type="password" name="userpassword" class="input-text" placeholder="Password" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><br><?php echo $error; ?></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="submit" value="Login" class="login-btn btn-primary btn">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <br>
-                            <label for="" class="sub-text" style="font-weight: 280;">Don't have an account&#63; </label>
-                            <a href="signup.php" class="hover-link1 non-style-link">Sign Up</a>
-                            <br><br><br>
-                        </td>
-                    </tr>
-                        </form>
-                </div>
-            </table>
+    <div class="login-bg">
+        <div class="login-center">
+            <div class="login-card">
+                <h2 class="login-header">Welcome Back!</h2>
+                <p class="login-subtext">Login with your details to continue</p>
+                <form action="" method="POST">
+                    <div class="login-field">
+                        <label for="useremail" class="form-label">Email:</label>
+                        <input type="email" name="useremail" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['useremail']) ? htmlspecialchars($_POST['useremail']) : ''; ?>">
+                    </div>
+                    <div class="login-field">
+                        <label for="userpassword" class="form-label">Password:</label>
+                        <input type="password" name="userpassword" class="input-text" placeholder="Password" required>
+                    </div>
+                    <div class="login-error"><?php echo $error; ?></div>
+                    <button type="submit" class="login-btn btn-primary btn">Login</button>
+                </form>
+            </div>
+            <div class="login-signup">
+                <span>Don't have an account? </span><a href="signup.php" class="signup-link">Sign Up</a>
+            </div>
         </div>
-    </center>
+    </div>
 </body>
 </html>

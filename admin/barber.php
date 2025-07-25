@@ -34,19 +34,53 @@ include("../connection.php");
 <body>
     <div class="container">
         <div class="menu">
-            <div class="profile-section" style="padding: 20px 0 0 0; text-align: center;">
-                <img src="../img/user.png" alt="" width="70" style="border-radius:50%; display:block; margin:0 auto 10px auto;">
-                <p class="profile-title">Administrator</p>
-                <p class="profile-subtitle">admin@pablings.com</p>
-                <a href="../logout.php"><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-            </div>
-            <nav class="menu-links" style="margin-top: 30px;">
-                <a href="index.php" class="non-style-link-menu"><div class="menu-btn menu-icon-dashbord"><p class="menu-text">Dashboard</p></div></a>
-                <a href="barber.php" class="non-style-link-menu non-style-link-menu-active"><div class="menu-btn menu-icon-barber menu-active menu-icon-barber-active"><p class="menu-text">Barber</p></div></a>
-                <a href="schedule.php" class="non-style-link-menu"><div class="menu-btn menu-icon-schedule"><p class="menu-text">Schedule</p></div></a>
-                <a href="appointment.php" class="non-style-link-menu"><div class="menu-btn menu-icon-appoinment"><p class="menu-text">Appointment</p></div></a>
-                <a href="customer.php" class="non-style-link-menu"><div class="menu-btn menu-icon-customer"><p class="menu-text">Customer</p></div></a>
-            </nav>
+            <table class="menu-container" border="0">
+                <tr>
+                    <td style="padding:10px" colspan="2">
+                        <table border="0" class="profile-container">
+                            <tr>
+                                <td width="30%" style="padding-left:20px" >
+                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                                </td>
+                                <td style="padding:0px;margin:0px;">
+                                    <p class="profile-title">Administrator</p>
+                                    <p class="profile-subtitle">admin@pablings.com</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-dashbord" >
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-barber menu-active menu-icon-barber-active">
+                        <a href="barber.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Barber</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-schedule">
+                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-appoinment">
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-customer">
+                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></a></div>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">

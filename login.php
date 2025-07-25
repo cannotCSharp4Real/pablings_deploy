@@ -108,54 +108,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <center>
         <div class="container">
-            <table border="0" style="margin: 0;padding: 0;width: 60%;">
-                <tr>
-                    <td><p class="header-text">Welcome Back!</p></td>
-                </tr>
-                <div class="form-body">
+            <form action="" method="POST">
+                <table border="0" style="margin: 0;padding: 0;width: 100%;">
                     <tr>
-                        <td><p class="sub-text">Login with your details to continue</p></td>
+                        <td colspan="2"><p class="header-text">Welcome Back!</p></td>
                     </tr>
                     <tr>
-                        <form action="" method="POST">
-                            <td class="label-td">
-                                <label for="useremail" class="form-label">Email: </label>
-                            </td>
+                        <td colspan="2"><p class="sub-text">Login with your details to continue</p></td>
                     </tr>
                     <tr>
-                        <td class="label-td">
+                        <td class="label-td" colspan="2">
+                            <label for="useremail" class="form-label">Email: </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td" colspan="2">
                             <input type="email" name="useremail" class="input-text" placeholder="Email Address" required value="<?php echo isset($_POST['useremail']) ? htmlspecialchars($_POST['useremail']) : ''; ?>">
                         </td>
                     </tr>
                     <tr>
-                        <td class="label-td">
+                        <td class="label-td" colspan="2">
                             <label for="userpassword" class="form-label">Password: </label>
                         </td>
                     </tr>
                     <tr>
-                        <td class="label-td">
+                        <td class="label-td" colspan="2">
                             <input type="password" name="userpassword" class="input-text" placeholder="Password" required>
                         </td>
                     </tr>
                     <tr>
-                        <td><br><?php echo $error; ?></td>
+                        <td colspan="2"><br><?php echo $error; ?></td>
                     </tr>
                     <tr>
-                        <td>
+                        <td colspan="2">
                             <input type="submit" value="Login" class="login-btn btn-primary btn">
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td colspan="2">
                             <br>
                             <label for="" class="sub-text" style="font-weight: 280;">Don't have an account&#63; </label>
                             <a href="signup.php" class="hover-link1 non-style-link">Sign Up</a>
                             <br><br><br>
                         </td>
                     </tr>
-                        </form>
-                </div>
-            </table>
+                </table>
+            </form>
         </div>
     </center>
 </body>

@@ -601,8 +601,6 @@ input[type=search]:focus {
 /* Sidebar menu styles for consistency across all admin pages */
 .menu {
   width: 240px !important;
-  min-width: 240px !important;
-  max-width: 240px !important;
   background: #fff !important;
   font-family: 'Segoe UI', sans-serif !important;
   font-size: 16px !important;
@@ -658,19 +656,15 @@ input[type=search]:focus {
   padding: 0 !important;
   white-space: normal !important;
   word-break: break-all !important;
-  overflow-wrap: break-word !important;
-  text-overflow: ellipsis !important;
-  max-width: 180px !important;
-  display: block !important;
 }
-
 .profile-title {
   font-size: 16px !important;
   font-weight: 600 !important;
+  color: #161c2d !important;
 }
-
 .profile-subtitle {
   font-size: 14px !important;
+  font-weight: 400 !important;
   color: #666 !important;
 }
 

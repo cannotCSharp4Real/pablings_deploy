@@ -37,72 +37,38 @@ if ($_POST) {
     <title>Sign Up</title>
 </head>
 <body>
-    <center>
-        <div class="container">
-            <table border="0">
-                <tr>
-                    <td colspan="2">
-                        <p class="header-text">Let's Get Started</p>
-                        <p class="sub-text">Add Your Personal Details to Continue</p>
-                    </td>
-                </tr>
-                <form action="" method="POST">
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="name" class="form-label">Name: </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td">
-                            <input type="text" name="fname" class="input-text" placeholder="First Name" required>
-                        </td>
-                        <td class="label-td">
-                            <input type="text" name="lname" class="input-text" placeholder="Last Name" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="address" class="form-label">Address: </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <input type="text" name="address" class="input-text" placeholder="Address" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="dob" class="form-label">Date of Birth: </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <input type="date" name="dob" class="input-text" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="reset" value="Reset" class="login-btn btn-primary-soft btn">
-                        </td>
-                        <td>
-                            <input type="submit" value="Next" class="login-btn btn-primary btn">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <br>
-                            <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
-                            <a href="login.php" class="hover-link1 non-style-link">Login</a>
-                            <br><br><br>
-                        </td>
-                    </tr>
-                </form>
-            </table>
+    <div class="center-wrapper">
+        <div class="signup-card">
+            <form action="" method="POST">
+                <h1 class="signup-header">Let's Get Started</h1>
+                <p class="signup-subtext">Add Your Personal Details to Continue</p>
+                <div class="signup-field-row">
+                    <div class="signup-field">
+                        <label for="fname" class="form-label">First Name:</label>
+                        <input type="text" name="fname" class="input-text" placeholder="First Name" required>
+                    </div>
+                    <div class="signup-field">
+                        <label for="lname" class="form-label">Last Name:</label>
+                        <input type="text" name="lname" class="input-text" placeholder="Last Name" required>
+                    </div>
+                </div>
+                <div class="signup-field">
+                    <label for="address" class="form-label">Address:</label>
+                    <input type="text" name="address" class="input-text" placeholder="Address" required>
+                </div>
+                <div class="signup-field">
+                    <label for="dob" class="form-label">Date of Birth:</label>
+                    <input type="date" name="dob" class="input-text" required>
+                </div>
+                <div class="signup-btn-row">
+                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn">
+                    <input type="submit" value="Next" class="login-btn btn-primary btn">
+                </div>
+                <div class="signup-login">
+                    <span>Already have an account? </span><a href="login.php" class="signup-link">Login</a>
+                </div>
+            </form>
         </div>
-    </center>
+    </div>
 </body>
 </html>

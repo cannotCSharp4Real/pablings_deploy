@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (added pdo_pgsql for PostgreSQL)
-RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd mysqli
+# Install PHP extensions (added pdo_pgsql and pgsql for PostgreSQL)
+RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd mysqli
 
 # Enable Apache modules
 RUN a2enmod rewrite

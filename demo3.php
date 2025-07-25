@@ -1,8 +1,12 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "demo2";
+$servername = getenv("DB_HOST");
+$username = getenv("DB_USER");
+$password = getenv("DB_PASS");
+$dbname   = getenv("DB_NAME");
+
+if (!$servername || !$username || !$password || !$dbname) {
+    die("Database connection environment variables are not set. Please check your deployment settings.");
+}
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

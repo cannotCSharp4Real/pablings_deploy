@@ -342,7 +342,9 @@ input[type=search]:focus {
 .menu-active{
   color: var(--primarycolor);
   border-right: 7px solid var(--primarycolor);
-  background-color: var();
+  background-color: #d8ebfa25; /* Light blue background */
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .menu-btn:hover{
@@ -596,4 +598,9 @@ input[type=search]:focus {
   background-position: 68% 50%;
   background-repeat: no-repeat;
   transition: 0.5s;
+}
+
+.menu {
+  width: 240px;
+  min-width: 240px;
 }

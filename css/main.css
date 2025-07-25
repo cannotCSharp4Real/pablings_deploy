@@ -618,6 +618,7 @@ input[type=search]:focus {
 }
 
 .menu-container td {
+  /* Remove all default padding/margin except inline ones */
   padding: 0 !important;
   margin: 0 !important;
   border: none !important;
@@ -629,6 +630,7 @@ input[type=search]:focus {
 }
 
 .profile-container td {
+  /* Remove all default padding/margin except inline ones */
   padding: 0 !important;
   margin: 0 !important;
   border: none !important;
@@ -664,14 +666,12 @@ input[type=search]:focus {
   color: #666 !important;
 }
 
-/* Ensure sidebar padding/margin matches appointment.php */
 .menu .logout-btn {
   width: 90% !important;
   margin: 20px 5% 0 5% !important;
   display: block !important;
 }
 
-/* Menu row styling */
 .menu-row {
   width: 100% !important;
 }
@@ -684,10 +684,11 @@ input[type=search]:focus {
 
 .menu-btn {
   width: 100% !important;
-  padding: 15px 20px !important;
+  padding: 0 !important; /* Remove extra padding */
   display: block !important;
   text-decoration: none !important;
   transition: 0.3s !important;
+  background: none !important;
 }
 
 .menu-btn:hover {

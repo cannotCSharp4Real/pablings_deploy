@@ -29,7 +29,14 @@ include("../connection.php");
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
-</style>
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .menu {
+            min-height: 100vh;
+        }
+    </style>
 </head>
 <body>
     <div class="container">

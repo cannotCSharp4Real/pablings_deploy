@@ -367,7 +367,7 @@ input[type=search]:focus {
 
 
 .menu-icon-dashbord{
-  background-image: url('../img/icons/dashboard.svg');
+  background-image: url('../img/icons/dashboards.svg');
 }
 
 
@@ -378,7 +378,7 @@ input[type=search]:focus {
   background-image: url('../img/icons/schedule.svg');
 }
 .menu-icon-appoinment{
-  background-image: url('../img/icons/book.svg');
+  background-image: url('../img/icons/appointment.svg');
 }
 .menu-icon-customer{
   background-image: url('../img/icons/customer.svg');
@@ -658,15 +658,34 @@ input[type=search]:focus {
   word-break: break-all !important;
 }
 .profile-title {
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  color: #161c2d !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #222 !important;
 }
 .profile-subtitle {
   font-size: 14px !important;
   font-weight: 400 !important;
-  color: #666 !important;
+  color: #888 !important;
 }
+
+/* Ensure sidebar icons are visible */
+.menu-btn {
+  position: relative;
+  padding-left: 36px !important;
+  background-repeat: no-repeat !important;
+  background-position: 10px center !important;
+  background-size: 20px 20px !important;
+}
+.menu-icon-dashbord { background-image: url('../img/icons/dashboards.svg') !important; }
+.menu-icon-barber { background-image: url('../img/icons/barber.svg') !important; }
+.menu-icon-schedule { background-image: url('../img/icons/schedule.svg') !important; }
+.menu-icon-appoinment { background-image: url('../img/icons/appointment.svg') !important; }
+.menu-icon-customer { background-image: url('../img/icons/customer.svg') !important; }
+.menu-icon-dashbord-active { background-image: url('../img/icons/dashboard-hover.svg') !important; }
+.menu-icon-barber-active { background-image: url('../img/icons/barber-hover.svg') !important; }
+.menu-icon-schedule-active { background-image: url('../img/icons/schedule-hover.svg') !important; }
+.menu-icon-appoinment-active { background-image: url('../img/icons/appointment.svg') !important; }
+.menu-icon-customer-active { background-image: url('../img/icons/customer.svg') !important; }
 
 .menu .logout-btn {
   width: 90% !important;

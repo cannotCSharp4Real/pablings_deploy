@@ -5,12 +5,14 @@
 
 
 }
+/* Commented out to prevent conflicts with main.css sidebar styles
 .menu{
     border-right: 1.5px solid rgb(235, 235, 235);
     width: 21%;
     height: 100vh;
     box-shadow: 0 0px 0px 2px rgba(240, 240, 240, 0.3);
 }
+*/
 .dash-body{
     width: 79%;
     height: 100vh;
@@ -22,6 +24,7 @@
     
 }
 
+/* Commented out to prevent conflicts with main.css sidebar styles
 .profile-title{
     font-weight: 500;
     color: #161c2d;
@@ -47,13 +50,12 @@
 
 .profile-container{
     border-bottom: 1.5px solid rgb(235, 235, 235);
-    /*border-radius: 6px;*/
     padding-top: 18%;
     padding-bottom: 12%;
-    /*box-shadow: 0 0 3px rgba(52,58,64,0.08);*/
     text-align: center;
     
 }
+*/
 
 
 /*.menu-items1{

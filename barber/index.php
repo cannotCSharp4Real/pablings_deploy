@@ -106,6 +106,10 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
             margin: 24px 0 12px 0;
             display: block;
         }
+        .profile-title, .profile-subtitle {
+            white-space: normal;
+            word-break: break-all;
+        }
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;

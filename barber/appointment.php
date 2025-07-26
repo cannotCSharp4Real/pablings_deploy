@@ -33,15 +33,29 @@ $username = $userfetch["docname"];
         
     <title>Appointments</title>
     <style>
-        .popup{
-            animation: transitionIn-Y-bottom 0.5s;
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f7;
         }
-        .sub-table{
-            animation: transitionIn-Y-bottom 0.5s;
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .menu {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            min-height: 100vh;
+            padding-top: 0;
+            position: sticky;
+            top: 0;
         }
         .dash-body {
             flex: 1;
-            padding: 16px 8px 16px 8px;
+            padding: 32px 24px 24px 24px;
             background: #f7f7f7;
             min-width: 0;
         }
@@ -53,7 +67,74 @@ $username = $userfetch["docname"];
             white-space: normal;
             word-break: break-all;
         }
-</style>
+        .heading-main12 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+        .heading-sub12 {
+            font-size: 16px;
+            color: #888;
+        }
+        .btn-primary-soft, .btn-primary {
+            min-width: 120px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-icon-back {
+            margin-bottom: 16px;
+        }
+        .filter-container {
+            margin: 16px 0 24px 0;
+        }
+        .abc.scroll {
+            max-height: 350px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 16px;
+        }
+        .sub-table {
+            width: 100%;
+        }
+        .notfound-img {
+            width: 120px;
+            margin: 24px 0 12px 0;
+            display: block;
+        }
+        .popup{
+            animation: transitionIn-Y-bottom 0.5s;
+        }
+        .sub-table{
+            animation: transitionIn-Y-bottom 0.5s;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .menu {
+                width: 100%;
+                min-height: unset;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .dash-body {
+                padding: 16px 8px;
+            }
+        }
+        @media (max-width: 600px) {
+            .heading-main12 {
+                font-size: 18px;
+            }
+            .dash-body {
+                padding: 8px 2px;
+            }
+            .logout-btn {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -80,16 +161,15 @@ $username = $userfetch["docname"];
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-dashbord " >
-                        <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Dashboard</p></a></div></a>
+                    <td class="menu-btn menu-icon-dashbord">
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment  menu-active menu-icon-appoinment-active">
+                    <td class="menu-btn menu-icon-appoinment menu-active menu-icon-appoinment-active">
                         <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Appointments</p></a></div>
                     </td>
                 </tr>
-                
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">My Sessions</p></div></a>
@@ -105,7 +185,6 @@ $username = $userfetch["docname"];
                         <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
                     </td>
                 </tr>
-                
             </table>
         </div>
         <div class="dash-body">

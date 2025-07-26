@@ -258,7 +258,20 @@ $today = date('Y-m-d');
                         <div class="abc scroll">
                         <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
                         <tbody>
-                        
+<?php
+// Debug: Confirm PHP is running
+    echo '<tr><td colspan="4" style="color:red;">DEBUG: PHP is running</td></tr>';
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        echo '<tr><td colspan="4" style="color:blue;">DEBUG: id = ' . htmlspecialchars($id) . '</td></tr>';
+        $sqlmain = "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
+        echo '<tr><td colspan="4" style="color:blue;">DEBUG: SQL = ' . htmlspecialchars($sqlmain) . '</td></tr>';
+        $result = $database->query($sqlmain);
+        echo '<tr><td colspan="4" style="color:blue;">DEBUG: rowCount = ' . $result->rowCount() . '</td></tr>';
+    } else {
+        echo '<tr><td colspan="4" style="color:orange;">DEBUG: No id in GET</td></tr>';
+    }
+?>
                             <?php
                             if(($_GET)){
                                 if(isset($_GET["id"])){

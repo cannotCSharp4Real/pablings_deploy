@@ -257,16 +257,17 @@ $today = date('Y-m-d');
                        <center>
                         <div class="abc scroll">
                         <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
-                            
                         <tbody>
                         
                             <?php
                             if(($_GET)){
                                 if(isset($_GET["id"])){
                                     $id=$_GET["id"];
-                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
+                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id  order by schedule.scheduledate desc";
                                     $result= $database->query($sqlmain);
-                                    $row=$result->fetch(PDO::FETCH_ASSOC);
+                                    
+                                    if($result->rowCount() > 0) {
+                                        $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $scheduleid=$row["scheduleid"];
                                     $title=$row["title"];
                                     $docname=$row["docname"];
@@ -329,6 +330,9 @@ $today = date('Y-m-d');
                                             </td>
                                         </tr>
                                         '; 
+                                    } else {
+                                        echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">Session not found or invalid ID.</td></tr>';
+                                    }
                                 }
                             }
                             ?>

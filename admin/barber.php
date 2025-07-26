@@ -232,10 +232,17 @@ include("../connection.php");
                                     $docid=$row["id"];
                                     $name=$row["docname"];
                                     $email=$row["docemail"];
-                                    $spe=$row["specialties"];
-                                    $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
-                                    $spcil_name=$spcil_array["sname"];
+                                    $spe=isset($row["specialties"]) ? $row["specialties"] : null;
+                                    
+                                    // Handle specialties safely
+                                    $spcil_name = "Not specified";
+                                    if ($spe && !empty($spe)) {
+                                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                                        if ($spcil_res && $spcil_res->rowCount() > 0) {
+                                            $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                                            $spcil_name = $spcil_array["sname"];
+                                        }
+                                    }
                                     echo '<tr>';
                                     echo '<td style="padding: 12px 8px;">'.htmlspecialchars($name).'</td>';
                                     echo '<td style="padding: 12px 8px;">'.htmlspecialchars($email).'</td>';
@@ -286,11 +293,17 @@ include("../connection.php");
                     $row=$result->fetch(PDO::FETCH_ASSOC);
                     $name=$row["docname"];
                     $email=$row["docemail"];
-                    $spe=$row["specialties"];
+                    $spe=isset($row["specialties"]) ? $row["specialties"] : null;
                     
-                    $spcil_res= $database->query("select sname from specialties where id='$spe'");
-                    $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
-                    $spcil_name=$spcil_array["sname"];
+                    // Handle specialties safely
+                    $spcil_name = "Not specified";
+                    if ($spe && !empty($spe)) {
+                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                        if ($spcil_res && $spcil_res->rowCount() > 0) {
+                            $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                            $spcil_name = $spcil_array["sname"];
+                        }
+                    }
                     echo '
                     <div id="popup1" class="overlay">
                             <div class="popup">
@@ -509,11 +522,17 @@ include("../connection.php");
             $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];
             $email=$row["docemail"];
-            $spe=$row["specialties"];
+            $spe=isset($row["specialties"]) ? $row["specialties"] : null;
             
-            $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch(PDO::FETCH_ASSOC);
-            $spcil_name=$spcil_array["sname"];
+            // Handle specialties safely
+            $spcil_name = "Not specified";
+            if ($spe && !empty($spe)) {
+                $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                if ($spcil_res && $spcil_res->rowCount() > 0) {
+                    $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                    $spcil_name = $spcil_array["sname"];
+                }
+            }
 
             $error_1=$_GET["error"];
                 $errorlist= array(

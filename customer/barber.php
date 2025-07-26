@@ -21,26 +21,6 @@ $userfetch=$userrow->fetch();
 $userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
-// Handle view action
-if(isset($_GET["action"])){
-    if($_GET["action"]=="view"){
-        $barberid=$_GET["id"];
-        $sqlmain= "select * from barber where id='$barberid'";
-        $result= $database->query($sqlmain);
-        $row=$result->fetch();
-        $barberid=$row["id"];
-        $name=$row["docname"];
-        $email=$row["docemail"];
-        $spe=$row["specialties"];
-        $spcil_name="N/A";
-        if($spe!=""){
-            $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch();
-            $spcil_name=$spcil_array["sname"];
-        }
-    }
-}
-
 // Get the list of doctors for the datalist
 $barberList = $database->query("select docname,docemail from barber;")->fetchAll();
 $barberCount = count($barberList);
@@ -136,32 +116,6 @@ $result= $database->query($sqlmain);
             width: 120px;
             margin: 24px 0 12px 0;
             display: block;
-        }
-        .barber-details {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            padding: 24px;
-            margin: 16px 0;
-        }
-        .barber-details h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        .detail-row {
-            display: flex;
-            margin-bottom: 16px;
-            align-items: center;
-        }
-        .detail-label {
-            font-weight: 600;
-            width: 120px;
-            color: #666;
-        }
-        .detail-value {
-            color: #333;
-            flex: 1;
         }
         @media (max-width: 900px) {
             .container {
@@ -286,41 +240,6 @@ $result= $database->query($sqlmain);
                     </td>
                 </tr>
                
-                <?php if(isset($_GET["action"]) && $_GET["action"]=="view"){ ?>
-                <!-- Barber Details View -->
-                <tr>
-                    <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">Barber Details</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div class="barber-details">
-                            <h2>View Details</h2>
-                            <div class="detail-row">
-                                <div class="detail-label">Name:</div>
-                                <div class="detail-value"><?php echo htmlspecialchars($name); ?></div>
-                            </div>
-                            <div class="detail-row">
-                                <div class="detail-label">Email:</div>
-                                <div class="detail-value"><?php echo htmlspecialchars($email); ?></div>
-                            </div>
-                            <div class="detail-row">
-                                <div class="detail-label">Specialties:</div>
-                                <div class="detail-value"><?php echo htmlspecialchars($spcil_name); ?></div>
-                            </div>
-                            <div style="margin-top: 24px;">
-                                <a href="barber.php" class="non-style-link">
-                                    <button class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                        <font class="tn-in-text">Back to Barber List</font>
-                                    </button>
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <?php } else { ?>
-                <!-- Barber List View -->
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Barber (<?php echo $barberCount; ?>)</p>
@@ -411,10 +330,102 @@ $result= $database->query($sqlmain);
                         </center>
                    </td> 
                 </tr>
-                <?php } ?>
             </table>
         </div>
     </div>
+    <?php 
+    // Handle view and session actions
+    if(isset($_GET['action'])){
+        $action = $_GET['action'];
+        $id = $_GET['id'];
+        
+        if($action == 'view'){
+            // Get barber details for view modal
+            $sqlmain = "select * from barber where id=$id";
+            $result = $database->query($sqlmain);
+            $row = $result->fetch();
+            $name = $row["docname"];
+            $email = $row["docemail"];
+            $spe = isset($row["specialties"]) ? $row["specialties"] : "";
+            $spcil_name = "N/A";
+            if ($spe !== "" && is_numeric($spe)) {
+                $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                $spcil_array = $spcil_res->fetch();
+                if ($spcil_array && isset($spcil_array["sname"])) {
+                    $spcil_name = $spcil_array["sname"];
+                }
+            }
+            ?>
+            <!-- View Modal -->
+            <div id="viewModal" class="modal" style="display: block; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+                <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0; color: #333;">Pablings Barberhop</h2>
+                        <span class="close" onclick="closeModal('viewModal')" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                    </div>
+                    <h3 style="color: #333; margin-bottom: 20px;">View Details</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Name:</strong> <?php echo htmlspecialchars($name); ?>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Email:</strong> <?php echo htmlspecialchars($email); ?>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <strong>Specialties:</strong> <?php echo htmlspecialchars($spcil_name); ?>
+                    </div>
+                    <div style="text-align: center;">
+                        <button onclick="closeModal('viewModal')" class="login-btn btn-primary btn" style="padding: 10px 30px;">OK</button>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        elseif($action == 'session'){
+            $name = $_GET['name'];
+            ?>
+            <!-- Session Modal -->
+            <div id="sessionModal" class="modal" style="display: block; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+                <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0; color: #333;">Pablings Barberhop</h2>
+                        <span class="close" onclick="closeModal('sessionModal')" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                    </div>
+                    <h3 style="color: #333; margin-bottom: 20px;">Redirect to Barber sessions?</h3>
+                    <p style="margin-bottom: 20px;">You want to view All sessions by (<?php echo htmlspecialchars($name); ?>).</p>
+                    <div style="text-align: center;">
+                        <button onclick="redirectToSessions(<?php echo $id; ?>)" class="login-btn btn-primary btn" style="padding: 10px 30px;">Yes</button>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+    }
+    ?>
+
+    <script>
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+            // Remove the action parameters from URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        function redirectToSessions(barberId) {
+            // Redirect to schedule.php with barber filter
+            window.location.href = 'schedule.php?barber=' + barberId;
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for(var i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = "none";
+                    // Remove the action parameters from URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        }
+    </script>
 </body>
 </html>
   

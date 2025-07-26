@@ -21,13 +21,10 @@ $userfetch=$userrow->fetch();
 $userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
-// Handle view action for modal
-$viewBarber = null;
-if(isset($_GET['action']) && $_GET['action'] == 'view' && isset($_GET['id'])) {
-    $barberId = $_GET['id'];
-    $viewQuery = $database->query("select * from barber where id='$barberId'");
-    $viewBarber = $viewQuery->fetch();
-}
+// Handle action parameters
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+$barber_id = isset($_GET['id']) ? $_GET['id'] : '';
+$barber_name = isset($_GET['name']) ? $_GET['name'] : '';
 
 // Get the list of doctors for the datalist
 $barberList = $database->query("select docname,docemail from barber;")->fetchAll();
@@ -137,95 +134,52 @@ $result= $database->query($sqlmain);
             height: 100%;
             background-color: rgba(0,0,0,0.5);
         }
-        
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto;
-            padding: 0;
+            margin: 15% auto;
+            padding: 20px;
             border-radius: 8px;
             width: 400px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            animation: modalSlideIn 0.3s ease-out;
+            text-align: center;
+            position: relative;
         }
-        
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .modal-header {
-            background: #2c7be5;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-header h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
         .close {
-            color: white;
+            color: #aaa;
+            float: right;
             font-size: 28px;
             font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
             cursor: pointer;
-            line-height: 1;
         }
-        
-        .close:hover {
-            opacity: 0.8;
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
-        
-        .modal-body {
-            padding: 20px;
-        }
-        
-        .modal-body h3 {
-            margin: 0 0 15px 0;
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
             color: #333;
-            font-size: 20px;
         }
-        
-        .modal-body p {
-            margin: 8px 0;
+        .modal-text {
+            margin-bottom: 20px;
             color: #666;
-            font-size: 14px;
         }
-        
-        .modal-body strong {
-            color: #333;
-        }
-        
-        .modal-footer {
-            padding: 15px 20px;
-            text-align: center;
-            border-top: 1px solid #eee;
-        }
-        
-        .btn-ok {
-            background: #2c7be5;
+        .modal-btn {
+            background-color: #007bff;
             color: white;
-            border: none;
             padding: 10px 30px;
-            border-radius: 6px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 16px;
         }
-        
-        .btn-ok:hover {
-            background: #1a68d1;
+        .modal-btn:hover {
+            background-color: #0056b3;
         }
         
         @media (max-width: 900px) {
@@ -240,10 +194,6 @@ $result= $database->query($sqlmain);
             }
             .dash-body {
                 padding: 16px 8px;
-            }
-            .modal-content {
-                width: 90%;
-                margin: 10% auto;
             }
         }
         @media (max-width: 600px) {
@@ -432,7 +382,7 @@ $result= $database->query($sqlmain);
                                         
                                         <a href="?action=view&id='.$docid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
                                        &nbsp;&nbsp;&nbsp;
-                                       <a href="?action=session&id='.$docid.'&name='.$name.'"  class="non-style-link"><button  class="btn-primary-soft btn button-icon menu-icon-session-active"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Sessions</font></button></a>
+                                       <button onclick="showSessionModal('.$docid.', \''.htmlspecialchars($name).'\')" class="btn-primary-soft btn button-icon menu-icon-session-active" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Sessions</font></button>
                                         </div>
                                         </td>
                                     </tr>';
@@ -449,62 +399,42 @@ $result= $database->query($sqlmain);
         </div>
     </div>
 
-    <!-- Modal for View Details -->
-    <?php if($viewBarber): ?>
-    <div id="viewModal" class="modal" style="display: block;">
+    <!-- Session Confirmation Modal -->
+    <div id="sessionModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Pablings Barberhop</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <h3>View Details.</h3>
-                <p><strong>Name:</strong> <?php echo htmlspecialchars($viewBarber['docname']); ?></p>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($viewBarber['docemail']); ?></p>
-                <p><strong>Specialties:</strong> 
-                    <?php 
-                    $spe = isset($viewBarber["specialties"]) ? $viewBarber["specialties"] : "";
-                    $spcil_name = "N/A";
-                    if ($spe !== "" && is_numeric($spe)) {
-                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
-                        $spcil_array = $spcil_res->fetch();
-                        if ($spcil_array && isset($spcil_array["sname"])) {
-                            $spcil_name = $spcil_array["sname"];
-                        }
-                    }
-                    echo htmlspecialchars($spcil_name);
-                    ?>
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-ok" onclick="closeModal()">OK</button>
-            </div>
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-title">Redirect to Barber sessions?</div>
+            <div class="modal-text" id="modalText">You want to view All sessions by <span id="barberName"></span>.</div>
+            <button class="modal-btn" onclick="redirectToSessions()">Yes</button>
         </div>
     </div>
-    <?php endif; ?>
 
     <script>
-        // Modal functionality
+        let currentBarberId = '';
+        let currentBarberName = '';
+
+        function showSessionModal(barberId, barberName) {
+            currentBarberId = barberId;
+            currentBarberName = barberName;
+            document.getElementById('barberName').textContent = barberName;
+            document.getElementById('sessionModal').style.display = 'block';
+        }
+
         function closeModal() {
-            document.getElementById('viewModal').style.display = 'none';
-            // Redirect back to barber.php without parameters
-            window.location.href = 'barber.php';
+            document.getElementById('sessionModal').style.display = 'none';
+        }
+
+        function redirectToSessions() {
+            window.location.href = 'schedule.php?barber_id=' + currentBarberId + '&barber_name=' + encodeURIComponent(currentBarberName);
         }
 
         // Close modal when clicking outside of it
         window.onclick = function(event) {
-            var modal = document.getElementById('viewModal');
+            var modal = document.getElementById('sessionModal');
             if (event.target == modal) {
                 closeModal();
             }
         }
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
-        });
     </script>
 </body>
 </html>

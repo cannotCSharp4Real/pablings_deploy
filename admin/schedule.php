@@ -23,11 +23,106 @@ include("../connection.php");
         
     <title>Schedule</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f7;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .menu {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            min-height: 100vh;
+            padding-top: 0;
+            position: sticky;
+            top: 0;
+        }
+        .dash-body {
+            flex: 1;
+            padding: 16px 8px 16px 8px;
+            background: #f7f7f7;
+            min-width: 0;
+        }
+        .logout-btn {
+            width: 90%;
+            margin: 20px 5% 0 5%;
+        }
+        .profile-title, .profile-subtitle {
+            white-space: normal;
+            word-break: break-all;
+        }
+        .heading-main12 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+        .heading-sub12 {
+            font-size: 16px;
+            color: #888;
+        }
+        .btn-primary-soft, .btn-primary {
+            min-width: 120px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-icon-back {
+            margin-bottom: 16px;
+        }
+        .filter-container {
+            margin: 16px 0 24px 0;
+        }
+        .abc.scroll {
+            max-height: 350px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 16px;
+        }
+        .sub-table {
+            width: 100%;
+        }
+        .notfound-img {
+            width: 120px;
+            margin: 24px 0 12px 0;
+            display: block;
+        }
         .popup{
             animation: transitionIn-Y-bottom 0.5s;
         }
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .menu {
+                width: 100%;
+                min-height: unset;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .dash-body {
+                padding: 16px 8px;
+            }
+        }
+        @media (max-width: 600px) {
+            .heading-main12 {
+                font-size: 18px;
+            }
+            .dash-body {
+                padding: 8px 2px;
+            }
+            .logout-btn {
+                font-size: 14px;
+            }
         }
         @media print {
             body * {
@@ -113,74 +208,40 @@ include("../connection.php");
             </table>
         </div>
         <div class="dash-body">
-            <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <td width="13%" >
-                    <a href="schedule.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                    </td>
-                    <td>
-                        <p style="font-size: 23px;padding-left:12px;font-weight: 600;">Shedule Manager</p>
-                                           
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            Today's Date
-                        </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                <a href="schedule.php"><button type="button" class="btn-primary" style="min-width: 110px;">&#8592; Back</button></a>
+                <div style="flex: 1;">
+                    <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Schedule Manager</h2>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 16px; color: #888;">Today's Date</div>
+                    <div style="font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-top: 2px;"><?php 
                         date_default_timezone_set('Asia/Kolkata');
                         $today = date('Y-m-d');
                         echo $today;
                         $list110 = $database->query("select  * from  schedule;");
-                        ?>
-                        </p>
-                    </td>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                    </td>
-
-                </tr>
-               
-                <tr>
-                    <td colspan="4" >
-                        <div style="display: flex;margin-top: 40px;">
-                        <div class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;">Schedule a Session</div>
-                        <a href="?action=add-session&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
-                        </a>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="padding-top:10px;width: 100%;" >
-                    
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Sessions (<?php echo $list110->rowCount(); ?>)</p>
-                    </td>
-                    
-                </tr>
-                <tr>
-                    <td colspan="4" style="padding-top:0px;width: 100%;" >
-                        <center>
-                        <table class="filter-container" border="0" >
-                        <tr>
-                           <td width="10%">
-                           </td> 
-                        <td width="5%" style="text-align: center;">
-                        Date:
-                        </td>
-                        <td width="30%">
-                        <form action="" method="post">
-                            
-                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
-                        </td>
-                        <td width="5%" style="text-align: center;">
-                        Barber:
-                        </td>
-                        <td width="30%">
-                        <select name="docid" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
-                            <option value="" disabled selected hidden>Choose Barber Name from the list</option><br/>
-                                
+                    ?></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Schedule a Session</h2>
+                <a href="?action=add-session&id=none&error=0" class="non-style-link"><button class="btn-primary" style="min-width: 140px;">+ Add Session</button></a>
+            </div>
+            
+            <p style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">All Sessions (<?php echo $list110->rowCount(); ?>)</p>
+            
+            <div class="filter-container">
+                <form action="" method="post" style="display: flex; align-items: center; gap: 16px; background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-weight: 500; min-width: 60px;">Date:</label>
+                        <input type="date" name="sheduledate" id="date" class="input-text" style="min-width: 150px;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-weight: 500; min-width: 60px;">Barber:</label>
+                        <select name="docid" class="input-text" style="min-width: 200px;">
+                            <option value="" disabled selected hidden>Choose Barber Name from the list</option>
                             <?php 
-                            
                                 $list11 = $database->query("select  * from  barber order by docname asc;");
                                 for ($y=0;$y<$list11->rowCount();$y++){
                                     $row00=$list11->fetch(PDO::FETCH_ASSOC);
@@ -188,20 +249,12 @@ include("../connection.php");
                                     $id00=$row00["id"];
                                     echo "<option value=".$id00.">$sn</option><br/>";
                                 };
-
-                                ?>
+                            ?>
                         </select>
-                    </td>
-                    <td width="12%">
-                        <input type="submit"  name="filter" value=" Filter" class=" btn-primary-soft btn button-icon btn-filter"  style="padding: 15px; margin :0;width:100%">
-                        </form>
-                    </td>
-                    </tr>
-                            </table>
-                        </center>
-                    </td>
-                    
-                </tr>
+                    </div>
+                    <button type="submit" name="filter" value="Filter" class="btn-primary" style="min-width: 100px;">Filter</button>
+                </form>
+            </div>
                 
                 <?php
                     if($_POST){
@@ -239,63 +292,23 @@ include("../connection.php");
 
                 ?>
                   
-                <tr>
-                   <td colspan="4">
-                       <center>
-                        <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0">
-                        <thead>
-                        <tr>
-                                <th class="table-headin">
-                                    
-                                
-                                Session Title
-                                
-                                </th>
-                                
-                                <th class="table-headin">
-                                    Barber
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Sheduled Date & Time
-                                    
-                                </th>
-                                <th class="table-headin">
-                                    
-                                Max num that can be booked
-                                    
-                                </th>
-                                
-                                <th class="table-headin">
-                                    
-                                    Events
-                                    
-                                </tr>
-                        </thead>
-                        <tbody>
-                        
-                            <?php
-                                
-                                $result= $database->query($sqlmain);
-                                if($result->rowCount()==0){
-                                    echo '<tr>
-                                    <td colspan="4">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound2.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
+                            <div class="abc scroll" style="padding: 0;">
+                <table class="sub-table scrolldown" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                    <thead>
+                        <tr style="border-bottom: 3px solid #1976d2;">
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Session Title</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Barber</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Scheduled Date & Time</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Max Bookings</th>
+                            <th class="table-headin" style="font-size: 18px; font-weight: 600; padding: 12px 8px;">Events</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            $result= $database->query($sqlmain);
+                            if($result->rowCount()==0){
+                                echo '<tr><td colspan="5" style="text-align:center; padding: 40px 0;">No sessions found.</td></tr>';
+                            } else {
                                 for ( $x=0; $x<$result->rowCount();$x++){
                                     $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $scheduleid=$row["scheduleid"];
@@ -304,44 +317,24 @@ include("../connection.php");
                                     $scheduledate=$row["scheduledate"];
                                     $scheduletime=$row["scheduletime"];
                                     $nop=$row["nop"];
-                                    echo '<tr>
-                                        <td> &nbsp;'.
-                                        substr($title,0,30)
-                                        .'</td>
-                                        <td>
-                                        '.substr($docname,0,20).'
-                                        </td>
-                                        <td style="text-align:center;">
-                                            '.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'
-                                        </td>
-                                        <td style="text-align:center;">
-                                            '.$nop.'
-                                        </td>
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        <a href="?action=view&id='.$scheduleid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;
-                                       <a href="?action=drop&id='.$scheduleid.'&name='.$title.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Remove</font></button></a>
-                                        </div>
-                                        </td>
-                                    </tr>';
-                                    
+                                    echo '<tr>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars(substr($title,0,30)).'</td>';
+                                    echo '<td style="padding: 12px 8px;">'.htmlspecialchars(substr($docname,0,20)).'</td>';
+                                    echo '<td style="padding: 12px 8px; text-align: center;">'.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'</td>';
+                                    echo '<td style="padding: 12px 8px; text-align: center;">'.$nop.'</td>';
+                                    echo '<td style="padding: 12px 8px;">';
+                                    echo '<div style="display: flex; gap: 12px;">';
+                                    echo '<a href="?action=view&id='.$scheduleid.'" class="non-style-link"><button class="btn-primary" style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 18px;">&#128065;</span> View</button></a>';
+                                    echo '<a href="?action=drop&id='.$scheduleid.'&name='.$title.'" class="non-style-link"><button class="btn-primary" style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 18px;">&#128465;</span> Remove</button></a>';
+                                    echo '</div>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                 }
                             }
-                                 
-                            ?>
- 
-                            </tbody>
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
-                </tr>
-                       
-                        
-                        
-            </table>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <?php

@@ -1,3 +1,42 @@
+<?php
+// Move all PHP code to the top before any HTML
+session_start();
+
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        header("location: ../login.php");
+        exit();
+    }else{
+        $useremail=$_SESSION["user"];
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+
+//import database
+include("../connection.php");
+$userrow = $database->query("select * from customer where pemail='$useremail'");
+$userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
+$userid= $userfetch["id"];
+$username=$userfetch["pname"];
+
+// Handle booking form submission
+if(isset($_POST["booknow"])){
+    $scheduleid = $_POST["scheduleid"];
+    $apponum = $_POST["apponum"];
+    $date = $_POST["date"];
+    // Insert booking into appointment table
+    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+    // Redirect to appointment.php with success message
+    header("Location: appointment.php?action=booking-added&id=$apponum");
+    exit();
+}
+
+date_default_timezone_set('Asia/Kolkata');
+$today = date('Y-m-d');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,57 +143,6 @@
     </style>
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from customer where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["id"];
-    $username=$userfetch["pname"];
-
-    // Handle booking form submission
-    if(isset($_POST["booknow"])){
-        $scheduleid = $_POST["scheduleid"];
-        $apponum = $_POST["apponum"];
-        $date = $_POST["date"];
-        // Insert booking into appointment table
-        $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$userid, $scheduleid, $apponum, $date]);
-        // Redirect to appointment.php with success message
-        header("Location: appointment.php?action=booking-added&id=$apponum");
-        exit();
-    }
-
-
-    //echo $userid;
-    //echo $username;
-    
-
-
-    date_default_timezone_set('Asia/Kolkata');
-
-    $today = date('Y-m-d');
-
-
- //echo $userid;
- ?>
  <div class="container">
      <div class="menu">
      <table class="menu-container" border="0">
@@ -166,8 +154,8 @@
                                  <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
                              </td>
                              <td style="padding:0px;margin:0px;">
-                                 <p class="profile-title"><?php echo substr($username,0,13)  ?>..</p>
-                                 <p class="profile-subtitle"><?php echo substr($useremail,0,22)  ?></p>
+                                 <p class="profile-title" style="white-space:normal;word-break:break-all;"><?php echo htmlspecialchars($username) ?></p>
+                                 <p class="profile-subtitle" style="white-space:normal;word-break:break-all;"><?php echo htmlspecialchars($useremail) ?></p>
                              </td>
                          </tr>
                          <tr>
@@ -223,31 +211,16 @@
                                             echo '<datalist id="barber">';
                                             $list11 = $database->query("select DISTINCT * from  barber;");
                                             $list12 = $database->query("select DISTINCT * from  schedule GROUP BY title;");
-                                            
-
-                                            
-
-
-                                            for ($y=0;$y<$list11->num_rows;$y++){
-                                                $row00=$list11->fetch_assoc();
+                                            foreach($list11 as $row00){
                                                 $d=$row00["docname"];
-                                               
                                                 echo "<option value='$d'><br/>";
-                                               
-                                            };
-
-
-                                            for ($y=0;$y<$list12->num_rows;$y++){
-                                                $row00=$list12->fetch_assoc();
+                                            }
+                                            foreach($list12 as $row00){
                                                 $d=$row00["title"];
-                                               
                                                 echo "<option value='$d'><br/>";
-                                                                                         };
-
-                                        echo ' </datalist>';
-            ?>
-                                        
-                                
+                                            }
+                                            echo ' </datalist>';
+                                        ?>
                                         <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
                                         </form>
                     </td>
@@ -257,12 +230,7 @@
                         </p>
                         <p class="heading-sub12" style="padding: 0;margin: 0;">
                             <?php 
-
-                                
                                 echo $today;
-
-                                
-
                         ?>
                         </p>
                     </td>
@@ -293,20 +261,12 @@
                         <tbody>
                         
                             <?php
-                            
                             if(($_GET)){
-                                
-                                
                                 if(isset($_GET["id"])){
-                                    
-
                                     $id=$_GET["id"];
-
                                     $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
-
-                                    //echo $sqlmain;
                                     $result= $database->query($sqlmain);
-                                    $row=$result->fetch_assoc();
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $scheduleid=$row["scheduleid"];
                                     $title=$row["title"];
                                     $docname=$row["docname"];
@@ -314,25 +274,17 @@
                                     $scheduledate=$row["scheduledate"];
                                     $scheduletime=$row["scheduletime"];
                                     $sql2="select * from appointment where scheduleid=$id";
-                                    //echo $sql2;
-                                     $result12= $database->query($sql2);
-                                     $apponum=($result12->num_rows)+1;
-                                    
+                                    $result12= $database->query($sql2);
+                                    $apponum=$result12->rowCount()+1;
                                     echo '
                                         <form action="booking.php" method="post">
                                             <input type="hidden" name="scheduleid" value="'.$scheduleid.'" >
                                             <input type="hidden" name="apponum" value="'.$apponum.'" >
                                             <input type="hidden" name="date" value="'.$today.'" >
-
-                                        
-                                    
                                     ';
-                                     
-
                                     echo '
                                     <td style="width: 50%;" rowspan="2">
                                             <div  class="dashboard-items search-items"  >
-                                            
                                                 <div style="width:100%">
                                                         <div class="h1-search" style="font-size:25px;">
                                                             Session Details
@@ -349,20 +301,13 @@
                                                             Session Scheduled Date: '.$scheduledate.'<br>
                                                             Session Starts : '.$scheduletime.'<br>
                                                             Channeling fee : <b>LKR.2 000.00</b>
-
                                                         </div>
                                                         <br>
-                                                        
                                                 </div>
-                                                        
                                             </div>
                                         </td>
-                                        
-                                        
-                                        
                                         <td style="width: 25%;">
                                             <div  class="dashboard-items search-items"  >
-                                            
                                                 <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
                                                         <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
                                                             Your Appointment Number
@@ -370,13 +315,10 @@
                                                         <center>
                                                         <div class=" dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">'.$apponum.'</div>
                                                     </center>
-                                                       
                                                         </div><br>
-                                                        
                                                         <br>
                                                         <br>
                                                 </div>
-                                                        
                                             </div>
                                         </td>
                                         </tr>
@@ -387,36 +329,17 @@
                                             </td>
                                         </tr>
                                         '; 
-                                        
-
-
-
-
                                 }
-
-
-
                             }
-                            
                             ?>
- 
                             </tbody>
-
                         </table>
                         </div>
                         </center>
                    </td> 
                 </tr>
-                       
-                        
-                        
             </table>
         </div>
     </div>
-    
-    
-   
-    </div>
-
 </body>
 </html>

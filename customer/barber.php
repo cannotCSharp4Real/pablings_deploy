@@ -21,6 +21,14 @@ $userfetch=$userrow->fetch();
 $userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
+// Handle view action for modal
+$viewBarber = null;
+if(isset($_GET['action']) && $_GET['action'] == 'view' && isset($_GET['id'])) {
+    $barberId = $_GET['id'];
+    $viewQuery = $database->query("select * from barber where id='$barberId'");
+    $viewBarber = $viewQuery->fetch();
+}
+
 // Get the list of doctors for the datalist
 $barberList = $database->query("select docname,docemail from barber;")->fetchAll();
 $barberCount = count($barberList);
@@ -117,6 +125,109 @@ $result= $database->query($sqlmain);
             margin: 24px 0 12px 0;
             display: block;
         }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            background: #2c7be5;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        .close:hover {
+            opacity: 0.8;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-body h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .modal-body p {
+            margin: 8px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .modal-body strong {
+            color: #333;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-ok {
+            background: #2c7be5;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .btn-ok:hover {
+            background: #1a68d1;
+        }
+        
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -129,6 +240,10 @@ $result= $database->query($sqlmain);
             }
             .dash-body {
                 padding: 16px 8px;
+            }
+            .modal-content {
+                width: 90%;
+                margin: 10% auto;
             }
         }
         @media (max-width: 600px) {
@@ -333,5 +448,64 @@ $result= $database->query($sqlmain);
             </table>
         </div>
     </div>
-    <?php 
+
+    <!-- Modal for View Details -->
+    <?php if($viewBarber): ?>
+    <div id="viewModal" class="modal" style="display: block;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Pablings Barberhop</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h3>View Details.</h3>
+                <p><strong>Name:</strong> <?php echo htmlspecialchars($viewBarber['docname']); ?></p>
+                <p><strong>Email:</strong> <?php echo htmlspecialchars($viewBarber['docemail']); ?></p>
+                <p><strong>Specialties:</strong> 
+                    <?php 
+                    $spe = isset($viewBarber["specialties"]) ? $viewBarber["specialties"] : "";
+                    $spcil_name = "N/A";
+                    if ($spe !== "" && is_numeric($spe)) {
+                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                        $spcil_array = $spcil_res->fetch();
+                        if ($spcil_array && isset($spcil_array["sname"])) {
+                            $spcil_name = $spcil_array["sname"];
+                        }
+                    }
+                    echo htmlspecialchars($spcil_name);
+                    ?>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ok" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <script>
+        // Modal functionality
+        function closeModal() {
+            document.getElementById('viewModal').style.display = 'none';
+            // Redirect back to barber.php without parameters
+            window.location.href = 'barber.php';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('viewModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
   

@@ -170,7 +170,6 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                         <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Appointments</p></a></div>
                     </td>
                 </tr>
-                
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">My Sessions</p></div></a>
@@ -186,10 +185,9 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                         <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
                     </td>
                 </tr>
-                
             </table>
         </div>
-        <div class="dash-body" style="margin-top: 15px">
+        <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;" >
                         
                         <tr >

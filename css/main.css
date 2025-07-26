@@ -367,7 +367,7 @@ input[type=search]:focus {
 
 
 .menu-icon-dashbord{
-  background-image: url('../img/icons/dashboard.svg');
+  /* background-image: url('../img/icons/dashboard.svg'); */
 }
 
 
@@ -399,7 +399,7 @@ input[type=search]:focus {
 .menu-icon-dashbord:hover,.menu-icon-dashbord-active{
   color: var(--primarycolor);
 
-  background-image: url('../img/icons/dashboard-hover.svg');
+  /* background-image: url('../img/icons/dashboard-hover.svg'); */
 }
 
 

@@ -368,6 +368,9 @@ input[type=search]:focus {
 
 .menu-icon-dashbord{
   background-image: url('../img/icons/dashboards.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 
 

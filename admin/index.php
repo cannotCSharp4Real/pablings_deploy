@@ -148,7 +148,8 @@ include("../connection.php");
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-dashbord menu-active menu-icon-dashbord-active" >
-                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></a></div></a>
+                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></a></div>
+                        <img src="../img/icons/dashboards.svg" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle;">
                     </td>
                 </tr>
                 <tr class="menu-row">

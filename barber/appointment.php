@@ -80,15 +80,16 @@ $username = $userfetch["docname"];
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-dashbord">
-                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
+                    <td class="menu-btn menu-icon-dashbord " >
+                        <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Dashboard</p></a></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment menu-active menu-icon-appoinment-active">
+                    <td class="menu-btn menu-icon-appoinment  menu-active menu-icon-appoinment-active">
                         <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Appointments</p></a></div>
                     </td>
                 </tr>
+                
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">My Sessions</p></div></a>
@@ -104,6 +105,7 @@ $username = $userfetch["docname"];
                         <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
                     </td>
                 </tr>
+                
             </table>
         </div>
         <div class="dash-body">

@@ -263,8 +263,13 @@ $today = date('Y-m-d');
                             if(($_GET)){
                                 if(isset($_GET["id"])){
                                     $id=$_GET["id"];
-                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id  order by schedule.scheduledate desc";
+                                    echo '<tr><td colspan="2" style="text-align:center; padding: 20px 0; color: #666;">Debug: ID = ' . $id . '</td></tr>';
+                                    
+                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
+                                    echo '<tr><td colspan="2" style="text-align:center; padding: 10px 0; color: #666; font-size: 12px;">Debug: SQL = ' . $sqlmain . '</td></tr>';
+                                    
                                     $result= $database->query($sqlmain);
+                                    echo '<tr><td colspan="2" style="text-align:center; padding: 10px 0; color: #666;">Debug: Found ' . $result->rowCount() . ' rows</td></tr>';
                                     
                                     if($result->rowCount() > 0) {
                                         $row=$result->fetch(PDO::FETCH_ASSOC);

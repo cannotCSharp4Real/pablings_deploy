@@ -30,6 +30,15 @@ $sqlpt1="";
 $insertkey="";
 $q='';
 $searchtype="All";
+
+// Handle barber filter from barber.php
+if(isset($_GET['barber'])){
+    $barberid = $_GET['barber'];
+    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and barber.id=$barberid order by schedule.scheduledate asc";
+    $searchtype="Barber Sessions : ";
+    $q='"';
+}
+
 if($_POST){
     if(!empty($_POST["search"])){
         $keyword=$_POST["search"];

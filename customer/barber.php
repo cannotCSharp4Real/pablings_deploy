@@ -21,10 +21,25 @@ $userfetch=$userrow->fetch();
 $userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
-// Handle action parameters
-$action = isset($_GET['action']) ? $_GET['action'] : '';
-$barber_id = isset($_GET['id']) ? $_GET['id'] : '';
-$barber_name = isset($_GET['name']) ? $_GET['name'] : '';
+// Handle view action
+if(isset($_GET["action"])){
+    if($_GET["action"]=="view"){
+        $barberid=$_GET["id"];
+        $sqlmain= "select * from barber where id='$barberid'";
+        $result= $database->query($sqlmain);
+        $row=$result->fetch();
+        $barberid=$row["id"];
+        $name=$row["docname"];
+        $email=$row["docemail"];
+        $spe=$row["specialties"];
+        $spcil_name="N/A";
+        if($spe!=""){
+            $spcil_res= $database->query("select sname from specialties where id='$spe'");
+            $spcil_array= $spcil_res->fetch();
+            $spcil_name=$spcil_array["sname"];
+        }
+    }
+}
 
 // Get the list of doctors for the datalist
 $barberList = $database->query("select docname,docemail from barber;")->fetchAll();
@@ -122,66 +137,32 @@ $result= $database->query($sqlmain);
             margin: 24px 0 12px 0;
             display: block;
         }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
+        .barber-details {
+            background: #fff;
             border-radius: 8px;
-            width: 400px;
-            text-align: center;
-            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 24px;
+            margin: 16px 0;
         }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            cursor: pointer;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
+        .barber-details h2 {
             color: #333;
-        }
-        .modal-text {
             margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .detail-label {
+            font-weight: 600;
+            width: 120px;
             color: #666;
         }
-        .modal-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 30px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+        .detail-value {
+            color: #333;
+            flex: 1;
         }
-        .modal-btn:hover {
-            background-color: #0056b3;
-        }
-        
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -305,6 +286,41 @@ $result= $database->query($sqlmain);
                     </td>
                 </tr>
                
+                <?php if(isset($_GET["action"]) && $_GET["action"]=="view"){ ?>
+                <!-- Barber Details View -->
+                <tr>
+                    <td colspan="4" style="padding-top:10px;">
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">Barber Details</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="barber-details">
+                            <h2>View Details</h2>
+                            <div class="detail-row">
+                                <div class="detail-label">Name:</div>
+                                <div class="detail-value"><?php echo htmlspecialchars($name); ?></div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Email:</div>
+                                <div class="detail-value"><?php echo htmlspecialchars($email); ?></div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Specialties:</div>
+                                <div class="detail-value"><?php echo htmlspecialchars($spcil_name); ?></div>
+                            </div>
+                            <div style="margin-top: 24px;">
+                                <a href="barber.php" class="non-style-link">
+                                    <button class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                                        <font class="tn-in-text">Back to Barber List</font>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <?php } else { ?>
+                <!-- Barber List View -->
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Barber (<?php echo $barberCount; ?>)</p>
@@ -382,7 +398,7 @@ $result= $database->query($sqlmain);
                                         
                                         <a href="?action=view&id='.$docid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
                                        &nbsp;&nbsp;&nbsp;
-                                       <button onclick="showSessionModal('.$docid.', \''.htmlspecialchars($name).'\')" class="btn-primary-soft btn button-icon menu-icon-session-active" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Sessions</font></button>
+                                       <a href="?action=session&id='.$docid.'&name='.$name.'"  class="non-style-link"><button  class="btn-primary-soft btn button-icon menu-icon-session-active"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Sessions</font></button></a>
                                         </div>
                                         </td>
                                     </tr>';
@@ -395,47 +411,10 @@ $result= $database->query($sqlmain);
                         </center>
                    </td> 
                 </tr>
+                <?php } ?>
             </table>
         </div>
     </div>
-
-    <!-- Session Confirmation Modal -->
-    <div id="sessionModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div class="modal-title">Redirect to Barber sessions?</div>
-            <div class="modal-text" id="modalText">You want to view All sessions by <span id="barberName"></span>.</div>
-            <button class="modal-btn" onclick="redirectToSessions()">Yes</button>
-        </div>
-    </div>
-
-    <script>
-        let currentBarberId = '';
-        let currentBarberName = '';
-
-        function showSessionModal(barberId, barberName) {
-            currentBarberId = barberId;
-            currentBarberName = barberName;
-            document.getElementById('barberName').textContent = barberName;
-            document.getElementById('sessionModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('sessionModal').style.display = 'none';
-        }
-
-        function redirectToSessions() {
-            window.location.href = 'schedule.php?barber_id=' + currentBarberId + '&barber_name=' + encodeURIComponent(currentBarberName);
-        }
-
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            var modal = document.getElementById('sessionModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-    </script>
 </body>
 </html>
   

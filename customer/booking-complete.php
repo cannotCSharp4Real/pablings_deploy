@@ -20,7 +20,7 @@
     include("../connection.php");
     $userrow = $database->query("select * from customer where pemail='$useremail'");
     $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["id"];
+    $userid= $userfetch["pid"];
     $username=$userfetch["pname"];
 
 

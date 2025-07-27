@@ -25,7 +25,7 @@ if (!$userfetch) {
 $userid= $userfetch["id"];
 $username=$userfetch["pname"];
 
-$sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.id  where  customer.id=$userid ";
+$sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,barber.docname,customer.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join customer on customer.id=appointment.pid inner join barber on schedule.docid=barber.docid  where  customer.id=$userid ";
 
 if($_POST){
     if(!empty($_POST["sheduledate"])){

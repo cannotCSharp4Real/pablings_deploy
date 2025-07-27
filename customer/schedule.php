@@ -35,6 +35,12 @@ $searchtype="All";
 if(isset($_GET['barber'])){
     $barberid = $_GET['barber'];
     $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and barber.id=$barberid order by schedule.scheduledate asc";
+    
+    // Get barber name for display
+    $barberQuery = $database->query("select docname from barber where id=$barberid");
+    $barberResult = $barberQuery->fetch();
+    $barberName = $barberResult ? $barberResult['docname'] : 'Unknown';
+    
     $searchtype="Barber Sessions : ";
     $q='"';
 }
@@ -255,7 +261,15 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;" >
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)"><?php echo $searchtype." Sessions (".count($resultRows).")"; ?> </p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">
+                            <?php 
+                            if(isset($_GET['barber']) && isset($barberName)) {
+                                echo $searchtype . $barberName . " (" . count($resultRows) . ")";
+                            } else {
+                                echo $searchtype . " Sessions (" . count($resultRows) . ")";
+                            }
+                            ?>
+                        </p>
                         <p class="heading-main12" style="margin-left: 45px;font-size:22px;color:rgb(49, 49, 49)"><?php echo $q.$insertkey.$q ; ?> </p>
                     </td>
                 </tr>

@@ -410,8 +410,8 @@ $result= $database->query($sqlmain);
         }
 
         function redirectToSessions(barberId) {
-            // Redirect to schedule.php with barber filter
-            window.location.href = 'schedule.php?barber=' + barberId;
+            // Redirect to schedule.php without any parameters
+            window.location.href = 'schedule.php';
         }
 
         // Close modal when clicking outside of it

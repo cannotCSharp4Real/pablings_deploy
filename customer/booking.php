@@ -53,27 +53,6 @@ if(isset($_GET["id"])){
         $apponum = $result12->rowCount() + 1;
     }
 }
-
-// Debug output (remove this after testing)
-if(isset($_GET["id"])) {
-    echo "<!-- Debug: ID = " . $_GET["id"] . " -->";
-    echo "<!-- Debug: sessionData = " . ($sessionData ? "found" : "not found") . " -->";
-    if($sessionData) {
-        echo "<!-- Debug: docname = " . $sessionData['docname'] . " -->";
-        echo "<!-- Debug: title = " . $sessionData['title'] . " -->";
-        echo "<!-- Debug: docemail = " . $sessionData['docemail'] . " -->";
-    } else {
-        echo "<!-- Debug: No session data found for ID: " . $_GET["id"] . " -->";
-        // Let's also check what's in the schedule table
-        $check_schedule = $database->query("SELECT COUNT(*) as count FROM schedule");
-        $schedule_count = $check_schedule->fetch(PDO::FETCH_ASSOC);
-        echo "<!-- Debug: Total schedules in database: " . $schedule_count['count'] . " -->";
-        
-        $check_barber = $database->query("SELECT COUNT(*) as count FROM barber");
-        $barber_count = $check_barber->fetch(PDO::FETCH_ASSOC);
-        echo "<!-- Debug: Total barbers in database: " . $barber_count['count'] . " -->";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -328,7 +307,9 @@ if(isset($_GET["id"])) {
                 
                 <tr>
                    <td colspan="4">
+                       <!-- DEBUG: sessionData exists: <?php echo $sessionData ? 'YES' : 'NO'; ?> -->
                        <?php if($sessionData): ?>
+                       <!-- DEBUG: Inside sessionData condition -->
                        <div class="booking-container">
                            <div class="session-details">
                                <h2 style="font-size: 25px; color: #1e88e5; margin-bottom: 24px;">Session Details</h2>
@@ -357,6 +338,7 @@ if(isset($_GET["id"])) {
                            </div>
                        </div>
                        <?php else: ?>
+                       <!-- DEBUG: Inside else condition -->
                        <div style="text-align: center; padding: 40px 0;">
                            <p style="font-size: 18px; color: #666;">Session not found or invalid ID.</p>
                            <a href="schedule.php" class="non-style-link">

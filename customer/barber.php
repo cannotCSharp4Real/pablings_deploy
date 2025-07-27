@@ -33,11 +33,7 @@ if($_POST){
     $sqlmain= "select * from barber order by id desc";
 }
 
-try {
-    $result= $database->query($sqlmain);
-} catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
-}
+$result= $database->query($sqlmain);
 ?>
 <!DOCTYPE html>
 <html lang="en">

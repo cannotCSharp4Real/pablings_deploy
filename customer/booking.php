@@ -264,6 +264,9 @@ $today = date('Y-m-d');
                                 if(isset($_GET["id"])){
                                     $id=$_GET["id"];
                                     
+                                    // Debug: Log the received ID
+                                    error_log("Booking.php received ID: " . $id);
+                                    
                                     $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id  order by schedule.scheduledate desc";
                                     
                                     $result= $database->query($sqlmain);
@@ -333,9 +336,31 @@ $today = date('Y-m-d');
                                         </tr>
                                         '; 
                                     } else {
-                                        echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">Session not found or invalid ID.</td></tr>';
+                                        echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">
+                                            <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                                <h3 style="color: #e74c3c; margin-bottom: 10px;">Session Not Found</h3>
+                                                <p style="color: #666; margin-bottom: 20px;">The session with ID '.htmlspecialchars($id).' could not be found or may have been removed.</p>
+                                                <a href="schedule.php" class="login-btn btn-primary-soft btn" style="text-decoration: none; display: inline-block;">Back to Sessions</a>
+                                            </div>
+                                        </td></tr>';
                                     }
+                                } else {
+                                    echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">
+                                        <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                            <h3 style="color: #e74c3c; margin-bottom: 10px;">Invalid Request</h3>
+                                            <p style="color: #666; margin-bottom: 20px;">No session ID provided. Please select a session from the schedule.</p>
+                                            <a href="schedule.php" class="login-btn btn-primary-soft btn" style="text-decoration: none; display: inline-block;">Back to Sessions</a>
+                                        </div>
+                                    </td></tr>';
                                 }
+                            } else {
+                                echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">
+                                    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                        <h3 style="color: #e74c3c; margin-bottom: 10px;">No Parameters</h3>
+                                        <p style="color: #666; margin-bottom: 20px;">No parameters received. Please select a session from the schedule.</p>
+                                        <a href="schedule.php" class="login-btn btn-primary-soft btn" style="text-decoration: none; display: inline-block;">Back to Sessions</a>
+                                    </div>
+                                </td></tr>';
                             }
                             ?>
                             </tbody>

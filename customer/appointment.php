@@ -35,11 +35,7 @@ if($_POST){
 }
 
 $sqlmain.="order by appointment.appodate  asc";
-try {
-    $result= $database->query($sqlmain);
-} catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
-}
+$result= $database->query($sqlmain);
 
 if(isset($_POST["booknow"])){
     $scheduleid = $_POST["scheduleid"];
@@ -411,7 +407,7 @@ if(isset($_POST["booknow"])){
             </div>
             '; 
         }elseif($action=='view'){
-            $sqlmain= "select * from barber where id='$id'";
+            $sqlmain= "select * from barber where docid='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["docname"];

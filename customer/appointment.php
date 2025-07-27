@@ -41,9 +41,11 @@ if(isset($_POST["booknow"])){
     $scheduleid = $_POST["scheduleid"];
     $apponum = $_POST["apponum"];
     $date = $_POST["date"];
+    $time = $_POST["time"]; // Get the time from the form
+    
     // Insert booking into appointment table
-    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate, appotime) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$userid, $scheduleid, $apponum, $date, $time]);
     // Redirect to appointment.php with success message
     header("Location: appointment.php?action=booking-added&id=$apponum");
     exit();
@@ -291,57 +293,63 @@ if(isset($_POST["booknow"])){
                                     </tr>';
                                 }
                                 else{
-                                    for ( $x=0; $x<($result->rowCount());$x++){
-                                        echo "<tr>";
-                                        for($q=0;$q<3;$q++){
-                                            $row=$result->fetch(PDO::FETCH_ASSOC);
-                                            if (!isset($row)){
-                                            break;
-                                            };
-                                            $scheduleid=$row["scheduleid"];
-                                            $title=$row["title"];
-                                            $docname=$row["docname"];
-                                            $scheduledate=$row["scheduledate"];
-                                            $scheduletime=$row["scheduletime"];
-                                            $apponum=$row["apponum"];
-                                            $appodate=$row["appodate"];
-                                            $appoid=$row["appoid"];
+                                    // Fetch all results first
+                                    $appointments = $result->fetchAll(PDO::FETCH_ASSOC);
+                                    $totalAppointments = count($appointments);
+                                    
+                                    if ($totalAppointments > 0) {
+                                        // Display appointments in rows of 3
+                                        for ($x = 0; $x < $totalAppointments; $x += 3) {
+                                            echo "<tr>";
+                                            for ($q = 0; $q < 3; $q++) {
+                                                if (($x + $q) >= $totalAppointments) {
+                                                    // Fill empty cells if needed
+                                                    echo '<td style="width: 25%;"></td>';
+                                                    continue;
+                                                }
+                                                
+                                                $row = $appointments[$x + $q];
+                                                $scheduleid = $row["scheduleid"];
+                                                $title = $row["title"];
+                                                $docname = $row["docname"];
+                                                $scheduledate = $row["scheduledate"];
+                                                $scheduletime = $row["scheduletime"];
+                                                $apponum = $row["apponum"];
+                                                $appodate = $row["appodate"];
+                                                $appoid = $row["appoid"];
     
-                                            if($scheduleid==""){
-                                                break;
-                                            }
-    
-                                            echo '
-                                            <td style="width: 25%;">
-                                                    <div  class="dashboard-items search-items"  >
-                                                    
-                                                        <div style="width:100%;">
-                                                        <div class="h3-search">
-                                                                    Booking Date: '.substr($appodate,0,30).'<br>
-                                                                    Reference Number: OC-000-'.$appoid.'
-                                                                </div>
-                                                                <div class="h1-search">
-                                                                    '.substr($title,0,21).'<br>
-                                                                </div>
-                                                                <div class="h3-search">
-                                                                    Appointment Number:<div class="h1-search">0'.$apponum.'</div>
-                                                                </div>
-                                                                <div class="h3-search">
-                                                                    '.substr($docname,0,30).'
-                                                                </div>
-                                                                
-                                                                
-                                                                <div class="h4-search">
-                                                                    Scheduled Date: '.$scheduledate.'<br>Starts: <b>@'.substr($scheduletime,0,5).'</b> (24h)
-                                                                </div>
-                                                                <br>
-                                                                <a href="?action=drop&id='.$appoid.'&title='.$title.'&doc='.$docname.'" ><button  class="login-btn btn-primary-soft btn "  style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>
+                                                echo '
+                                                <td style="width: 25%;">
+                                                        <div  class="dashboard-items search-items"  >
+                                                        
+                                                            <div style="width:100%;">
+                                                            <div class="h3-search">
+                                                                        Booking Date: '.substr($appodate,0,30).'<br>
+                                                                        Reference Number: OC-000-'.$appoid.'
+                                                                    </div>
+                                                                    <div class="h1-search">
+                                                                        '.substr($title,0,21).'<br>
+                                                                    </div>
+                                                                    <div class="h3-search">
+                                                                        Appointment Number:<div class="h1-search">0'.$apponum.'</div>
+                                                                    </div>
+                                                                    <div class="h3-search">
+                                                                        '.substr($docname,0,30).'
+                                                                    </div>
+                                                                    
+                                                                    
+                                                                    <div class="h4-search">
+                                                                        Scheduled Date: '.$scheduledate.'<br>Starts: <b>@'.substr($scheduletime,0,5).'</b> (24h)
+                                                                    </div>
+                                                                    <br>
+                                                                    <a href="?action=drop&id='.$appoid.'&title='.$title.'&doc='.$docname.'" ><button  class="login-btn btn-primary-soft btn "  style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>
+                                                            </div>
+                                                                    
                                                         </div>
-                                                                
-                                                    </div>
-                                                </td>';
+                                                    </td>';
+                                            }
+                                            echo "</tr>";
                                         }
-                                        echo "</tr>";
                                     }
                                 }
                             ?>

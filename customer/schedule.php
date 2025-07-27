@@ -25,7 +25,7 @@ date_default_timezone_set('Asia/Kolkata');
 $today = date('Y-m-d');
 
 // Prepare main query
-$sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today'  order by schedule.scheduledate asc";
+$sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduledate>='$today'  order by schedule.scheduledate asc";
 $sqlpt1="";
 $insertkey="";
 $q='';
@@ -34,7 +34,7 @@ $searchtype="All";
 // Handle barber filter from barber.php
 if(isset($_GET['barber'])){
     $barberid = $_GET['barber'];
-    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and barber.id=$barberid order by schedule.scheduledate asc";
+    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduledate>='$today' and barber.docid=$barberid order by schedule.scheduledate asc";
     $searchtype="Barber Sessions : ";
     $q='"';
 }
@@ -42,7 +42,7 @@ if(isset($_GET['barber'])){
 if($_POST){
     if(!empty($_POST["search"])){
         $keyword=$_POST["search"];
-        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
+        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
         $insertkey=$keyword;
         $searchtype="Search Result : ";
         $q='"';
@@ -124,6 +124,14 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             padding: 16px;
+        }
+        .dashboard-items:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-soft:hover {
+            background: #1565c0 !important;
+            transform: translateY(-1px);
         }
         .sub-table {
             width: 100%;
@@ -273,8 +281,9 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
                                     <center>
                                     <img src="../img/notfound2.svg" width="25%">
                                     <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</font></button>
+                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">No sessions found for your search criteria!</p>
+                                    <p class="heading-sub12" style="margin-left: 45px;font-size:16px;color:rgb(119, 119, 119)">Try searching with different keywords or browse all available sessions.</p>
+                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</button>
                                     </a>
                                     </center>
                                     <br><br><br><br>
@@ -296,19 +305,20 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
                                             if ($scheduleid == "") break;
                                             echo '
                                             <td style="width: 25%;">
-                                                    <div  class="dashboard-items search-items"  >
+                                                    <div  class="dashboard-items search-items"  style="transition: transform 0.2s ease-in-out; border: 1px solid #e0e0e0;">
                                                         <div style="width:100%">
-                                                                <div class="h1-search">
+                                                                <div class="h1-search" style="color: #1976d2; font-weight: 600;">
                                                                     '.substr($title,0,21).'
                                                                 </div><br>
-                                                                <div class="h3-search">
-                                                                    '.substr($docname,0,30).'
+                                                                <div class="h3-search" style="color: #424242;">
+                                                                    <strong>Barber:</strong> '.substr($docname,0,30).'
                                                                 </div>
-                                                                <div class="h4-search">
-                                                                    '.$scheduledate.'<br>Starts: <b>@'.substr($scheduletime,0,5).'</b> (24h)
+                                                                <div class="h4-search" style="color: #666;">
+                                                                    <strong>Date:</strong> '.$scheduledate.'<br>
+                                                                    <strong>Time:</strong> <span style="color: #1976d2; font-weight: 600;">@'.substr($scheduletime,0,5).'</span> (24h)
                                                                 </div>
                                                                 <br>
-                                                                <a href="booking.php?id='.$scheduleid.'" ><button  class="login-btn btn-primary-soft btn "  style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Book Now</font></button></a>
+                                                                <a href="booking.php?id='.$scheduleid.'" ><button  class="login-btn btn-primary-soft btn "  style="padding-top:11px;padding-bottom:11px;width:100%; background: #1976d2; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s ease;"><font class="tn-in-text">Book Now</font></button></a>
                                                         </div>
                                                     </div>
                                                 </td>';

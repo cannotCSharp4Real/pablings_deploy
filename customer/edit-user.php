@@ -1,72 +1,79 @@
-    <?php
-    
-    
+<?php
+session_start();
 
-    //import database
-    include("../connection.php");
-
-
-
-    if($_POST){
-        //print_r($_POST);
-        $result= $database->query("select * from webuser");
-        $name=$_POST['name'];
-        $oldemail=$_POST["oldemail"];
-        $address=$_POST['address'];
-        $email=$_POST['email'];
-        $password=$_POST['password'];
-        $cpassword=$_POST['cpassword'];
-        $id=$_POST['id00'];
-        
-        if ($password==$cpassword){
-            $error='3';
-            $aab="select customer.pid from customer inner join webuser on customer.pemail=webuser.email where webuser.email='$email';";
-            $result= $database->query($aab);
-            //$resultqq= $database->query("select * from barber where docid='$id';");
-            if($result->num_rows==1){
-                $id2=$result->fetch_assoc()["pid"];
-            }else{
-                $id2=$id;
-            }
-            
-
-            if($id2!=$id){
-                $error='1';
-                //$resultqq1= $database->query("select * from barber where docemail='$email';");
-                //$did= $resultqq1->fetch_assoc()["docid"];
-                //if($resultqq1->num_rows==1){
-                    
-            }else{
-
-                //$sql1="insert into barber(docemail,docname,docpassword,specialties) values('$email','$name','$password',$spec);";
-                $sql1="update customer set pemail='$email',pname='$name',ppassword='$password',paddress='$address' where pid=$id ;";
-                $database->query($sql1);
-                echo $sql1;
-                $sql1="update webuser set email='$email' where email='$oldemail' ;";
-                $database->query($sql1);
-                echo $sql1;
-                
-                $error= '4';
-                
-            }
-            
-        }else{
-            $error='2';
-        }
-    
-    
-        
-        
+// Check if user is logged in
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        header("location: ../login.php");
+        exit();
     }else{
-        //header('location: signup.php');
-        $error='3';
+        $useremail=$_SESSION["user"];
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+
+// Import database connection
+include("../connection.php");
+
+// Get current user information
+$userrow = $database->query("select * from customer where pemail='$useremail'");
+$userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
+$userid= $userfetch["id"];
+
+if($_POST){
+    $name = $_POST['name'];
+    $oldemail = $_POST["oldemail"];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $cpassword = $_POST['cpassword'];
+    $id = $_POST['id00'];
+    
+    // Validate that the user is editing their own profile
+    if($id != $userid) {
+        header("location: settings.php?action=edit&error=unauthorized");
+        exit();
     }
     
+    if ($password == $cpassword){
+        $error = '3';
+        
+        // Check if email already exists (excluding current user)
+        $checkQuery = "SELECT id FROM customer WHERE pemail = ? AND id != ?";
+        $checkStmt = $database->prepare($checkQuery);
+        $checkStmt->execute([$email, $userid]);
+        
+        if($checkStmt->rowCount() > 0){
+            $error = '1'; // Email already exists
+        } else {
+            try {
+                // Update customer information
+                $updateCustomerQuery = "UPDATE customer SET pemail = ?, pname = ?, ppassword = ?, paddress = ? WHERE id = ?";
+                $updateCustomerStmt = $database->prepare($updateCustomerQuery);
+                $updateCustomerStmt->execute([$email, $name, $password, $address, $userid]);
+                
+                // Update webuser email if it exists
+                $updateWebuserQuery = "UPDATE webuser SET email = ? WHERE email = ?";
+                $updateWebuserStmt = $database->prepare($updateWebuserQuery);
+                $updateWebuserStmt->execute([$email, $oldemail]);
+                
+                // Update session with new email
+                $_SESSION["user"] = $email;
+                
+                $error = '4'; // Success
+            } catch (Exception $e) {
+                $error = 'database_error';
+            }
+        }
+    } else {
+        $error = '2'; // Password mismatch
+    }
+} else {
+    $error = '3'; // No POST data
+}
 
-    header("location: settings.php?action=edit&error=".$error."&id=".$id);
-    ?>
-    
-   
-
-</body>
-</html>
+header("location: settings.php?action=edit&error=".$error."&id=".$userid);
+exit();
+?>

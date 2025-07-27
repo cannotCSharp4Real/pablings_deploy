@@ -39,6 +39,7 @@ $today = date('Y-m-d');
 
 // Get session details if ID is provided
 $sessionData = null;
+$apponum = 0;
 if(isset($_GET["id"])){
     $id = $_GET["id"];
     $sqlmain = "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id order by schedule.scheduledate desc";
@@ -50,6 +51,27 @@ if(isset($_GET["id"])){
         $sql2 = "select * from appointment where scheduleid=$id";
         $result12 = $database->query($sql2);
         $apponum = $result12->rowCount() + 1;
+    }
+}
+
+// Debug output (remove this after testing)
+if(isset($_GET["id"])) {
+    echo "<!-- Debug: ID = " . $_GET["id"] . " -->";
+    echo "<!-- Debug: sessionData = " . ($sessionData ? "found" : "not found") . " -->";
+    if($sessionData) {
+        echo "<!-- Debug: docname = " . $sessionData['docname'] . " -->";
+        echo "<!-- Debug: title = " . $sessionData['title'] . " -->";
+        echo "<!-- Debug: docemail = " . $sessionData['docemail'] . " -->";
+    } else {
+        echo "<!-- Debug: No session data found for ID: " . $_GET["id"] . " -->";
+        // Let's also check what's in the schedule table
+        $check_schedule = $database->query("SELECT COUNT(*) as count FROM schedule");
+        $schedule_count = $check_schedule->fetch(PDO::FETCH_ASSOC);
+        echo "<!-- Debug: Total schedules in database: " . $schedule_count['count'] . " -->";
+        
+        $check_barber = $database->query("SELECT COUNT(*) as count FROM barber");
+        $barber_count = $check_barber->fetch(PDO::FETCH_ASSOC);
+        echo "<!-- Debug: Total barbers in database: " . $barber_count['count'] . " -->";
     }
 }
 ?>

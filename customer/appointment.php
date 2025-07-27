@@ -414,6 +414,65 @@ if(isset($_POST["booknow"])){
             </div>
             </div>
             '; 
+        }elseif($action=='deleted'){
+            echo '
+            <div id="popup1" class="overlay">
+                    <div class="popup">
+                    <center>
+                    <br><br>
+                        <h2>Appointment Cancelled Successfully!</h2>
+                        <a class="close" href="appointment.php">&times;</a>
+                        <div class="content">
+                        Your appointment has been cancelled.<br><br>
+                            
+                        </div>
+                        <div style="display: flex;justify-content: center;">
+                        
+                        <a href="appointment.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
+                        <br><br><br><br>
+                        </div>
+                    </center>
+            </div>
+            </div>
+            ';
+        }elseif($action=='error'){
+            $message = $_GET["message"] ?? "unknown_error";
+            $errorText = "";
+            
+            switch($message) {
+                case "appointment_not_found":
+                    $errorText = "Appointment not found or you don't have permission to cancel it.";
+                    break;
+                case "database_error":
+                    $errorText = "Database error occurred. Please try again.";
+                    break;
+                case "no_id_provided":
+                    $errorText = "No appointment ID provided.";
+                    break;
+                default:
+                    $errorText = "An error occurred while processing your request.";
+            }
+            
+            echo '
+            <div id="popup1" class="overlay">
+                    <div class="popup">
+                    <center>
+                    <br><br>
+                        <h2>Error</h2>
+                        <a class="close" href="appointment.php">&times;</a>
+                        <div class="content">
+                        '.$errorText.'<br><br>
+                            
+                        </div>
+                        <div style="display: flex;justify-content: center;">
+                        
+                        <a href="appointment.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
+                        <br><br><br><br>
+                        </div>
+                    </center>
+            </div>
+            </div>
+            ';
         }elseif($action=='view'){
             $sqlmain= "select * from barber where docid='$id'";
             $result= $database->query($sqlmain);

@@ -1,72 +1,59 @@
-    <?php
-    
-    
+<?php
+session_start();
 
-    //import database
-    include("../connection.php");
-
-
-
-    if($_POST){
-        //print_r($_POST);
-        $result= $database->query("select * from webuser");
-        $name=$_POST['name'];
-        $oldemail=$_POST["oldemail"];
-        $address=$_POST['address'];
-        $email=$_POST['email'];
-        $password=$_POST['password'];
-        $cpassword=$_POST['cpassword'];
-        $id=$_POST['id00'];
-        
-        if ($password==$cpassword){
-            $error='3';
-            $aab="select customer.pid from customer inner join webuser on customer.pemail=webuser.email where webuser.email='$email';";
-            $result= $database->query($aab);
-            //$resultqq= $database->query("select * from barber where docid='$id';");
-            if($result->num_rows==1){
-                $id2=$result->fetch_assoc()["pid"];
-            }else{
-                $id2=$id;
-            }
-            
-
-            if($id2!=$id){
-                $error='1';
-                //$resultqq1= $database->query("select * from barber where docemail='$email';");
-                //$did= $resultqq1->fetch_assoc()["docid"];
-                //if($resultqq1->num_rows==1){
-                    
-            }else{
-
-                //$sql1="insert into barber(docemail,docname,docpassword,specialties) values('$email','$name','$password',$spec);";
-                $sql1="update customer set pemail='$email',pname='$name',ppassword='$password',paddress='$address' where pid=$id ;";
-                $database->query($sql1);
-                echo $sql1;
-                $sql1="update webuser set email='$email' where email='$oldemail' ;";
-                $database->query($sql1);
-                echo $sql1;
-                
-                $error= '4';
-                
-            }
-            
-        }else{
-            $error='2';
-        }
-    
-    
-        
-        
+// Check if user is logged in
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        header("location: ../login.php");
+        exit();
     }else{
-        //header('location: signup.php');
-        $error='3';
+        $useremail=$_SESSION["user"];
     }
-    
+}else{
+    header("location: ../login.php");
+    exit();
+}
 
-    header("location: settings.php?action=edit&error=".$error."&id=".$id);
-    ?>
-    
-   
+// Import database connection
+include("../connection.php");
 
-</body>
-</html>
+// Get user information
+$userrow = $database->query("select * from customer where pemail='$useremail'");
+$userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
+$userid= $userfetch["id"];
+
+// Check if appointment ID is provided
+if(isset($_GET["id"])){
+    $appointmentid = $_GET["id"];
+    
+    try {
+        // First, verify that this appointment belongs to the current user
+        $checkQuery = "SELECT * FROM appointment WHERE appoid = ? AND pid = ?";
+        $checkStmt = $database->prepare($checkQuery);
+        $checkStmt->execute([$appointmentid, $userid]);
+        
+        if($checkStmt->rowCount() > 0) {
+            // Delete the appointment
+            $deleteQuery = "DELETE FROM appointment WHERE appoid = ? AND pid = ?";
+            $deleteStmt = $database->prepare($deleteQuery);
+            $deleteStmt->execute([$appointmentid, $userid]);
+            
+            // Redirect with success message
+            header("location: appointment.php?action=deleted&id=".$appointmentid);
+            exit();
+        } else {
+            // Appointment not found or doesn't belong to user
+            header("location: appointment.php?action=error&message=appointment_not_found");
+            exit();
+        }
+    } catch (Exception $e) {
+        // Database error
+        header("location: appointment.php?action=error&message=database_error");
+        exit();
+    }
+} else {
+    // No appointment ID provided
+    header("location: appointment.php?action=error&message=no_id_provided");
+    exit();
+}
+?>

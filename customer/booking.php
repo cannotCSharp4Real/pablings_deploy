@@ -1,3 +1,54 @@
+<?php
+session_start();
+
+if(isset($_SESSION["user"])){
+    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        header("location: ../login.php");
+        exit();
+    }else{
+        $useremail=$_SESSION["user"];
+    }
+}else{
+    header("location: ../login.php");
+    exit();
+}
+
+include("../connection.php");
+$userrow = $database->query("select * from customer where pemail='$useremail'");
+$userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
+$userid= $userfetch["id"];
+$username=$userfetch["pname"];
+
+// Handle booking form submission
+if(isset($_POST["booknow"])){
+    $scheduleid = $_POST["scheduleid"];
+    $apponum = $_POST["apponum"];
+    $date = $_POST["date"];
+    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+    header("Location: appointment.php?action=booking-added&id=$apponum");
+    exit();
+}
+
+date_default_timezone_set('Asia/Kolkata');
+$today = date('Y-m-d');
+
+// Get session details
+$sessionData = null;
+$apponum = 0;
+if(isset($_GET["id"])){
+    $id = $_GET["id"];
+    $sqlmain = "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id";
+    $result = $database->query($sqlmain);
+    
+    if($result->rowCount() > 0) {
+        $sessionData = $result->fetch(PDO::FETCH_ASSOC);
+        $sql2 = "select * from appointment where scheduleid=$id";
+        $result12 = $database->query($sql2);
+        $apponum = $result12->rowCount() + 1;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,318 +58,213 @@
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
-        
-    <title>Sessions</title>
+    <title>Booking</title>
     <style>
-        .popup{
-            animation: transitionIn-Y-bottom 0.5s;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f7;
         }
-        .sub-table{
-            animation: transitionIn-Y-bottom 0.5s;
+        .container {
+            display: flex;
+            min-height: 100vh;
         }
-</style>
+        .menu {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        .dash-body {
+            flex: 1;
+            padding: 32px 24px;
+            background: #f7f7f7;
+        }
+        .booking-container {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .session-details {
+            flex: 2;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .appointment-number {
+            flex: 1;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+        .appointment-number-display {
+            font-size: 70px;
+            font-weight: 800;
+            color: #1e88e5;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .book-now-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+        .logout-btn {
+            width: 90%;
+            margin: 20px 5%;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .menu {
+                width: 100%;
+                min-height: unset;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .booking-container {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from customer where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
-
-
-    //echo $userid;
-    //echo $username;
-    
-
-
-    date_default_timezone_set('Asia/Kolkata');
-
-    $today = date('Y-m-d');
-
-
- //echo $userid;
- ?>
- <div class="container">
-     <div class="menu">
-     <table class="menu-container" border="0">
-             <tr>
-                 <td style="padding:10px" colspan="2">
-                     <table border="0" class="profile-container">
-                         <tr>
-                             <td width="30%" style="padding-left:20px" >
-                                 <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
-                             </td>
-                             <td style="padding:0px;margin:0px;">
-                                 <p class="profile-title"><?php echo substr($username,0,13)  ?>..</p>
-                                 <p class="profile-subtitle"><?php echo substr($useremail,0,22)  ?></p>
-                             </td>
-                         </tr>
-                         <tr>
-                             <td colspan="2">
-                                 <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                             </td>
-                         </tr>
-                 </table>
-                 </td>
-             </tr>
-             <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-home " >
-                        <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Home</p></a></div></a>
+    <div class="container">
+        <div class="menu">
+            <table class="menu-container" border="0">
+                <tr>
+                    <td style="padding:10px" colspan="2">
+                        <table border="0" class="profile-container">
+                            <tr>
+                                <td width="30%" style="padding-left:20px">
+                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                                </td>
+                                <td style="padding:0px;margin:0px;">
+                                    <p class="profile-title"><?php echo htmlspecialchars($username) ?></p>
+                                    <p class="profile-subtitle"><?php echo htmlspecialchars($useremail) ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a href="../logout.php"><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-home">
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Home</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-barber">
-                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">All Barber</p></a></div>
+                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">All Barber</p></div></a>
                     </td>
                 </tr>
-                
-                <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-session menu-active menu-icon-session-active">
                         <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Scheduled Sessions</p></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-settings">
-                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a>
                     </td>
                 </tr>
-                
             </table>
         </div>
         
         <div class="dash-body">
-            <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <td width="13%" >
-                    <a href="schedule.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
+            <table border="0" width="100%" style="border-spacing: 0;margin:0;padding:0;margin-top:25px;">
+                <tr>
+                    <td width="13%">
+                        <a href="schedule.php"><button class="login-btn btn-primary-soft btn btn-icon-back" style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
                     </td>
-                    <td >
-                            <form action="schedule.php" method="post" class="header-search">
-
-                                        <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Barber name or Email or Date (YYYY-MM-DD)" list="barber" >&nbsp;&nbsp;
-                                        
-                                        <?php
-                                            echo '<datalist id="barber">';
-                                            $list11 = $database->query("select DISTINCT * from  barber;");
-                                            $list12 = $database->query("select DISTINCT * from  schedule GROUP BY title;");
-                                            
-
-                                            
-
-
-                                            for ($y=0;$y<$list11->num_rows;$y++){
-                                                $row00=$list11->fetch_assoc();
-                                                $d=$row00["docname"];
-                                               
-                                                echo "<option value='$d'><br/>";
-                                               
-                                            };
-
-
-                                            for ($y=0;$y<$list12->num_rows;$y++){
-                                                $row00=$list12->fetch_assoc();
-                                                $d=$row00["title"];
-                                               
-                                                echo "<option value='$d'><br/>";
-                                                                                         };
-
-                                        echo ' </datalist>';
-            ?>
-                                        
-                                
-                                        <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                        </form>
+                    <td>
+                        <form action="schedule.php" method="post" class="header-search">
+                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Barber name or Email or Date (YYYY-MM-DD)" list="barber">&nbsp;&nbsp;
+                            <?php
+                                echo '<datalist id="barber">';
+                                $list11 = $database->query("select DISTINCT * from barber;");
+                                $list12 = $database->query("select DISTINCT * from schedule GROUP BY title;");
+                                foreach($list11 as $row00){
+                                    $d=$row00["docname"];
+                                    echo "<option value='$d'><br/>";
+                                }
+                                foreach($list12 as $row00){
+                                    $d=$row00["title"];
+                                    echo "<option value='$d'><br/>";
+                                }
+                                echo '</datalist>';
+                            ?>
+                            <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                        </form>
                     </td>
                     <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            Today's Date
-                        </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
-
-                                
-                                echo $today;
-
-                                
-
-                        ?>
-                        </p>
+                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's Date</p>
+                        <p class="heading-sub12" style="padding: 0;margin: 0;"><?php echo $today; ?></p>
                     </td>
                     <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
+                        <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
                     </td>
-
-
                 </tr>
                 
-                
                 <tr>
-                    <td colspan="4" style="padding-top:10px;width: 100%;" >
-                        <!-- <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49);font-weight:400;">Scheduled Sessions / Booking / <b>Review Booking</b></p> -->
-                        
-                    </td>
-                    
-                </tr>
-                
-                
-                
-                <tr>
-                   <td colspan="4">
-                       <center>
-                        <div class="abc scroll">
-                        <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
+                    <td colspan="4">
+                        <?php if($sessionData): ?>
+                        <div class="booking-container">
+                            <div class="session-details">
+                                <h2 style="font-size: 25px; color: #1e88e5; margin-bottom: 24px;">Session Details</h2>
+                                <div style="font-size: 18px; line-height: 30px;">
+                                    <p><strong>Barber name:</strong> <?php echo htmlspecialchars($sessionData['docname']); ?></p>
+                                    <p><strong>Barber Email:</strong> <?php echo htmlspecialchars($sessionData['docemail']); ?></p>
+                                    <p><strong>Session Title:</strong> <?php echo htmlspecialchars($sessionData['title']); ?></p>
+                                    <p><strong>Session Scheduled Date:</strong> <?php echo htmlspecialchars($sessionData['scheduledate']); ?></p>
+                                    <p><strong>Session Starts:</strong> <?php echo htmlspecialchars($sessionData['scheduletime']); ?></p>
+                                    <p><strong>Channeling fee:</strong> <b>LKR.2 000.00</b></p>
+                                </div>
+                            </div>
                             
-                        <tbody>
-                        
-                            <?php
-                            
-                            if(($_GET)){
+                            <div class="appointment-number">
+                                <h3 style="font-size: 20px; color: #1e88e5; margin-bottom: 16px;">Your Appointment Number</h3>
+                                <div class="appointment-number-display">
+                                    <?php echo $apponum; ?>
+                                </div>
                                 
-                                
-                                if(isset($_GET["id"])){
-                                    
-
-                                    $id=$_GET["id"];
-
-                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
-
-                                    //echo $sqlmain;
-                                    $result= $database->query($sqlmain);
-                                    $row=$result->fetch_assoc();
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $docemail=$row["docemail"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $sql2="select * from appointment where scheduleid=$id";
-                                    //echo $sql2;
-                                     $result12= $database->query($sql2);
-                                     $apponum=($result12->num_rows)+1;
-                                    
-                                    echo '
-                                        <form action="booking-complete.php" method="post">
-                                            <input type="hidden" name="scheduleid" value="'.$scheduleid.'" >
-                                            <input type="hidden" name="apponum" value="'.$apponum.'" >
-                                            <input type="hidden" name="date" value="'.$today.'" >
-
-                                        
-                                    
-                                    ';
-                                     
-
-                                    echo '
-                                    <td style="width: 50%;" rowspan="2">
-                                            <div  class="dashboard-items search-items"  >
-                                            
-                                                <div style="width:100%">
-                                                        <div class="h1-search" style="font-size:25px;">
-                                                            Session Details
-                                                        </div><br><br>
-                                                        <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                            Barber name:  &nbsp;&nbsp;<b>'.$docname.'</b><br>
-                                                            Barber Email:  &nbsp;&nbsp;<b>'.$docemail.'</b> 
-                                                        </div>
-                                                        <div class="h3-search" style="font-size:18px;">
-                                                          
-                                                        </div><br>
-                                                        <div class="h3-search" style="font-size:18px;">
-                                                            Session Title: '.$title.'<br>
-                                                            Session Scheduled Date: '.$scheduledate.'<br>
-                                                            Session Starts : '.$scheduletime.'<br>
-                                                            Channeling fee : <b>LKR.2 000.00</b>
-
-                                                        </div>
-                                                        <br>
-                                                        
-                                                </div>
-                                                        
-                                            </div>
-                                        </td>
-                                        
-                                        
-                                        
-                                        <td style="width: 25%;">
-                                            <div  class="dashboard-items search-items"  >
-                                            
-                                                <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
-                                                        <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
-                                                            Your Appointment Number
-                                                        </div>
-                                                        <center>
-                                                        <div class=" dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">'.$apponum.'</div>
-                                                    </center>
-                                                       
-                                                        </div><br>
-                                                        
-                                                        <br>
-                                                        <br>
-                                                </div>
-                                                        
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="Submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow"></button>
-                                            </form>
-                                            </td>
-                                        </tr>
-                                        '; 
-                                        
-
-
-
-
-                                }
-
-
-
-                            }
-                            
-                            ?>
- 
-                            </tbody>
-
-                        </table>
+                                <form action="booking.php" method="post">
+                                    <input type="hidden" name="scheduleid" value="<?php echo $sessionData['scheduleid']; ?>">
+                                    <input type="hidden" name="apponum" value="<?php echo $apponum; ?>">
+                                    <input type="hidden" name="date" value="<?php echo $today; ?>">
+                                    <input type="submit" class="login-btn btn-primary btn book-now-btn" value="Book now" name="booknow">
+                                </form>
+                            </div>
                         </div>
-                        </center>
-                   </td> 
+                        <?php else: ?>
+                        <div style="text-align: center; padding: 40px 0;">
+                            <p style="font-size: 18px; color: #666;">Session not found or invalid ID.</p>
+                            <a href="schedule.php" class="non-style-link">
+                                <button class="login-btn btn-primary-soft btn" style="margin-top: 16px;">Back to Sessions</button>
+                            </a>
+                        </div>
+                        <?php endif; ?>
+                    </td>
                 </tr>
-                       
-                        
-                        
             </table>
         </div>
     </div>
-    
-    
-   
-    </div>
-
 </body>
 </html>

@@ -21,8 +21,10 @@ if($_POST){
         'dob'=>$_POST['dob']
     );
 
-    print_r($_SESSION["personal"]);
+    // Remove debug output that causes headers already sent error
+    // print_r($_SESSION["personal"]);
     header("location: create-account.php");
+    exit();
 }
 ?>
 <!DOCTYPE html>

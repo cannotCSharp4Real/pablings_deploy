@@ -1,14 +1,20 @@
 <?php
 session_start();
 
+// Debug session information
+error_log("Booking.php - Session data: " . print_r($_SESSION, true));
+
 if(isset($_SESSION["user"])){
     if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        error_log("Booking.php - Session user is empty or usertype is not 'p'");
         header("location: ../login.php");
         exit();
     }else{
         $useremail=$_SESSION["user"];
+        error_log("Booking.php - User email: " . $useremail);
     }
 }else{
+    error_log("Booking.php - No session user found");
     header("location: ../login.php");
     exit();
 }

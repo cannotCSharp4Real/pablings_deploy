@@ -24,8 +24,10 @@ if(isset($_POST["booknow"])){
     $scheduleid = $_POST["scheduleid"];
     $apponum = $_POST["apponum"];
     $date = $_POST["date"];
-    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+    $time = $_POST["time"]; // Get the time from the form
+    
+    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate, appotime) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$userid, $scheduleid, $apponum, $date, $time]);
     header("Location: appointment.php?action=booking-added&id=$apponum");
     exit();
 }
@@ -247,6 +249,7 @@ if(isset($_GET["id"])){
                         <input type="hidden" name="scheduleid" value="<?php echo $sessionData['scheduleid']; ?>">
                         <input type="hidden" name="apponum" value="<?php echo $apponum; ?>">
                         <input type="hidden" name="date" value="<?php echo $today; ?>">
+                        <input type="hidden" name="time" value="<?php echo $sessionData['scheduletime']; ?>">
                         <input type="submit" class="btn btn-primary book-now-btn" value="Book now" name="booknow">
                     </form>
                 </div>

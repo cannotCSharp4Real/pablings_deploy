@@ -30,7 +30,7 @@ if($_POST){
     $keyword=$_POST["search"];
     $sqlmain= "select * from barber where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
 }else{
-    $sqlmain= "select * from barber order by id desc";
+    $sqlmain= "select * from barber order by docid desc";
 }
 
 $result= $database->query($sqlmain);

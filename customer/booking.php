@@ -36,6 +36,22 @@ if(isset($_POST["booknow"])){
 
 date_default_timezone_set('Asia/Kolkata');
 $today = date('Y-m-d');
+
+// Get session details if ID is provided
+$sessionData = null;
+if(isset($_GET["id"])){
+    $id = $_GET["id"];
+    $sqlmain = "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id order by schedule.scheduledate desc";
+    $result = $database->query($sqlmain);
+    
+    if($result->rowCount() > 0) {
+        $sessionData = $result->fetch(PDO::FETCH_ASSOC);
+        // Get appointment number
+        $sql2 = "select * from appointment where scheduleid=$id";
+        $result12 = $database->query($sql2);
+        $apponum = $result12->rowCount() + 1;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -115,6 +131,39 @@ $today = date('Y-m-d');
             margin: 24px 0 12px 0;
             display: block;
         }
+        .booking-container {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .session-details {
+            flex: 2;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .appointment-number {
+            flex: 1;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+        .appointment-number-display {
+            font-size: 70px;
+            font-weight: 800;
+            color: #1e88e5;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .book-now-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -127,6 +176,9 @@ $today = date('Y-m-d');
             }
             .dash-body {
                 padding: 16px 8px;
+            }
+            .booking-container {
+                flex-direction: column;
             }
         }
         @media (max-width: 600px) {
@@ -254,119 +306,42 @@ $today = date('Y-m-d');
                 
                 <tr>
                    <td colspan="4">
-                       <center>
-                        <div class="abc scroll">
-                        <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
-                        <tbody>
-
-                            <?php
-                            if(($_GET)){
-                                if(isset($_GET["id"])){
-                                    $id=$_GET["id"];
-                                    
-                                    // Debug: Log the received ID
-                                    error_log("Booking.php received ID: " . $id);
-                                    
-                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id  order by schedule.scheduledate desc";
-                                    
-                                    $result= $database->query($sqlmain);
-                                    
-                                    if($result->rowCount() > 0) {
-                                        $row=$result->fetch(PDO::FETCH_ASSOC);
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $docemail=$row["docemail"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $sql2="select * from appointment where scheduleid=$id";
-                                    $result12= $database->query($sql2);
-                                    $apponum=$result12->rowCount()+1;
-                                    echo '
-                                        <form action="booking.php" method="post">
-                                            <input type="hidden" name="scheduleid" value="'.$scheduleid.'" >
-                                            <input type="hidden" name="apponum" value="'.$apponum.'" >
-                                            <input type="hidden" name="date" value="'.$today.'" >
-                                    ';
-                                    echo '
-                                    <td style="width: 50%;" rowspan="2">
-                                            <div  class="dashboard-items search-items"  >
-                                                <div style="width:100%">
-                                                        <div class="h1-search" style="font-size:25px;">
-                                                            Session Details
-                                                        </div><br><br>
-                                                        <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                            Barber name:  &nbsp;&nbsp;<b>'.$docname.'</b><br>
-                                                            Barber Email:  &nbsp;&nbsp;<b>'.$docemail.'</b> 
-                                                        </div>
-                                                        <div class="h3-search" style="font-size:18px;">
-                                                          
-                                                        </div><br>
-                                                        <div class="h3-search" style="font-size:18px;">
-                                                            Session Title: '.$title.'<br>
-                                                            Session Scheduled Date: '.$scheduledate.'<br>
-                                                            Session Starts : '.$scheduletime.'<br>
-                                                            Channeling fee : <b>LKR.2 000.00</b>
-                                                        </div>
-                                                        <br>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td style="width: 25%;">
-                                            <div  class="dashboard-items search-items"  >
-                                                <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
-                                                        <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
-                                                            Your Appointment Number
-                                                        </div>
-                                                        <center>
-                                                        <div class=" dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">'.$apponum.'</div>
-                                                    </center>
-                                                        </div><br>
-                                                        <br>
-                                                        <br>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="Submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow"></button>
-                                            </form>
-                                            </td>
-                                        </tr>
-                                        '; 
-                                    } else {
-                                        echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">
-                                            <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                                <h3 style="color: #e74c3c; margin-bottom: 10px;">Session Not Found</h3>
-                                                <p style="color: #666; margin-bottom: 20px;">The session with ID '.htmlspecialchars($id).' could not be found or may have been removed.</p>
-                                                <a href="schedule.php" class="login-btn btn-primary-soft btn" style="text-decoration: none; display: inline-block;">Back to Sessions</a>
-                                            </div>
-                                        </td></tr>';
-                                    }
-                                } else {
-                                    echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">
-                                        <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                            <h3 style="color: #e74c3c; margin-bottom: 10px;">Invalid Request</h3>
-                                            <p style="color: #666; margin-bottom: 20px;">No session ID provided. Please select a session from the schedule.</p>
-                                            <a href="schedule.php" class="login-btn btn-primary-soft btn" style="text-decoration: none; display: inline-block;">Back to Sessions</a>
-                                        </div>
-                                    </td></tr>';
-                                }
-                            } else {
-                                echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">
-                                    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                        <h3 style="color: #e74c3c; margin-bottom: 10px;">No Parameters</h3>
-                                        <p style="color: #666; margin-bottom: 20px;">No parameters received. Please select a session from the schedule.</p>
-                                        <a href="schedule.php" class="login-btn btn-primary-soft btn" style="text-decoration: none; display: inline-block;">Back to Sessions</a>
-                                    </div>
-                                </td></tr>';
-                            }
-                            ?>
-                            </tbody>
-                        </table>
-                        </div>
-                        </center>
+                       <?php if($sessionData): ?>
+                       <div class="booking-container">
+                           <div class="session-details">
+                               <h2 style="font-size: 25px; color: #1e88e5; margin-bottom: 24px;">Session Details</h2>
+                               <div style="font-size: 18px; line-height: 30px;">
+                                   <p><strong>Barber name:</strong> <?php echo htmlspecialchars($sessionData['docname']); ?></p>
+                                   <p><strong>Barber Email:</strong> <?php echo htmlspecialchars($sessionData['docemail']); ?></p>
+                                   <p><strong>Session Title:</strong> <?php echo htmlspecialchars($sessionData['title']); ?></p>
+                                   <p><strong>Session Scheduled Date:</strong> <?php echo htmlspecialchars($sessionData['scheduledate']); ?></p>
+                                   <p><strong>Session Starts:</strong> <?php echo htmlspecialchars($sessionData['scheduletime']); ?></p>
+                                   <p><strong>Channeling fee:</strong> <b>LKR.2 000.00</b></p>
+                               </div>
+                           </div>
+                           
+                           <div class="appointment-number">
+                               <h3 style="font-size: 20px; color: #1e88e5; margin-bottom: 16px;">Your Appointment Number</h3>
+                               <div class="appointment-number-display">
+                                   <?php echo $apponum; ?>
+                               </div>
+                               
+                               <form action="booking.php" method="post">
+                                   <input type="hidden" name="scheduleid" value="<?php echo $sessionData['scheduleid']; ?>">
+                                   <input type="hidden" name="apponum" value="<?php echo $apponum; ?>">
+                                   <input type="hidden" name="date" value="<?php echo $today; ?>">
+                                   <input type="submit" class="login-btn btn-primary btn book-now-btn" value="Book now" name="booknow">
+                               </form>
+                           </div>
+                       </div>
+                       <?php else: ?>
+                       <div style="text-align: center; padding: 40px 0;">
+                           <p style="font-size: 18px; color: #666;">Session not found or invalid ID.</p>
+                           <a href="schedule.php" class="non-style-link">
+                               <button class="login-btn btn-primary-soft btn" style="margin-top: 16px;">Back to Sessions</button>
+                           </a>
+                       </div>
+                       <?php endif; ?>
                    </td> 
                 </tr>
             </table>

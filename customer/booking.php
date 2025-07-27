@@ -64,10 +64,10 @@ if(isset($_GET["id"])){
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', sans-serif;
-            background: #f7f7f7;
+            background: #f7f7f7 !important;
         }
         .container {
-            display: flex;
+            display: flex !important;
             min-height: 100vh;
         }
         .menu {
@@ -79,50 +79,70 @@ if(isset($_GET["id"])){
             top: 0;
         }
         .dash-body {
-            flex: 1;
+            flex: 1 !important;
             padding: 32px 24px;
-            background: #f7f7f7;
+            background: #f7f7f7 !important;
+            min-width: 0;
         }
         .booking-container {
-            display: flex;
+            display: flex !important;
             gap: 24px;
             margin-top: 24px;
+            width: 100%;
         }
         .session-details {
-            flex: 2;
-            background: #fff;
+            flex: 2 !important;
+            background: #fff !important;
             border-radius: 8px;
             padding: 24px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e0e0e0;
         }
         .appointment-number {
-            flex: 1;
-            background: #fff;
+            flex: 1 !important;
+            background: #fff !important;
             border-radius: 8px;
             padding: 24px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             text-align: center;
+            border: 1px solid #e0e0e0;
         }
         .appointment-number-display {
-            font-size: 70px;
-            font-weight: 800;
-            color: #1e88e5;
-            background-color: #e3f2fd;
+            font-size: 70px !important;
+            font-weight: 800 !important;
+            color: #1e88e5 !important;
+            background-color: #e3f2fd !important;
             border-radius: 8px;
             padding: 20px;
             margin: 16px 0;
+            display: block !important;
         }
         .book-now-btn {
-            width: 100%;
+            width: 100% !important;
             margin-top: 16px;
         }
         .logout-btn {
             width: 90%;
             margin: 20px 5%;
         }
+        .session-details h2 {
+            font-size: 25px !important;
+            color: #1e88e5 !important;
+            margin-bottom: 24px !important;
+        }
+        .appointment-number h3 {
+            font-size: 20px !important;
+            color: #1e88e5 !important;
+            margin-bottom: 16px !important;
+        }
+        .session-details p {
+            font-size: 18px !important;
+            line-height: 30px !important;
+            margin: 8px 0 !important;
+        }
         @media (max-width: 900px) {
             .container {
-                flex-direction: column;
+                flex-direction: column !important;
             }
             .menu {
                 width: 100%;
@@ -131,7 +151,7 @@ if(isset($_GET["id"])){
                 border-bottom: 1px solid #e0e0e0;
             }
             .booking-container {
-                flex-direction: column;
+                flex-direction: column !important;
             }
         }
     </style>
@@ -225,7 +245,10 @@ if(isset($_GET["id"])){
                 
                 <tr>
                     <td colspan="4">
+                        <!-- Debug: sessionData exists: <?php echo $sessionData ? 'YES' : 'NO'; ?> -->
+                        <!-- Debug: GET id: <?php echo isset($_GET['id']) ? $_GET['id'] : 'NOT SET'; ?> -->
                         <?php if($sessionData): ?>
+                        <!-- Debug: Inside sessionData condition -->
                         <div class="booking-container">
                             <div class="session-details">
                                 <h2 style="font-size: 25px; color: #1e88e5; margin-bottom: 24px;">Session Details</h2>
@@ -254,6 +277,7 @@ if(isset($_GET["id"])){
                             </div>
                         </div>
                         <?php else: ?>
+                        <!-- Debug: Inside else condition -->
                         <div style="text-align: center; padding: 40px 0;">
                             <p style="font-size: 18px; color: #666;">Session not found or invalid ID.</p>
                             <a href="schedule.php" class="non-style-link">

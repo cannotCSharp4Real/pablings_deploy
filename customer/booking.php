@@ -26,12 +26,21 @@ if(isset($_POST["booknow"])){
     $scheduleid = $_POST["scheduleid"];
     $apponum = $_POST["apponum"];
     $date = $_POST["date"];
-    // Insert booking into appointment table
-    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$userid, $scheduleid, $apponum, $date]);
-    // Redirect to appointment.php with success message
-    header("Location: appointment.php?action=booking-added&id=$apponum");
-    exit();
+    
+    // Check if user already has a booking for this schedule
+    $checkStmt = $database->prepare("SELECT * FROM appointment WHERE pid = ? AND scheduleid = ?");
+    $checkStmt->execute([$userid, $scheduleid]);
+    
+    if($checkStmt->rowCount() > 0) {
+        $error_message = "You already have a booking for this session.";
+    } else {
+        // Insert booking into appointment table
+        $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$userid, $scheduleid, $apponum, $date]);
+        // Redirect to appointment.php with success message
+        header("Location: appointment.php?action=booking-added&id=$apponum");
+        exit();
+    }
 }
 
 date_default_timezone_set('Asia/Kolkata');
@@ -106,6 +115,17 @@ $today = date('Y-m-d');
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             padding: 16px;
+        }
+        .dashboard-items {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .dashboard-items:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-book:hover {
+            background: #45a049 !important;
+            transform: translateY(-1px);
         }
         .sub-table {
             width: 100%;
@@ -254,6 +274,11 @@ $today = date('Y-m-d');
                 
                 <tr>
                    <td colspan="4">
+                       <?php if(isset($error_message)): ?>
+                       <div style="background: #ffebee; color: #c62828; padding: 12px; margin: 16px; border-radius: 4px; text-align: center; border: 1px solid #ffcdd2;">
+                           <?php echo htmlspecialchars($error_message); ?>
+                       </div>
+                       <?php endif; ?>
                        <center>
                         <div class="abc scroll">
                         <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
@@ -264,11 +289,15 @@ $today = date('Y-m-d');
                                 if(isset($_GET["id"])){
                                     $id=$_GET["id"];
                                     
-                                    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id  order by schedule.scheduledate desc";
-                                    
-                                    $result= $database->query($sqlmain);
-                                    
-                                    if($result->rowCount() > 0) {
+                                    // Validate that id is numeric
+                                    if(!is_numeric($id)) {
+                                        echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;color:red;">Invalid session ID.</td></tr>';
+                                    } else {
+                                        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
+                                        
+                                        $result= $database->query($sqlmain);
+                                        
+                                        if($result->rowCount() > 0) {
                                         $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $scheduleid=$row["scheduleid"];
                                     $title=$row["title"];
@@ -287,47 +316,43 @@ $today = date('Y-m-d');
                                     ';
                                     echo '
                                     <td style="width: 50%;" rowspan="2">
-                                            <div  class="dashboard-items search-items"  >
+                                            <div  class="dashboard-items search-items"  style="border: 1px solid #e0e0e0; border-radius: 8px;">
                                                 <div style="width:100%">
-                                                        <div class="h1-search" style="font-size:25px;">
+                                                        <div class="h1-search" style="font-size:25px; color: #1976d2; font-weight: 600; margin-bottom: 20px;">
                                                             Session Details
-                                                        </div><br><br>
-                                                        <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                            Barber name:  &nbsp;&nbsp;<b>'.$docname.'</b><br>
-                                                            Barber Email:  &nbsp;&nbsp;<b>'.$docemail.'</b> 
                                                         </div>
-                                                        <div class="h3-search" style="font-size:18px;">
-                                                          
-                                                        </div><br>
-                                                        <div class="h3-search" style="font-size:18px;">
-                                                            Session Title: '.$title.'<br>
-                                                            Session Scheduled Date: '.$scheduledate.'<br>
-                                                            Session Starts : '.$scheduletime.'<br>
-                                                            Channeling fee : <b>LKR.2 000.00</b>
+                                                        <div class="h3-search" style="font-size:18px;line-height:35px; margin-bottom: 15px;">
+                                                            <strong style="color: #424242;">Barber Name:</strong>  &nbsp;&nbsp;<span style="color: #1976d2; font-weight: 600;">'.$docname.'</span><br>
+                                                            <strong style="color: #424242;">Barber Email:</strong>  &nbsp;&nbsp;<span style="color: #666;">'.$docemail.'</span> 
                                                         </div>
-                                                        <br>
+                                                        <div class="h3-search" style="font-size:18px; line-height: 30px;">
+                                                            <strong style="color: #424242;">Session Title:</strong> <span style="color: #1976d2;">'.$title.'</span><br>
+                                                            <strong style="color: #424242;">Scheduled Date:</strong> <span style="color: #666;">'.$scheduledate.'</span><br>
+                                                            <strong style="color: #424242;">Start Time:</strong> <span style="color: #1976d2; font-weight: 600;">'.substr($scheduletime,0,5).'</span><br>
+                                                            <strong style="color: #424242;">Channeling Fee:</strong> <span style="color: #d32f2f; font-weight: 600; font-size: 20px;">LKR.2 000.00</span>
+                                                        </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td style="width: 25%;">
-                                            <div  class="dashboard-items search-items"  >
+                                            <div  class="dashboard-items search-items"  style="border: 1px solid #e0e0e0; border-radius: 8px;">
                                                 <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
-                                                        <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
+                                                        <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center; color: #1976d2; font-weight: 600;">
                                                             Your Appointment Number
                                                         </div>
                                                         <center>
-                                                        <div class=" dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">'.$apponum.'</div>
+                                                        <div class=" dashboard-icons" style="margin: 20px 0; width:90%; font-size:70px; font-weight:800; text-align:center; color: white; background: linear-gradient(135deg, #1976d2, #1565c0); border-radius: 8px; padding: 20px;">'.$apponum.'</div>
                                                     </center>
-                                                        </div><br>
-                                                        <br>
-                                                        <br>
+                                                        <div style="text-align: center; color: #666; font-size: 14px; margin-top: 10px;">
+                                                            This is your unique appointment number
+                                                        </div>
                                                 </div>
                                             </div>
                                         </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <input type="Submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow"></button>
+                                                <input type="Submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 15px;padding-bottom: 15px;width:95%;text-align: center; background: #4caf50; border: none; border-radius: 8px; color: white; font-weight: 600; font-size: 16px; cursor: pointer; transition: background 0.2s ease;" value="Confirm Booking" name="booknow">
                                             </form>
                                             </td>
                                         </tr>
@@ -335,7 +360,12 @@ $today = date('Y-m-d');
                                     } else {
                                         echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">Session not found or invalid ID.</td></tr>';
                                     }
+                                    } // Close the else for numeric validation
+                                } else {
+                                    echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">No session ID provided.</td></tr>';
                                 }
+                            } else {
+                                echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;">No parameters provided.</td></tr>';
                             }
                             ?>
                             </tbody>

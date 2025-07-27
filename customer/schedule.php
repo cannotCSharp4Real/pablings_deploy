@@ -2,14 +2,20 @@
 // All PHP logic before any HTML output
 session_start();
 
+// Debug session information
+error_log("Schedule.php - Session data: " . print_r($_SESSION, true));
+
 if(isset($_SESSION["user"])){
     if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
+        error_log("Schedule.php - Session user is empty or usertype is not 'p'");
         header("location: ../login.php");
         exit();
     }else{
         $useremail=$_SESSION["user"];
+        error_log("Schedule.php - User email: " . $useremail);
     }
 }else{
+    error_log("Schedule.php - No session user found");
     header("location: ../login.php");
     exit();
 }

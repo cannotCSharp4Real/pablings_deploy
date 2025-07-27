@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22px" height="22px" viewBox="0 0 22 22" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" width="22px" height="22px" viewBox="0 0 22 22" version="1.1">
 <g id="surface1">
-<path style="fill-rule:nonzero;fill:rgb(10.196079%,37.254903%,67.843139%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(10.196079%,37.254903%,67.843139%);stroke-opacity:1;stroke-miterlimit:4;" d="M 410.023172 55.881859 L 467.490426 55.881859 L 467.490426 90.336499 L 410.023172 90.336499 Z M 410.023172 55.881859 " transform="matrix(0.0303842,-0.0303842,0.0303842,0.0303842,3.300902,14.252471)"/>
-<path style="fill-rule:nonzero;fill:rgb(10.196079%,37.254903%,67.843139%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(10.196079%,37.254903%,67.843139%);stroke-opacity:1;stroke-miterlimit:4;" d="M 369.44757 15.30764 L 426.910761 15.303577 L 426.913197 49.755781 L 369.450006 49.759844 Z M 369.44757 15.30764 " transform="matrix(0.0303884,-0.0303842,0.0303842,0.0303884,4.022796,12.506269)"/>
-<path style="fill-rule:nonzero;fill:rgb(10.196079%,37.254903%,67.843139%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(10.196079%,37.254903%,67.843139%);stroke-opacity:1;stroke-miterlimit:4;" d="M 450.702438 96.448953 L 508.169693 96.448953 L 508.105412 130.967875 L 450.638157 130.967875 Z M 450.702438 96.448953 " transform="matrix(0.0303842,-0.0303842,0.0303842,0.0303842,2.578395,15.998066)"/>
-<path style="fill-rule:nonzero;fill:rgb(10.196079%,37.254903%,67.843139%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(10.196079%,37.254903%,67.843139%);stroke-opacity:1;stroke-miterlimit:4;" d="M 471.258008 146.268159 L 430.622914 186.903253 L 406.260038 162.540378 L 446.895133 121.905283 L 430.622914 105.633064 L 389.987819 146.268159 L 365.624944 121.905283 L 406.260038 81.270189 L 377.806381 52.816532 L 389.987819 64.99797 L 349.443631 105.633064 L 324.989849 81.270189 L 365.624944 40.635094 L 345.35285 20.272094 L 239.719785 125.905158 C 226.26566 139.359284 226.26566 161.176784 239.719785 174.721815 L 337.171287 272.173317 C 350.716319 285.627442 372.533819 285.627442 385.987944 272.173317 L 491.621008 166.540253 Z M 349.443631 194.99391 C 340.443912 203.993629 325.808006 203.993629 316.899193 194.99391 C 307.899474 186.085097 307.899474 171.44919 316.899193 162.540378 C 325.898912 153.540659 340.443912 153.540659 349.352725 162.449472 C 358.352444 171.44919 358.352444 186.085097 349.443631 194.99391 Z M 349.443631 194.99391 " transform="matrix(0.0429701,0,0,0.0429701,0,0)"/>
-<path style="fill-rule:nonzero;fill:rgb(10.196079%,37.254903%,67.843139%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(10.196079%,37.254903%,67.843139%);stroke-opacity:1;stroke-miterlimit:4;" d="M 312.808412 296.536193 L 215.35691 199.084691 C 210.357066 194.175753 206.357191 188.630472 203.175472 182.630659 C 162.994909 228.538316 91.90622 311.081193 69.088751 345.35285 C 51.271126 371.988381 44.362251 403.623757 58.634532 429.077507 L 0.0909063 487.621133 L 24.453782 511.984009 L 82.997408 453.440383 C 108.451158 467.439946 139.995627 460.53107 166.540253 442.804351 C 200.81191 419.986882 283.354786 348.898193 329.262443 308.71763 C 323.353537 305.626818 317.808255 301.536036 312.808412 296.536193 Z M 312.808412 296.536193 " transform="matrix(0.0429701,0,0,0.0429701,0,0)"/>
+  <!-- Main clipper body -->
+  <rect x="4" y="8" width="12" height="6" rx="1" ry="1" style="fill:#0A76D8;stroke:#006dd3;stroke-width:0.5"/>
+  
+  <!-- Clipper head/blade area -->
+  <rect x="4" y="6" width="12" height="2" rx="0.5" ry="0.5" style="fill:#127edc;stroke:#0A76D8;stroke-width:0.3"/>
+  
+  <!-- Blade teeth -->
+  <path d="M 4.5 6 L 4.5 8 M 5.5 6 L 5.5 8 M 6.5 6 L 6.5 8 M 7.5 6 L 7.5 8 M 8.5 6 L 8.5 8 M 9.5 6 L 9.5 8 M 10.5 6 L 10.5 8 M 11.5 6 L 11.5 8 M 12.5 6 L 12.5 8 M 13.5 6 L 13.5 8 M 14.5 6 L 14.5 8 M 15.5 6 L 15.5 8" 
+        style="stroke:#006dd3;stroke-width:0.3;fill:none"/>
+  
+  <!-- Handle -->
+  <rect x="6" y="10" width="8" height="3" rx="1.5" ry="1.5" style="fill:#1b62b3;stroke:#0A76D8;stroke-width:0.3"/>
+  
+  <!-- Power button -->
+  <circle cx="8" cy="11.5" r="0.8" style="fill:#D8EBFA;stroke:#1b62b3;stroke-width:0.2"/>
+  
+  <!-- Cord -->
+  <path d="M 16 11.5 Q 18 11.5 19 12 Q 20 12.5 20 14" 
+        style="stroke:#006dd3;stroke-width:1.5;fill:none;stroke-linecap:round"/>
+  
+  <!-- Cord plug -->
+  <rect x="19.5" y="13.5" width="1.5" height="1" rx="0.2" ry="0.2" style="fill:#0A76D8;stroke:#006dd3;stroke-width:0.2"/>
 </g>
 </svg>

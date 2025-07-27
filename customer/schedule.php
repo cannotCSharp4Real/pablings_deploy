@@ -25,7 +25,7 @@ date_default_timezone_set('Asia/Kolkata');
 $today = date('Y-m-d');
 
 // Prepare main query
-$sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduledate>='$today'  order by schedule.scheduledate asc";
+$sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today'  order by schedule.scheduledate asc";
 $sqlpt1="";
 $insertkey="";
 $q='';
@@ -34,7 +34,7 @@ $searchtype="All";
 // Handle barber filter from barber.php
 if(isset($_GET['barber'])){
     $barberid = $_GET['barber'];
-    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduledate>='$today' and barber.docid=$barberid order by schedule.scheduledate asc";
+    $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and barber.id=$barberid order by schedule.scheduledate asc";
     $searchtype="Barber Sessions : ";
     $q='"';
 }
@@ -42,14 +42,18 @@ if(isset($_GET['barber'])){
 if($_POST){
     if(!empty($_POST["search"])){
         $keyword=$_POST["search"];
-        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
+        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
         $insertkey=$keyword;
         $searchtype="Search Result : ";
         $q='"';
     }
 }
 
-$result= $database->query($sqlmain);
+try {
+    $result= $database->query($sqlmain);
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
 $resultRows = $result->fetchAll();
 
 // Datalist population

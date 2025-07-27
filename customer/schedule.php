@@ -2,20 +2,14 @@
 // All PHP logic before any HTML output
 session_start();
 
-// Debug session information
-error_log("Schedule.php - Session data: " . print_r($_SESSION, true));
-
 if(isset($_SESSION["user"])){
     if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-        error_log("Schedule.php - Session user is empty or usertype is not 'p'");
         header("location: ../login.php");
         exit();
     }else{
         $useremail=$_SESSION["user"];
-        error_log("Schedule.php - User email: " . $useremail);
     }
 }else{
-    error_log("Schedule.php - No session user found");
     header("location: ../login.php");
     exit();
 }
@@ -54,7 +48,7 @@ if(isset($_GET['barber'])){
 if($_POST){
     if(!empty($_POST["search"])){
         $keyword=$_POST["search"];
-        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate like '$keyword%' or schedule.scheduledate like '%$keyword' or schedule.scheduledate like '%$keyword%' or schedule.scheduledate='$keyword' )  order by schedule.scheduledate asc";
+        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate='$keyword') order by schedule.scheduledate asc";
         $insertkey=$keyword;
         $searchtype="Search Result : ";
         $q='"';

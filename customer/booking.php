@@ -293,9 +293,13 @@ $today = date('Y-m-d');
                                     if(!is_numeric($id)) {
                                         echo '<tr><td colspan="2" style="text-align:center; padding: 40px 0;color:red;">Invalid session ID.</td></tr>';
                                     } else {
-                                        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.docid where schedule.scheduleid=$id  order by schedule.scheduledate desc";
+                                        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduleid=$id  order by schedule.scheduledate desc";
                                         
-                                        $result= $database->query($sqlmain);
+                                        try {
+                                            $result= $database->query($sqlmain);
+                                        } catch (PDOException $e) {
+                                            die("Database error: " . $e->getMessage());
+                                        }
                                         
                                         if($result->rowCount() > 0) {
                                         $row=$result->fetch(PDO::FETCH_ASSOC);

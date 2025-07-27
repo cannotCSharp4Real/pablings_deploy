@@ -163,16 +163,6 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
             }
         }
     </style>
-    <script>
-        function bookSession(scheduleId) {
-            console.log('Attempting to book session with ID:', scheduleId);
-            if (scheduleId && scheduleId !== '') {
-                window.location.href = 'booking.php?id=' + scheduleId;
-            } else {
-                alert('Invalid session ID. Please try again.');
-            }
-        }
-    </script>
 </head>
 <body>
  <div class="container">
@@ -304,10 +294,6 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
                                             $scheduledate = $row["scheduledate"];
                                             $scheduletime = $row["scheduletime"];
                                             if ($scheduleid == "") break;
-                                            
-                                            // Debug: Add a comment to verify the scheduleid
-                                            // echo "<!-- Debug: scheduleid = $scheduleid -->";
-                                            
                                             echo '
                                             <td style="width: 25%;">
                                                     <div  class="dashboard-items search-items"  >
@@ -322,7 +308,7 @@ $scheduleList = $database->query("select DISTINCT title from schedule;")->fetchA
                                                                     '.$scheduledate.'<br>Starts: <b>@'.substr($scheduletime,0,5).'</b> (24h)
                                                                 </div>
                                                                 <br>
-                                                                <button onclick="bookSession('.$scheduleid.')" class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Book Now</font></button>
+                                                                <a href="booking.php?id='.$scheduleid.'" ><button  class="login-btn btn-primary-soft btn "  style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Book Now</font></button></a>
                                                         </div>
                                                     </div>
                                                 </td>';

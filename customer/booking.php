@@ -63,6 +63,13 @@ if(isset($_GET["id"])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking</title>
     <style>
+        :root {
+            --primarycolor: #0A76D8;
+            --primarycolorhover: #006dd3;
+            --btnice: #D8EBFA;
+            --btnnicetext: #1b62b3;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -197,6 +204,126 @@ if(isset($_GET["id"])){
             font-size: 18px;
         }
         
+        /* Sidebar styling to match other customer pages */
+        .menu-container {
+            width: 100%;
+            border-spacing: 0;
+        }
+        
+        .profile-container {
+            border-bottom: 1.5px solid rgb(235, 235, 235);
+            padding-top: 18%;
+            padding-bottom: 12%;
+            text-align: center;
+        }
+        
+        .profile-title {
+            font-weight: 500;
+            color: #161c2d;
+            font-size: 22px;
+            margin: 0;
+            text-align: left;
+            padding-left: 8%;
+        }
+        
+        .profile-subtitle {
+            font-weight: 300;
+            color: #8492a6;
+            font-size: 15px;
+            margin: 0;
+            text-align: left;
+            padding-left: 8%;
+        }
+        
+        .logout-btn {
+            margin-top: 30px;
+            width: 85%;
+        }
+        
+        .menu-row {
+            padding: 6px;
+            color: #3b3b3b;
+            background-position: 30% 50%;
+            background-repeat: no-repeat;
+            transition: 0.5s;
+        }
+        
+        .menu-text {
+            padding-left: 40%;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .menu-active {
+            color: var(--primarycolor);
+            border-right: 7px solid var(--primarycolor);
+        }
+        
+        .menu-btn:hover {
+            background-color: var(--btnice);
+            color: var(--primarycolor);
+        }
+        
+        .non-style-link-menu:link, .non-style-link-menu:visited, .non-style-link-menu:active {
+            text-decoration: none;
+            color: #3b3b3b;
+        }
+        
+        .non-style-link-menu:hover {
+            text-decoration: none;
+            color: var(--primarycolor);
+        }
+        
+        .non-style-link-menu-active:link, .non-style-link-menu-active:visited, .non-style-link-menu-active:active {
+            text-decoration: none;
+            color: var(--primarycolor);
+        }
+        
+        .menu-icon-home {
+            background-image: url('../img/icons/home.svg');
+        }
+        
+        .menu-icon-barber {
+            background-image: url('../img/icons/barber.svg');
+        }
+        
+        .menu-icon-session {
+            background-image: url('../img/icons/schedule.svg');
+        }
+        
+        .menu-icon-appoinment {
+            background-image: url('../img/icons/book.svg');
+        }
+        
+        .menu-icon-settings {
+            background-image: url('../img/icons/settings.svg');
+        }
+        
+        .menu-icon-session:hover, .menu-icon-session-active {
+            color: white;
+            background-image: url('../img/icons/schedule-hover.svg');
+        }
+        
+        .menu-icon-home:hover, .menu-icon-home-active {
+            color: white;
+            background-image: url('../img/icons/home-iceblue.svg');
+        }
+        
+        .menu-icon-barber:hover, .menu-icon-barber-active {
+            color: var(--primarycolor);
+            background-image: url('../img/icons/barber-hover.svg');
+        }
+        
+        .menu-icon-appoinment:hover, .menu-icon-appoinment-active {
+            color: var(--primarycolor);
+            background-image: url('../img/icons/book-hover.svg');
+        }
+        
+        .menu-icon-settings:hover, .menu-icon-settings-active {
+            color: var(--primarycolor);
+            background-image: url('../img/icons/settings-iceblue.svg');
+        }
+        
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -215,13 +342,53 @@ if(isset($_GET["id"])){
 <body>
     <div class="container">
         <div class="menu">
-            <h3 style="margin-bottom: 20px;">Welcome, <?php echo htmlspecialchars($username); ?></h3>
-            <p style="margin-bottom: 20px; color: #666;"><?php echo htmlspecialchars($useremail); ?></p>
-            <a href="../logout.php" class="btn back-btn">Log out</a>
-            <br><br>
-            <a href="index.php" class="btn back-btn">Home</a>
-            <br><br>
-            <a href="schedule.php" class="btn back-btn">Back to Sessions</a>
+            <table class="menu-container" border="0">
+                <tr>
+                    <td style="padding:10px" colspan="2">
+                        <table border="0" class="profile-container">
+                            <tr>
+                                <td width="30%" style="padding-left:20px">
+                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                                </td>
+                                <td style="padding:0px;margin:0px;">
+                                    <p class="profile-title"><?php echo htmlspecialchars($username) ?></p>
+                                    <p class="profile-subtitle"><?php echo htmlspecialchars($useremail) ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a href="../logout.php"><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-home">
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Home</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-barber">
+                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">All Barber</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-session menu-active menu-icon-session-active">
+                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Scheduled Sessions</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-appoinment">
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-settings">
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a>
+                    </td>
+                </tr>
+            </table>
         </div>
         
         <div class="dash-body">

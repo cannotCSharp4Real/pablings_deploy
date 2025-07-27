@@ -48,7 +48,18 @@ if(isset($_GET['barber'])){
 if($_POST){
     if(!empty($_POST["search"])){
         $keyword=$_POST["search"];
-        $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate='$keyword') order by schedule.scheduledate asc";
+        
+        // Check if the keyword is a valid date format (YYYY-MM-DD)
+        $isDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', $keyword);
+        
+        if($isDate) {
+            // If it's a date, include date comparison
+            $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%' or schedule.scheduledate='$keyword') order by schedule.scheduledate asc";
+        } else {
+            // If it's not a date, exclude date comparison
+            $sqlmain= "select * from schedule inner join barber on schedule.docid=barber.id where schedule.scheduledate>='$today' and (barber.docname='$keyword' or barber.docname like '$keyword%' or barber.docname like '%$keyword' or barber.docname like '%$keyword%' or schedule.title='$keyword' or schedule.title like '$keyword%' or schedule.title like '%$keyword' or schedule.title like '%$keyword%') order by schedule.scheduledate asc";
+        }
+        
         $insertkey=$keyword;
         $searchtype="Search Result : ";
         $q='"';

@@ -491,7 +491,7 @@ if(isset($_POST["booknow"])){
                         <h2></h2>
                         <a class="close" href="barber.php">&times;</a>
                         <div class="content">
-                            eDoc Web App<br>
+                            Pablings Barbershop<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">

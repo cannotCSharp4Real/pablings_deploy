@@ -92,10 +92,6 @@ if(isset($_GET["id"])){
             background: #f7f7f7;
             min-width: 0;
         }
-        .logout-btn {
-            width: 90%;
-            margin: 20px 5% 0 5%;
-        }
         .profile-title, .profile-subtitle {
             white-space: normal;
             word-break: break-all;
@@ -196,18 +192,6 @@ if(isset($_GET["id"])){
             padding: 20px;
             margin: 16px 0;
             display: block;
-        }
-        
-        .btn {
-            cursor: pointer;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
         }
         
         .btn-primary {

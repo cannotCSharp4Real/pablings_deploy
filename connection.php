@@ -35,7 +35,7 @@ try {
     
     // Updated fallback URL (make sure this is correct)
     if (!$database_url) {
-        $database_url = "postgresql://pablings_dp_jdd3_user:EDy75KM1w3BN7vbxxc1Par4i26N1ho9p@dpg-d1n4eper433s73bbh8g0-a.singapore-postgres.render.com/pablings_dp_jdd3";
+        $database_url = "postgresql://pablings_l11r_user:PhrHoLeTMyXpgsdxK5TKDIq61s8Y0Qw3@dpg-d23mh52dbo4c738ddt70-a.singapore-postgres.render.com/pablings_l11r";
     }
     
     // Parse the database URL

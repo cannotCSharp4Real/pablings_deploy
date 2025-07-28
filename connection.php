@@ -115,6 +115,11 @@ try {
     // Enable debug mode to see actual error
     $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
     
+    // In debug mode, show the actual error immediately
+    if ($debug_mode) {
+        die("DEBUG - Actual Error: " . htmlspecialchars($error_message));
+    }
+    
     // Provide specific error messages without exposing sensitive information
     if (strpos($error_message, 'could not find driver') !== false) {
         $user_error = "Database driver not available. Please contact support.";
@@ -132,12 +137,7 @@ try {
         $user_error = "Database connection failed. Please try again later.";
     }
     
-    // In development, show more details
-    if ($debug_mode) {
-        die("Connection failed: " . htmlspecialchars($error_message));
-    } else {
-        die("Connection failed: " . $user_error);
-    }
+    die("Connection failed: " . $user_error);
     
 } catch(Exception $e) {
     error_log("General connection error: " . $e->getMessage());

@@ -33,10 +33,10 @@ include("../connection.php");
         
         if ($password==$cpassword){
             $error='3';
-            $result= $database->query("select barber.docid from barber inner join webuser on barber.docemail=webuser.email where webuser.email='$email';");
+            $result= $database->query("select barber.id from barber inner join webuser on barber.docemail=webuser.email where webuser.email='$email';");
             //$resultqq= $database->query("select * from barber where docid='$id';");
             if($result->rowCount()==1){
-                $id2=$result->fetch(PDO::FETCH_ASSOC)["docid"];
+                $id2=$result->fetch(PDO::FETCH_ASSOC)["id"];
             }else{
                 $id2=$id;
             }
@@ -51,7 +51,7 @@ include("../connection.php");
             }else{
 
                 //$sql1="insert into barber(docemail,docname,docpassword,specialties) values('$email','$name','$password',$spec);";
-                $sql1="update barber set docemail='$email',docname='$name',docpassword='$password',specialties=$spec where docid=$id ;";
+                $sql1="update barber set docemail='$email',docname='$name',docpassword='$password',specialties=$spec where id=$id ;";
                 $database->query($sql1);
                 
                 $sql1="update webuser set email='$email' where email='$oldemail' ;";

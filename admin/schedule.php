@@ -96,6 +96,26 @@ include("../connection.php");
         .popup{
             animation: transitionIn-Y-bottom 0.5s;
         }
+        .overlay {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: block;
+        }
+        .popup {
+            margin: 70px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+            z-index: 1001;
+        }
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
@@ -153,6 +173,16 @@ include("../connection.php");
             window.print();
             document.body.innerHTML = originalContents;
             location.reload();
+        }
+        
+        // Ensure popup is visible when view action is triggered
+        window.onload = function() {
+            if(window.location.href.indexOf('action=view') > -1) {
+                var popup = document.getElementById('popup1');
+                if(popup) {
+                    popup.style.display = 'block';
+                }
+            }
         }
     </script>
 </head>
@@ -496,8 +526,29 @@ include("../connection.php");
             </div>
             '; 
         }elseif($action=='view'){
+            // Debug: Check if view action is triggered
+            error_log("View action triggered for schedule ID: " . $id);
             $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where  schedule.scheduleid=$id";
             $result= $database->query($sqlmain);
+            
+            if($result->rowCount() == 0) {
+                echo '<div id="popup1" class="overlay" style="display: block; z-index: 1000;">
+                        <div class="popup" style="width: 80%; max-width: 800px; height: auto; margin: 50px auto;">
+                        <center>
+                            <h2>Error</h2>
+                            <a class="close" href="schedule.php">&times;</a>
+                            <div class="content">
+                                Schedule not found with ID: '.$id.'
+                            </div>
+                            <div style="display: flex;justify-content: center;">
+                            <a href="schedule.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
+                            </div>
+                        </center>
+                </div>
+                </div>';
+                exit();
+            }
+            
             $row=$result->fetch(PDO::FETCH_ASSOC);
             $docname=$row["docname"];
             $scheduleid=$row["scheduleid"];
@@ -551,8 +602,8 @@ include("../connection.php");
             echo '</div>'; // End of printable area
             
             echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup" style="width: 100%; height: auto">
+            <div id="popup1" class="overlay" style="display: block; z-index: 1000;">
+                    <div class="popup" style="width: 80%; max-width: 800px; height: auto; margin: 50px auto;">
                     <center>
                         <h2></h2>
                         <a class="close" href="schedule.php">&times;</a>
@@ -564,7 +615,7 @@ include("../connection.php");
                         <tr>
                             <td colspan="2" style="text-align: center; padding-top: 20px;">
                                 <button class="login-btn btn-primary btn" onclick="printPage()" style="margin: 10px;">
-                                    <img src="../img/icons/print.svg" width="15px" style="margin-right: 8px;">Print Session Details
+                                    <span style="font-size: 18px; margin-right: 8px;">🖨️</span>Print Session Details
                                 </button>
                             </td>
                         </tr>

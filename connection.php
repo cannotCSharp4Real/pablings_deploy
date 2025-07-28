@@ -3,12 +3,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Function to check available PDO drivers
-function checkPDODrivers() {
-    $drivers = PDO::getAvailableDrivers();
-    return $drivers;
-}
-
 // Function to parse database URL
 function parseDatabaseUrl($url) {
     $parsed = parse_url($url);
@@ -22,24 +16,10 @@ function parseDatabaseUrl($url) {
 }
 
 try {
-    // Check available PDO drivers
-    $available_drivers = checkPDODrivers();
-    
-    // Debug: Show available drivers
-    $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
-    if ($debug_mode) {
-        echo "<!-- DEBUG: Available PDO drivers: " . implode(', ', $available_drivers) . " -->\n";
-    }
-    
-    // Check if PostgreSQL driver is available
-    if (!in_array('pgsql', $available_drivers)) {
-        throw new Exception("PostgreSQL PDO driver (pdo_pgsql) is not installed. Available drivers: " . implode(', ', $available_drivers));
-    }
-    
     // Get database URL from environment
     $database_url = $_ENV['DATABASE_URL'] ?? getenv('DATABASE_URL');
     
-    // Updated fallback URL (make sure this is correct)
+    // Updated fallback URL with new credentials
     if (!$database_url) {
         $database_url = "postgresql://pablings_l11r_user:PhrHoLeTMyXpgsdxK5TKDIq61s8Y0Qw3@dpg-d23mh52dbo4c738ddt70-a.singapore-postgres.render.com/pablings_l11r";
     }
@@ -50,11 +30,6 @@ try {
     // Validate required configuration
     if (empty($db_config['host']) || empty($db_config['database']) || empty($db_config['username'])) {
         throw new Exception("Invalid database configuration. Missing required parameters.");
-    }
-    
-    // Debug: Show connection details (only in debug mode)
-    if ($debug_mode) {
-        echo "<!-- DEBUG: Connecting to " . $db_config['host'] . ":" . $db_config['port'] . " database: " . $db_config['database'] . " -->\n";
     }
     
     // Build DSN string with proper SSL configuration for Render
@@ -75,32 +50,8 @@ try {
         PDO::ATTR_PERSISTENT => false,
     ];
     
-    // Create PDO connection with retry logic
-    $max_retries = 3;
-    $retry_delay = 1; // seconds
-    $pdo = null;
-    
-    for ($i = 0; $i < $max_retries; $i++) {
-        try {
-            if ($debug_mode) {
-                echo "<!-- DEBUG: Attempt " . ($i + 1) . " to connect to database -->\n";
-            }
-            $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], $options);
-            if ($debug_mode) {
-                echo "<!-- DEBUG: Connection successful on attempt " . ($i + 1) . " -->\n";
-            }
-            break; // Success, exit retry loop
-        } catch (PDOException $e) {
-            if ($debug_mode) {
-                echo "<!-- DEBUG: Connection attempt " . ($i + 1) . " failed: " . htmlspecialchars($e->getMessage()) . " -->\n";
-            }
-            if ($i == $max_retries - 1) {
-                throw $e; // Last attempt failed, throw the exception
-            }
-            sleep($retry_delay);
-            $retry_delay *= 2; // Exponential backoff
-        }
-    }
+    // Create PDO connection
+    $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], $options);
     
     // Test the connection
     $test_query = $pdo->query('SELECT 1 as test');
@@ -117,11 +68,6 @@ try {
     $conn = $pdo;
     $database = $pdo;
     
-    // Success message (only in development)
-    // if (isset($_GET['debug']) || (defined('DEBUG') && DEBUG)) {
-    //     echo "<!-- DEBUG: Database connection successful -->\n";
-    // }
-    
 } catch(PDOException $e) {
     $error_message = $e->getMessage();
     error_log("Database connection error: " . $error_message);
@@ -134,24 +80,7 @@ try {
         die("DEBUG - Actual Error: " . htmlspecialchars($error_message));
     }
     
-    // Provide specific error messages without exposing sensitive information
-    if (strpos($error_message, 'could not find driver') !== false) {
-        $user_error = "Database driver not available. Please contact support.";
-    } elseif (strpos($error_message, 'could not translate host name') !== false || 
-              strpos($error_message, 'Name or service not known') !== false) {
-        $user_error = "Database server is currently unavailable. Please try again later.";
-    } elseif (strpos($error_message, 'password authentication failed') !== false) {
-        $user_error = "Database authentication error. Please contact support.";
-    } elseif (strpos($error_message, 'database') !== false && strpos($error_message, 'does not exist') !== false) {
-        $user_error = "Database configuration error. Please contact support.";
-    } elseif (strpos($error_message, 'Connection timed out') !== false || 
-              strpos($error_message, 'timeout') !== false) {
-        $user_error = "Database connection timeout. Please try again later.";
-    } else {
-        $user_error = "Database connection failed. Please try again later.";
-    }
-    
-    die("Connection failed: " . $user_error);
+    die("Connection failed: Database service unavailable. Please try again later.");
     
 } catch(Exception $e) {
     error_log("General connection error: " . $e->getMessage());

@@ -509,8 +509,19 @@ include("../connection.php");
         }elseif($action=='view'){
             // View action triggered
             error_log("View action triggered for schedule ID: " . $id);
+            echo "<!-- DEBUG: View action triggered for schedule ID: " . $id . " -->";
             $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where  schedule.scheduleid=$id";
             $result= $database->query($sqlmain);
+            
+            // Debug: Check if query executed successfully
+            if(!$result) {
+                echo '<div id="error-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 2px solid red; padding: 20px; z-index: 9999;">
+                    <h2 style="color: red;">Database Error</h2>
+                    <p>Failed to execute query for schedule ID: '.$id.'</p>
+                    <button onclick="document.getElementById(\'error-popup\').style.display=\'none\'" style="background: #cc0000; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+                </div>';
+                exit();
+            }
             
             if($result->rowCount() == 0) {
                 echo '<div id="popup1" class="overlay" style="display: block; z-index: 1000;">
@@ -532,6 +543,15 @@ include("../connection.php");
             
             $row=$result->fetch(PDO::FETCH_ASSOC);
             $docname=$row["docname"];
+            
+            // Simple test popup to verify view action is working
+            echo '<div id="test-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 2px solid black; padding: 20px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                <h2 style="margin: 0 0 15px 0; color: #333;">Test Popup - View Working</h2>
+                <p><strong>Schedule ID:</strong> '.$id.'</p>
+                <p><strong>Title:</strong> '.$row["title"].'</p>
+                <p><strong>Barber:</strong> '.$row["docname"].'</p>
+                <button onclick="document.getElementById(\'test-popup\').style.display=\'none\'" style="background: #0066cc; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close Test</button>
+            </div>';
             
 
             $scheduleid=$row["scheduleid"];

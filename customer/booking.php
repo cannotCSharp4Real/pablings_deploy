@@ -66,41 +66,75 @@ if(isset($_GET["id"])){
     <link rel="stylesheet" href="../css/admin.css">
     <title>Booking</title>
     <style>
-        :root {
-            --primarycolor: #0A76D8;
-            --primarycolorhover: #006dd3;
-            --btnice: #D8EBFA;
-            --btnnicetext: #1b62b3;
-        }
-        
-        * {
+        body {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', Arial, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: #f7f7f7;
-            line-height: 1.6;
         }
-        
         .container {
             display: flex;
             min-height: 100vh;
         }
-        
         .menu {
             width: 240px;
             background: #fff;
             border-right: 1px solid #e0e0e0;
-            padding: 20px;
+            min-height: 100vh;
+            padding-top: 0;
+            position: sticky;
+            top: 0;
         }
-        
         .dash-body {
             flex: 1;
-            padding: 32px 24px;
+            padding: 16px 8px 16px 8px;
             background: #f7f7f7;
+            min-width: 0;
+        }
+        .logout-btn {
+            width: 90%;
+            margin: 20px 5% 0 5%;
+        }
+        .profile-title, .profile-subtitle {
+            white-space: normal;
+            word-break: break-all;
+        }
+        .heading-main12 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+        .heading-sub12 {
+            font-size: 16px;
+            color: #888;
+        }
+        .btn-primary-soft, .btn-primary {
+            min-width: 120px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-icon-back {
+            margin-bottom: 16px;
+        }
+        .filter-container {
+            margin: 16px 0 24px 0;
+        }
+        .abc.scroll {
+            max-height: 350px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 16px;
+        }
+        .sub-table {
+            width: 100%;
+        }
+        .notfound-img {
+            width: 120px;
+            margin: 24px 0 12px 0;
+            display: block;
         }
         
         .booking-container {
@@ -207,82 +241,32 @@ if(isset($_GET["id"])){
             font-size: 18px;
         }
         
-        /* Simplified sidebar styling */
-        .profile-section {
-            padding: 20px 0;
-            border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 20px;
-        }
-        
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            text-decoration: none;
-            color: #3b3b3b;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            gap: 12px;
-        }
-        
-        .nav-item:hover {
-            background-color: #f5f5f5;
-            color: var(--primarycolor);
-        }
-        
-        .nav-item.active {
-            background-color: var(--btnice);
-            color: var(--primarycolor);
-            border-right: 3px solid var(--primarycolor);
-        }
-        
-        .nav-icon {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-        
-        .nav-text {
-            font-weight: 500;
-            font-size: 16px;
-        }
-        
-        .logout-btn {
-            background-color: #6c757d;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.3s;
-        }
-        
-        .logout-btn:hover {
-            background-color: #5a6268;
-            color: #fff;
-            text-decoration: none;
-        }
-        
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
             }
             .menu {
                 width: 100%;
+                min-height: unset;
                 border-right: none;
                 border-bottom: 1px solid #e0e0e0;
             }
+            .dash-body {
+                padding: 16px 8px;
+            }
             .booking-container {
                 flex-direction: column;
+            }
+        }
+        @media (max-width: 600px) {
+            .heading-main12 {
+                font-size: 18px;
+            }
+            .dash-body {
+                padding: 8px 2px;
+            }
+            .logout-btn {
+                font-size: 14px;
             }
         }
     </style>

@@ -287,38 +287,53 @@ if(isset($_GET["id"])){
 <body>
     <div class="container">
         <div class="menu">
-            <div class="profile-section">
-                <h3 style="margin-bottom: 20px; color: #161c2d; font-size: 22px; font-weight: 500;"><?php echo htmlspecialchars($username); ?></h3>
-                <p style="margin-bottom: 20px; color: #8492a6; font-size: 15px;"><?php echo htmlspecialchars($useremail); ?></p>
-                <a href="../logout.php" class="btn logout-btn">Log out</a>
-            </div>
-            
-            <div class="nav-menu">
-                <a href="index.php" class="nav-item">
-                    <img src="../img/icons/home.svg" alt="Home" class="nav-icon">
-                    <span class="nav-text">Home</span>
-                </a>
-                
-                <a href="barber.php" class="nav-item">
-                    <img src="../img/icons/barber.svg" alt="All Barber" class="nav-icon">
-                    <span class="nav-text">All Barber</span>
-                </a>
-                
-                <a href="schedule.php" class="nav-item active">
-                    <img src="../img/icons/schedule-hover.svg" alt="Scheduled Sessions" class="nav-icon">
-                    <span class="nav-text">Scheduled Sessions</span>
-                </a>
-                
-                <a href="appointment.php" class="nav-item">
-                    <img src="../img/icons/book.svg" alt="My Bookings" class="nav-icon">
-                    <span class="nav-text">My Bookings</span>
-                </a>
-                
-                <a href="settings.php" class="nav-item">
-                    <img src="../img/icons/settings.svg" alt="Settings" class="nav-icon">
-                    <span class="nav-text">Settings</span>
-                </a>
-            </div>
+            <table class="menu-container" border="0">
+                <tr>
+                    <td style="padding:10px" colspan="2">
+                        <table border="0" class="profile-container">
+                            <tr>
+                                <td width="30%" style="padding-left:20px" >
+                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                                </td>
+                                <td style="padding:0px;margin:0px;">
+                                    <p class="profile-title" style="white-space:normal;word-break:break-all;"><?php echo htmlspecialchars($username) ?></p>
+                                    <p class="profile-subtitle" style="white-space:normal;word-break:break-all;"><?php echo htmlspecialchars($useremail) ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-home">
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Home</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-barber">
+                        <a href="barber.php" class="non-style-link-menu"><div><p class="menu-text">All Barber</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-session menu-active menu-icon-session-active">
+                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Scheduled Sessions</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-appoinment">
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-settings">
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a>
+                    </td>
+                </tr>
+            </table>
         </div>
         
         <div class="dash-body">

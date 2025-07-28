@@ -249,9 +249,6 @@ if(isset($_GET["id"])){
             .dash-body {
                 padding: 8px 2px;
             }
-            .logout-btn {
-                font-size: 14px;
-            }
         }
     </style>
 </head>

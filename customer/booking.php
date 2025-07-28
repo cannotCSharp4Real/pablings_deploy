@@ -26,10 +26,29 @@ if(isset($_POST["booknow"])){
     $date = $_POST["date"];
     $time = $_POST["time"]; // Get the time from the form
     
-    $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate, appotime) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$userid, $scheduleid, $apponum, $date, $time]);
-    header("Location: appointment.php?action=booking-added&id=$apponum");
-    exit();
+    try {
+        // Check if appointment number already exists
+        $check_stmt = $database->prepare("SELECT COUNT(*) FROM appointment WHERE scheduleid = ? AND apponum = ?");
+        $check_stmt->execute([$scheduleid, $apponum]);
+        $exists = $check_stmt->fetchColumn();
+        
+        if($exists > 0) {
+            // Find the next available appointment number
+            $next_stmt = $database->prepare("SELECT MAX(apponum) FROM appointment WHERE scheduleid = ?");
+            $next_stmt->execute([$scheduleid]);
+            $max_apponum = $next_stmt->fetchColumn();
+            $apponum = $max_apponum + 1;
+        }
+        
+        $stmt = $database->prepare("INSERT INTO appointment (pid, scheduleid, apponum, appodate, appotime) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$userid, $scheduleid, $apponum, $date, $time]);
+        header("Location: appointment.php?action=booking-added&id=$apponum");
+        exit();
+    } catch (PDOException $e) {
+        // Handle the error gracefully
+        error_log("Booking error: " . $e->getMessage());
+        $error_message = "Booking failed. Please try again.";
+    }
 }
 
 date_default_timezone_set('Asia/Kolkata');
@@ -49,6 +68,15 @@ if(isset($_GET["id"])){
         $sql2 = "select * from appointment where scheduleid=$id";
         $result12 = $database->query($sql2);
         $apponum = $result12->rowCount() + 1;
+        
+        // Check if this appointment number already exists for this schedule
+        $check_sql = "select * from appointment where scheduleid=$id and apponum=$apponum";
+        $check_result = $database->query($check_sql);
+        while($check_result->rowCount() > 0) {
+            $apponum++;
+            $check_sql = "select * from appointment where scheduleid=$id and apponum=$apponum";
+            $check_result = $database->query($check_sql);
+        }
         }
     } catch (Exception $e) {
         error_log("Database error in booking.php: " . $e->getMessage());
@@ -305,6 +333,11 @@ if(isset($_GET["id"])){
         </div>
         
         <div class="dash-body">
+                        <?php if(isset($error_message)): ?>
+                            <div style="background: #ffebee; color: #c62828; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+                                <?php echo htmlspecialchars($error_message); ?>
+                            </div>
+                        <?php endif; ?>
                         <?php if($sessionData): ?>
                         <div class="booking-container">
                             <div class="session-details">

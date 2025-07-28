@@ -96,26 +96,7 @@ include("../connection.php");
         .popup{
             animation: transitionIn-Y-bottom 0.5s;
         }
-        .overlay {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            display: block;
-        }
-        .popup {
-            margin: 70px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            width: 80%;
-            max-width: 800px;
-            position: relative;
-            z-index: 1001;
-        }
+
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
@@ -528,6 +509,7 @@ include("../connection.php");
         }elseif($action=='view'){
             // Debug: Check if view action is triggered
             error_log("View action triggered for schedule ID: " . $id);
+            echo "<!-- DEBUG: View action triggered for schedule ID: " . $id . " -->";
             $sqlmain= "select schedule.scheduleid,schedule.title,barber.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join barber on schedule.docid=barber.id  where  schedule.scheduleid=$id";
             $result= $database->query($sqlmain);
             
@@ -551,6 +533,14 @@ include("../connection.php");
             
             $row=$result->fetch(PDO::FETCH_ASSOC);
             $docname=$row["docname"];
+            
+            // Simple test popup first
+            echo '<div id="test-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 2px solid black; padding: 20px; z-index: 9999;">
+                <h2>Test Popup - View Action Working</h2>
+                <p>Schedule ID: '.$id.'</p>
+                <p>Title: '.$row["title"].'</p>
+                <button onclick="document.getElementById(\'test-popup\').style.display=\'none\'">Close</button>
+            </div>';
             $scheduleid=$row["scheduleid"];
             $title=$row["title"];
             $scheduledate=$row["scheduledate"];
@@ -602,8 +592,8 @@ include("../connection.php");
             echo '</div>'; // End of printable area
             
             echo '
-            <div id="popup1" class="overlay" style="display: block; z-index: 1000;">
-                    <div class="popup" style="width: 80%; max-width: 800px; height: auto; margin: 50px auto;">
+            <div id="popup1" class="overlay" style="display: block !important;">
+                    <div class="popup" style="width: 80%; max-width: 800px;">
                     <center>
                         <h2></h2>
                         <a class="close" href="schedule.php">&times;</a>

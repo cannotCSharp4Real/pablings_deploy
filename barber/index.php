@@ -164,29 +164,29 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                     </table>
                     </td>
                 </tr>
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-dashbord menu-active menu-icon-dashbord-active" >
-                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></a></div></a>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-dashbord menu-active menu-icon-dashbord-active">
+                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Appointments</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Appointments</p></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-session">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">My Sessions</p></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-customer">
-                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">My Customer</p></a></div>
+                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">My Customer</p></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-settings">
-                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a>
                     </td>
                 </tr>
             </table>

@@ -6,8 +6,17 @@ require_once("connection.php");
 
 // Check if connection was successful
 if (!isset($pdo)) {
-    die("Database connection failed. Please check your database configuration.");
+    $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
+    if ($debug_mode) {
+        die("DEBUG - PDO connection not established. Check connection.php for errors.");
+    } else {
+        die("Database connection failed. Please check your database configuration.");
+    }
 }
+
+// Unset all the server-side variables
+$_SESSION["user"] = "";
+$_SESSION["usertype"] = "";
 
 // Set the timezone
 date_default_timezone_set('Asia/Manila'); // Changed to Philippines timezone

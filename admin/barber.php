@@ -149,12 +149,12 @@ include("../connection.php");
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-dashbord" >
-                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-barber menu-active menu-icon-barber-active">
-                        <a href="barber.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Barber</p></a></div>
+                        <a href="barber.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Barber</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -164,12 +164,12 @@ include("../connection.php");
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-customer">
-                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></a></div>
+                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></div></a>
                     </td>
                 </tr>
 
@@ -237,10 +237,17 @@ include("../connection.php");
                                     // Handle specialties safely
                                     $spcil_name = "Not specified";
                                     if ($spe && !empty($spe)) {
-                                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
-                                        if ($spcil_res && $spcil_res->rowCount() > 0) {
-                                            $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
-                                            $spcil_name = $spcil_array["sname"];
+                                        // Check if specialties is stored as text or integer
+                                        if (is_numeric($spe)) {
+                                            // If it's a numeric ID, query the specialties table
+                                            $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                                            if ($spcil_res && $spcil_res->rowCount() > 0) {
+                                                $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                                                $spcil_name = $spcil_array["sname"];
+                                            }
+                                        } else {
+                                            // If it's stored as text, use it directly
+                                            $spcil_name = $spe;
                                         }
                                     }
                                     echo '<tr>';
@@ -298,10 +305,17 @@ include("../connection.php");
                     // Handle specialties safely
                     $spcil_name = "Not specified";
                     if ($spe && !empty($spe)) {
-                        $spcil_res = $database->query("select sname from specialties where id='$spe'");
-                        if ($spcil_res && $spcil_res->rowCount() > 0) {
-                            $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
-                            $spcil_name = $spcil_array["sname"];
+                        // Check if specialties is stored as text or integer
+                        if (is_numeric($spe)) {
+                            // If it's a numeric ID, query the specialties table
+                            $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                            if ($spcil_res && $spcil_res->rowCount() > 0) {
+                                $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                                $spcil_name = $spcil_array["sname"];
+                            }
+                        } else {
+                            // If it's stored as text, use it directly
+                            $spcil_name = $spe;
                         }
                     }
                     echo '
@@ -527,10 +541,17 @@ include("../connection.php");
             // Handle specialties safely
             $spcil_name = "Not specified";
             if ($spe && !empty($spe)) {
-                $spcil_res = $database->query("select sname from specialties where id='$spe'");
-                if ($spcil_res && $spcil_res->rowCount() > 0) {
-                    $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
-                    $spcil_name = $spcil_array["sname"];
+                // Check if specialties is stored as text or integer
+                if (is_numeric($spe)) {
+                    // If it's a numeric ID, query the specialties table
+                    $spcil_res = $database->query("select sname from specialties where id='$spe'");
+                    if ($spcil_res && $spcil_res->rowCount() > 0) {
+                        $spcil_array = $spcil_res->fetch(PDO::FETCH_ASSOC);
+                        $spcil_name = $spcil_array["sname"];
+                    }
+                } else {
+                    // If it's stored as text, use it directly
+                    $spcil_name = $spe;
                 }
             }
 

@@ -21,7 +21,7 @@ try {
     
     // Updated fallback URL with new credentials
     if (!$database_url) {
-        $database_url = "postgresql://pablings_l11r_user:PhrHoLeTMyXpgsdxK5TKDIq61s8Y0Qw3@dpg-d23mh52dbo4c738ddt70-a.singapore-postgres.render.com/pablings_l11r";
+        $database_url = "postgresql://pablings_l11r_user:PhrHoLeTMyXpgsdxK5TKDIq61s8Y0Qw3@dpg-d23mh52dbo4c738ddt70-a.singapore-postgres.render.com/pablings_111r";
     }
     
     // Parse the database URL

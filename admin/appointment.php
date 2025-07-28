@@ -149,12 +149,12 @@ $list110 = $database->query("select * from appointment;");
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-dashbord" >
-                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-barber ">
-                        <a href="barber.php" class="non-style-link-menu "><div><p class="menu-text">Barber</p></a></div>
+                        <a href="barber.php" class="non-style-link-menu "><div><p class="menu-text">Barber</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -164,12 +164,12 @@ $list110 = $database->query("select * from appointment;");
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment menu-active menu-icon-appoinment-active">
-                        <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Appointment</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Appointment</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-customer">
-                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></a></div>
+                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></div></a>
                     </td>
                 </tr>
             </table>

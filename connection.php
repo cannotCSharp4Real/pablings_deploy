@@ -25,6 +25,12 @@ try {
     // Check available PDO drivers
     $available_drivers = checkPDODrivers();
     
+    // Debug: Show available drivers
+    $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
+    if ($debug_mode) {
+        echo "<!-- DEBUG: Available PDO drivers: " . implode(', ', $available_drivers) . " -->\n";
+    }
+    
     // Check if PostgreSQL driver is available
     if (!in_array('pgsql', $available_drivers)) {
         throw new Exception("PostgreSQL PDO driver (pdo_pgsql) is not installed. Available drivers: " . implode(', ', $available_drivers));
@@ -47,7 +53,6 @@ try {
     }
     
     // Debug: Show connection details (only in debug mode)
-    $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
     if ($debug_mode) {
         echo "<!-- DEBUG: Connecting to " . $db_config['host'] . ":" . $db_config['port'] . " database: " . $db_config['database'] . " -->\n";
     }
@@ -77,9 +82,18 @@ try {
     
     for ($i = 0; $i < $max_retries; $i++) {
         try {
+            if ($debug_mode) {
+                echo "<!-- DEBUG: Attempt " . ($i + 1) . " to connect to database -->\n";
+            }
             $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], $options);
+            if ($debug_mode) {
+                echo "<!-- DEBUG: Connection successful on attempt " . ($i + 1) . " -->\n";
+            }
             break; // Success, exit retry loop
         } catch (PDOException $e) {
+            if ($debug_mode) {
+                echo "<!-- DEBUG: Connection attempt " . ($i + 1) . " failed: " . htmlspecialchars($e->getMessage()) . " -->\n";
+            }
             if ($i == $max_retries - 1) {
                 throw $e; // Last attempt failed, throw the exception
             }

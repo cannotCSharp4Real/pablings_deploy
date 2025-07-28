@@ -18,10 +18,10 @@
         //import database
         include("../connection.php");
         $id=$_GET["id"];
-        $result001= $database->query("select * from doctor where docid=$id;");
+        $result001= $database->query("select * from barber where id=$id;");
         $email=($result001->fetch(PDO::FETCH_ASSOC))["docemail"];
         $sql= $database->query("delete from webuser where email='$email';");
-        $sql= $database->query("delete from doctor where docemail='$email';");
+        $sql= $database->query("delete from barber where docemail='$email';");
         //print_r($email);
         header("location: barber.php");
     }

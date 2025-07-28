@@ -46,23 +46,28 @@ try {
         throw new Exception("Invalid database configuration. Missing required parameters.");
     }
     
-    // Build DSN string with proper SSL configuration
+    // Debug: Show connection details (only in debug mode)
+    $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
+    if ($debug_mode) {
+        echo "<!-- DEBUG: Connecting to " . $db_config['host'] . ":" . $db_config['port'] . " database: " . $db_config['database'] . " -->\n";
+    }
+    
+    // Build DSN string with proper SSL configuration for Render
     $dsn = sprintf(
-        "pgsql:host=%s;port=%d;dbname=%s;sslmode=require;options='--client_encoding=UTF8'",
+        "pgsql:host=%s;port=%d;dbname=%s;sslmode=require",
         $db_config['host'],
         $db_config['port'],
         $db_config['database']
     );
     
-    // PDO options with improved configuration
+    // PDO options optimized for PostgreSQL
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
         PDO::ATTR_STRINGIFY_FETCHES => false,
-        PDO::ATTR_TIMEOUT => 30,
+        PDO::ATTR_TIMEOUT => 60, // Increased timeout for external connections
         PDO::ATTR_PERSISTENT => false,
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci", // This won't affect PostgreSQL but won't hurt
     ];
     
     // Create PDO connection with retry logic
@@ -107,6 +112,9 @@ try {
     $error_message = $e->getMessage();
     error_log("Database connection error: " . $error_message);
     
+    // Enable debug mode to see actual error
+    $debug_mode = isset($_GET['debug']) || (defined('DEBUG') && DEBUG);
+    
     // Provide specific error messages without exposing sensitive information
     if (strpos($error_message, 'could not find driver') !== false) {
         $user_error = "Database driver not available. Please contact support.";
@@ -125,7 +133,7 @@ try {
     }
     
     // In development, show more details
-    if (isset($_GET['debug']) || (defined('DEBUG') && DEBUG)) {
+    if ($debug_mode) {
         die("Connection failed: " . htmlspecialchars($error_message));
     } else {
         die("Connection failed: " . $user_error);

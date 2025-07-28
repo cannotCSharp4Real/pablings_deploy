@@ -24,6 +24,11 @@ try {
         $database_url = "postgresql://pablings_l11r_user:PhrHoLeTMyXpgsdxK5TKDIq61s8Y0Qw3@dpg-d23mh52dbo4c738ddt70-a.singapore-postgres.render.com/pablings_111r";
     }
     
+    // Fix malformed URL if it has duplicate 'postgresql:' prefix
+    if (strpos($database_url, 'postgresql:postgresql://') === 0) {
+        $database_url = str_replace('postgresql:postgresql://', 'postgresql://', $database_url);
+    }
+    
     // Parse the database URL
     $db_config = parseDatabaseUrl($database_url);
     

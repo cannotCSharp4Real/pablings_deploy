@@ -82,28 +82,28 @@
                 
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-dashbord" >
-                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></a></div></a>
+                    <td class="menu-btn">
+                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-barber menu-active menu-icon-barber-active">
-                        <a href="barber.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Barber</p></a></div>
+                    <td class="menu-btn menu-active">
+                        <a href="barber.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Barber</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-schedule">
+                    <td class="menu-btn">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
+                    <td class="menu-btn">
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-customer">
-                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></a></div>
+                    <td class="menu-btn">
+                        <a href="customer.php" class="non-style-link-menu"><div><p class="menu-text">Customer</p></div></a>
                     </td>
                 </tr>
 

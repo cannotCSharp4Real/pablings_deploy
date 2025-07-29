@@ -318,7 +318,6 @@ try {
                                                                 All Barber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                             </div>
                                                         </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/barber-hover.svg');"></div>
                                                     </div>
                                                 </td>
                                                 <td style="width: 25%;">
@@ -331,7 +330,6 @@ try {
                                                                 All Customer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                             </div>
                                                         </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/customer-hover.svg');"></div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -346,7 +344,6 @@ try {
                                                                 New Booking &nbsp;&nbsp;
                                                             </div>
                                                         </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="margin-left: 0px;background-image: url('../img/icons/book-hover.svg');"></div>
                                                     </div>
                                                 </td>
                                                 <td style="width: 25%;">
@@ -359,7 +356,6 @@ try {
                                                                 Today Sessions
                                                             </div>
                                                         </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
                                                     </div>
                                                 </td>
                                             </tr>

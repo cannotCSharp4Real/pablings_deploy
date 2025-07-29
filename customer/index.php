@@ -264,14 +264,14 @@ try {
                                     <td style="padding:0;">
                                         <h3 style="margin:0 0 8px 0;">Welcome!</h3>
                                         <h1 style="margin:0 0 8px 0;"><?php echo htmlspecialchars($username)  ?>.</h1>
-                                        <p style="margin:0 0 12px 0;">Haven't any idea about barber? no problem let's jumping to 
+                                        <p style="margin:0 0 12px 0;">Haven't had any idea about barber? No problem, let's jump to 
                                             <a href="barber.php" class="non-style-link"><b>"All Barber"</b></a> section or 
                                             <a href="schedule.php" class="non-style-link"><b>"Sessions"</b> </a><br>
-                                            Track your past and future appointments history.<br>Also find out the expected arrival time of your barber or medical consultant.
+                                            Track your past and future appointments history.<br>Also find out the expected arrival time of your barber..
                                         </p>
                                         <h3 style="margin:16px 0 8px 0;">Channel a Barber Here</h3>
                                         <form action="schedule.php" method="post" style="display: flex;gap:8px;margin:0;">
-                                            <input type="search" name="search" class="input-text " placeholder="Search barber and We will Find The Session Available" list="barber" style="width:45%;">
+                                            <input type="search" name="search" class="input-text " placeholder="Search barber and we will find the session available" list="barber" style="width:45%;">
                                             <?php
                                             echo '<datalist id="barber">';
                                             try {

@@ -376,25 +376,46 @@ input[type=search]:focus {
 
 .menu-icon-barber{
   background-image: url('../img/icons/barbers.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 .menu-icon-schedule{
   background-image: url('../img/icons/schedule.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 .menu-icon-appoinment{
   background-image: url('../img/icons/book.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 .menu-icon-customer{
   background-image: url('../img/icons/customer.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 .menu-icon-settings{
   background-image: url('../img/icons/settings.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 
 .menu-icon-session{
   background-image: url('../img/icons/schedule.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 .menu-icon-home{
   background-image: url('../img/icons/home.svg');
+  background-position: 18px 50%;
+  background-repeat: no-repeat;
+  padding-left: 48px;
 }
 
 

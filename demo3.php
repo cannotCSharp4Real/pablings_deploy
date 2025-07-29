@@ -6,25 +6,21 @@ $user = "pablings_dp_jdd3_user";
 $password = "EDy75KM1w3BN7vbxxc1Par4i26N1ho9p";
 $port = "5432";
 
-// Updated connection string with better SSL configuration
-$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=prefer";
+// Try different SSL modes if connection fails
+$ssl_modes = ['prefer', 'allow', 'disable'];
+$conn = false;
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Attempt connection with better error handling
-$conn = pg_connect($conn_string);
-
-if (!$conn) {
-    // Use proper error handling for deprecated function
-    $error_msg = pg_last_error($conn);
-    die("Connection failed: " . ($error_msg ? $error_msg : "Unknown connection error"));
+foreach ($ssl_modes as $ssl_mode) {
+    $conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=$ssl_mode";
+    $conn = pg_connect($conn_string);
+    
+    if ($conn) {
+        break; // Connection successful
+    }
 }
 
-// Check if connection is still valid
-if (pg_connection_status($conn) !== PGSQL_CONNECTION_OK) {
-    die("Connection lost: " . pg_last_error($conn));
+if (!$conn) {
+    die("Connection failed: Unable to connect to PostgreSQL server. Please check your connection settings.");
 }
 
 // form values
@@ -62,9 +58,14 @@ if (empty($value) || empty($value2) || empty($value3) || empty($value4)) {
             $create_result = pg_query($conn, $create_table_sql);
             if (!$create_result) {
                 echo "Error creating table: " . pg_last_error($conn);
+                pg_close($conn);
                 exit;
             }
         }
+    } else {
+        echo "Error checking table existence: " . pg_last_error($conn);
+        pg_close($conn);
+        exit;
     }
     
     // Escape values to prevent SQL injection
@@ -86,5 +87,7 @@ if (empty($value) || empty($value2) || empty($value3) || empty($value4)) {
 }
 
 // Close connection
-pg_close($conn);
+if ($conn) {
+    pg_close($conn);
+}
 ?>

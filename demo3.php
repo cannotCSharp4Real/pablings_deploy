@@ -6,21 +6,11 @@ $user = "pablings_dp_jdd3_user";
 $password = "EDy75KM1w3BN7vbxxc1Par4i26N1ho9p";
 $port = "5432";
 
-// Try different SSL modes if connection fails
-$ssl_modes = ['prefer', 'allow', 'disable'];
-$conn = false;
-
-foreach ($ssl_modes as $ssl_mode) {
-    $conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=$ssl_mode";
-    $conn = pg_connect($conn_string);
-    
-    if ($conn) {
-        break; // Connection successful
-    }
-}
+$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=require";
+$conn = pg_connect($conn_string);
 
 if (!$conn) {
-    die("Connection failed: Unable to connect to PostgreSQL server. Please check your connection settings.");
+    die("Connection failed: " . pg_last_error());
 }
 
 // form values
@@ -58,14 +48,9 @@ if (empty($value) || empty($value2) || empty($value3) || empty($value4)) {
             $create_result = pg_query($conn, $create_table_sql);
             if (!$create_result) {
                 echo "Error creating table: " . pg_last_error($conn);
-                pg_close($conn);
                 exit;
             }
         }
-    } else {
-        echo "Error checking table existence: " . pg_last_error($conn);
-        pg_close($conn);
-        exit;
     }
     
     // Escape values to prevent SQL injection
@@ -87,7 +72,5 @@ if (empty($value) || empty($value2) || empty($value3) || empty($value4)) {
 }
 
 // Close connection
-if ($conn) {
-    pg_close($conn);
-}
+pg_close($conn);
 ?>

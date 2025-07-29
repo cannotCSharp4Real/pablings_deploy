@@ -367,100 +367,62 @@ input[type=search]:focus {
 
 
 .menu-icon-dashbord{
-  background-image: url('../img/icons/dashboards.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 
 
 .menu-icon-barber{
-  background-image: url('../img/icons/barbers.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 .menu-icon-schedule{
-  background-image: url('../img/icons/schedule.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 .menu-icon-appoinment{
-  background-image: url('../img/icons/book.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 .menu-icon-customer{
-  background-image: url('../img/icons/customer.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 .menu-icon-settings{
-  background-image: url('../img/icons/settings.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 
 .menu-icon-session{
-  background-image: url('../img/icons/schedule.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 .menu-icon-home{
-  background-image: url('../img/icons/home.svg');
-  background-position: 18px 50%;
-  background-repeat: no-repeat;
-  padding-left: 48px;
+  padding-left: 20px;
 }
 
 
 
 .menu-icon-dashbord:hover,.menu-icon-dashbord-active{
   color: var(--primarycolor);
-  background-image: url('../img/icons/dashboard-hover.svg');
 }
 
 
 .menu-icon-barber:hover,.menu-icon-barber-active{
   color: var(--primarycolor);
-  background-image: url('../img/icons/barber-hover.svg');
 }
 .menu-icon-schedule:hover,.menu-icon-schedule-active{
   color: var(--primarycolor);
-  
-  background-image: url('../img/icons/schedule-hover.svg');
 }
 .menu-icon-appoinment:hover,.menu-icon-appoinment-active{
   color: var(--primarycolor);
-  
-  background-image: url('../img/icons/book-hover.svg');
 }
 .menu-icon-customer:hover,.menu-icon-customer-active{
   color: var(--primarycolor);
-  
-  background-image: url('../img/icons/customer-hover.svg');
 }
 
 .menu-icon-settings:hover,.menu-icon-settings-active{
   color: var(--primarycolor);
-  
-  background-image: url('../img/icons/settings-iceblue.svg');
 }
 
 .menu-icon-session:hover,.menu-icon-session-active{
   color:white;
-  
-  background-image: url('../img/icons/schedule-hover.svg');
 }
 .menu-icon-home:hover,.menu-icon-home-active{
   color:white;
-  
-  background-image: url('../img/icons/home-iceblue.svg');
 }
 
 

@@ -1,9 +1,9 @@
 <?php
 // PostgreSQL connection details
-$host = "dpg-d1n4eper433s73bbh8g0-a.singapore-postgres.render.com";
-$dbname = "pablings_dp_jdd3";
-$user = "pablings_dp_jdd3_user";
-$password = "EDy75KM1w3BN7vbxxc1Par4i26N1ho9p";
+$host = "dpg-d23mh52dbo4c738ddt70-a.singapore-postgres.render.com";
+$dbname = "pablings_l11r";
+$user = "pablings_l11r_user";
+$password = "PhrHoLeTMyXpgsdxK5TKDIq61s8Y0Qw3";
 $port = "5432";
 
 $conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=require";

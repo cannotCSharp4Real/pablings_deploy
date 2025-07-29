@@ -281,7 +281,6 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                                                                     All Barber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                 </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/barber-hover.svg');"></div>
                                                     </div>
                                                 </td>
                                                 <td style="width: 25%;">
@@ -294,7 +293,6 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                                                                     All Customer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                 </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/customer-hover.svg');"></div>
                                                     </div>
                                                 </td>
                                                 </tr>
@@ -309,7 +307,6 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                                                                     NewBooking &nbsp;&nbsp;
                                                                 </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="margin-left: 0px;background-image: url('../img/icons/book-hover.svg');"></div>
                                                     </div>
                                                     
                                                 </td>
@@ -324,7 +321,6 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                                                                     Today Sessions
                                                                 </div>
                                                         </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
                                                     </div>
                                                 </td>
                                                 

@@ -239,8 +239,8 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
                         <td >
                             <h3>Welcome!</h3>
                             <h1><?php echo $username  ?>.</h1>
-                            <p>Thanks for joining with us. We are always trying to get you a complete service<br>
-                            You can view your dailly schedule. Reach Customer Appointment at home!<br><br>
+                            <p>Thanks for joining with us. We are always trying to get you a complete service.<br>
+                            You can view your daily schedule, and each Customer Appointment everywhere!<br><br>
                             </p>
                             <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="width:30%">View My Appointments</button></a>
                             <br>
@@ -340,7 +340,7 @@ $schedulerow = $database->query("select * from schedule where scheduledate='$tod
 
 
                             
-                                    <p id="anim" style="font-size: 20px;font-weight:600;padding-left: 40px;">Your Up Coming Sessions until Next week</p>
+                                    <p id="anim" style="font-size: 20px;font-weight:600;padding-left: 40px;">Your up coming sessions until next week!</p>
                                     <center>
                                         <div class="abc scroll" style="height: 250px;padding: 0;margin: 0;">
                                         <table width="85%" class="sub-table scrolldown" border="0" >

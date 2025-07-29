@@ -6,11 +6,25 @@ $user = "pablings_dp_jdd3_user";
 $password = "EDy75KM1w3BN7vbxxc1Par4i26N1ho9p";
 $port = "5432";
 
-$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=require";
+// Updated connection string with better SSL configuration
+$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=prefer";
+
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Attempt connection with better error handling
 $conn = pg_connect($conn_string);
 
 if (!$conn) {
-    die("Connection failed: " . pg_last_error());
+    // Use proper error handling for deprecated function
+    $error_msg = pg_last_error($conn);
+    die("Connection failed: " . ($error_msg ? $error_msg : "Unknown connection error"));
+}
+
+// Check if connection is still valid
+if (pg_connection_status($conn) !== PGSQL_CONNECTION_OK) {
+    die("Connection lost: " . pg_last_error($conn));
 }
 
 // form values

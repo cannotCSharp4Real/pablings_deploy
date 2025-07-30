@@ -27,7 +27,10 @@ if($_POST){
             $error='1';
         }else{
 
-            $sql1="insert into barber(docemail,docname,docpassword,specialties) values('$email','$name','$password',$spec);";
+            // Hash the password before storing
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            
+            $sql1="insert into barber(docemail,docname,docpassword,specialties) values('$email','$name','$hashed_password',$spec);";
             $sql2="insert into webuser(email,usertype) values('$email','d')";
             $database->query($sql1);
             $database->query($sql2);

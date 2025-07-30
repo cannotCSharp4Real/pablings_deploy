@@ -17,7 +17,7 @@
     //import database
     include("../connection.php");
     $userrow = $database->query("select * from customer where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
+    $userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
     $userid= $userfetch["pid"];
     $username=$userfetch["pname"];
 
@@ -27,7 +27,7 @@
         include("../connection.php");
         $id=$_GET["id"];
         $result001= $database->query("select * from customer where pid=$id;");
-        $email=($result001->fetch_assoc())["pemail"];
+        $email=($result001->fetch(PDO::FETCH_ASSOC))["pemail"];
         $sql= $database->query("delete from webuser where email='$email';");
         $sql= $database->query("delete from customer where pemail='$email';");
         //print_r($email);

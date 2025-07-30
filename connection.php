@@ -4,15 +4,17 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Function to parse database URL
-function parseDatabaseUrl($url) {
-    $parsed = parse_url($url);
-    return [
-        'host' => $parsed['host'] ?? 'localhost',
-        'port' => $parsed['port'] ?? 5432,
-        'database' => ltrim($parsed['path'] ?? '', '/'),
-        'username' => $parsed['user'] ?? '',
-        'password' => $parsed['pass'] ?? ''
-    ];
+if (!function_exists('parseDatabaseUrl')) {
+    function parseDatabaseUrl($url) {
+        $parsed = parse_url($url);
+        return [
+            'host' => $parsed['host'] ?? 'localhost',
+            'port' => $parsed['port'] ?? 5432,
+            'database' => ltrim($parsed['path'] ?? '', '/'),
+            'username' => $parsed['user'] ?? '',
+            'password' => $parsed['pass'] ?? ''
+        ];
+    }
 }
 
 try {

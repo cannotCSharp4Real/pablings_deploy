@@ -32,6 +32,7 @@ include("../connection.php");
     
     
 
+    <?php
     if($_POST){
         //print_r($_POST);
         $result= $database->query("select * from webuser");

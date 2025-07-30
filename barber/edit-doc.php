@@ -38,8 +38,10 @@ if($_POST){
                 $error='1';
             }else{
 
+                // Hash the password before updating
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-                $sql1="update barber set docemail='$email',docname='$name',docpassword='$password',specialties=$spec where id=$id ;";
+                $sql1="update barber set docemail='$email',docname='$name',docpassword='$hashed_password',specialties=$spec where id=$id ;";
                 $database->query($sql1);
 
                 $sql1="update webuser set email='$email' where email='$oldemail' ;";

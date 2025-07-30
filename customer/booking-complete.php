@@ -19,8 +19,8 @@
     //import database
     include("../connection.php");
     $userrow = $database->query("select * from customer where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["pid"];
+    $userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
+    $userid= $userfetch["id"];
     $username=$userfetch["pname"];
 
 

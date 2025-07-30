@@ -27,8 +27,8 @@ if($_POST){
             $error='3';
             $result= $database->query("select barber.id from barber inner join webuser on barber.docemail=webuser.email where webuser.email='$email';");
 
-            if($result->num_rows==1){
-                $id2=$result->fetch_assoc()["id"];
+            if($result->rowCount()==1){
+                $id2=$result->fetch(PDO::FETCH_ASSOC)["id"];
             }else{
                 $id2=$id;
             }

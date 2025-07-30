@@ -21,7 +21,7 @@
     
     // Check if user exists before accessing array keys
     if($userfetch) {
-        $userid= $userfetch["pid"];
+        $userid= $userfetch["id"];
         $username=$userfetch["pname"];
     } else {
         // User not found, redirect to login
@@ -32,7 +32,7 @@
     
     if($_GET){
         $id=$_GET["id"];
-        $result001= $database->query("select * from customer where pid=$id;");
+        $result001= $database->query("select * from customer where id=$id;");
         $customer_data = $result001->fetch(PDO::FETCH_ASSOC);
         
         if($customer_data) {

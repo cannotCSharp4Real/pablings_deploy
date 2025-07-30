@@ -18,20 +18,32 @@
     include("../connection.php");
     $userrow = $database->query("select * from customer where pemail='$useremail'");
     $userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
+    
+    // Check if user exists before accessing array keys
+    if($userfetch) {
+        $userid= $userfetch["pid"];
+        $username=$userfetch["pname"];
+    } else {
+        // User not found, redirect to login
+        header("location: ../login.php");
+        exit();
+    }
 
     
     if($_GET){
-        //import database
-        include("../connection.php");
         $id=$_GET["id"];
         $result001= $database->query("select * from customer where pid=$id;");
-        $email=($result001->fetch(PDO::FETCH_ASSOC))["pemail"];
-        $sql= $database->query("delete from webuser where email='$email';");
-        $sql= $database->query("delete from customer where pemail='$email';");
-        //print_r($email);
-        header("location: ../logout.php");
+        $customer_data = $result001->fetch(PDO::FETCH_ASSOC);
+        
+        if($customer_data) {
+            $email = $customer_data["pemail"];
+            $sql= $database->query("delete from webuser where email='$email';");
+            $sql= $database->query("delete from customer where pemail='$email';");
+            header("location: ../logout.php");
+        } else {
+            // Customer not found
+            header("location: ../logout.php");
+        }
     }
 
 

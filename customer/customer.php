@@ -40,7 +40,7 @@
     //import database
     include("../connection.php");
     $userrow = $database->query("select * from barber where docemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
+    $userfetch=$userrow->fetch(PDO::FETCH_ASSOC);
     $userid= $userfetch["id"];
     $username=$userfetch["docname"];
 
@@ -151,8 +151,9 @@
                                 $list11 = $database->query($sqlmain);
                                //$list12= $database->query("select * from appointment inner join customer on customer.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=1;");
 
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
+                                $list11_count = $list11->rowCount();
+                                for ($y=0;$y<$list11_count;$y++){
+                                    $row00=$list11->fetch(PDO::FETCH_ASSOC);
                                     $d=$row00["pname"];
                                     $c=$row00["pemail"];
                                     echo "<option value='$d'><br/>";
@@ -191,7 +192,7 @@
                 
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)"><?php echo $selecttype." Customer (".$list11->num_rows.")"; ?></p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)"><?php echo $selecttype." Customer (".$list11_count.")"; ?></p>
                     </td>
                     
                 </tr>
@@ -258,7 +259,8 @@
                                 
                                 $result= $database->query($sqlmain);
                                 //echo $sqlmain;
-                                if($result->num_rows==0){
+                                $result_count = $result->rowCount();
+                                if($result_count==0){
                                     echo '<tr>
                                     <td colspan="4">
                                     <br><br><br><br>
@@ -276,8 +278,8 @@
                                     
                                 }
                                 else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
+                                for ( $x=0; $x<$result_count;$x++){
+                                    $row=$result->fetch(PDO::FETCH_ASSOC);
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
@@ -327,7 +329,7 @@
         $action=$_GET["action"];
             $sqlmain= "select * from customer where id='$id'";
             $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
+            $row=$result->fetch(PDO::FETCH_ASSOC);
             $name=$row["pname"];
             $email=$row["pemail"];
             $dob=$row["pdob"];
